@@ -21,7 +21,10 @@ export default {
 		plugins: [
 			replace({
 				'process.browser': true,
-				'process.env.NODE_ENV': JSON.stringify(mode)
+				'process.env.NODE_ENV': JSON.stringify(mode),
+				process: JSON.stringify({
+					env: process.env
+				})
 			}),
 			svelte({
 				dev,

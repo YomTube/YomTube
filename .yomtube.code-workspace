@@ -1,0 +1,21 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"editor.detectIndentation": false,
+		"editor.insertSpaces": false,
+		"editor.tabSize": 4,
+		"editor.formatOnSave": true,
+		"editor.formatOnPaste": true,
+		"editor.formatOnType": true,
+		"prettier.singleQuote": true,
+		"prettier.tabWidth": 4,
+		"prettier.trailingComma": "all",
+		"prettier.useTabs": true,
+		"prettier.endOfLine": "crlf",
+		"prettier.bracketSpacing": true
+	}
+}
