@@ -1,6 +1,6 @@
 <script>
   import { onMount } from "svelte";
-  import Thumbnail from "../components/Thumbnail.svelte";
+  import Videobox from "../components/Videobox.svelte";
 
   let videos = [];
 
@@ -22,9 +22,7 @@
 </style>
 
 <svelte:head>
-  <title>Sapper project template</title>
+  <title>Yomtube</title>
 </svelte:head>
 
-{#each videos as video}
-  <Thumbnail id={video._id} title={video.title} />
-{/each}
+<Videobox title="Latest videos" {videos} />
