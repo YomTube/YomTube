@@ -1,14 +1,15 @@
-import Router from 'express';
+import Router from "express";
 const router = Router();
 
-import models, { connectDB } from '../models/index.js';
+import { connectDB, User } from "../models/index.js";
 
-import videos from './routes/videos.js';
+import videos from "./routes/videos.js";
+import users from "./routes/users.js";
 
-router.get('/', (req, res) => res.send("Hello"))
-router.use('/videos', videos);
+router.get("/", (req, res) => res.send("Hello"));
+router.use("/videos", videos);
+router.use("/users", users);
 
-//roliga databasgrejer
 const DB = connectDB();
 
 export default router;
