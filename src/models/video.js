@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-const videoSchema = new mongoose.Schema({
+const VideoSchema = new mongoose.Schema({
 	title: { type: String, required: true },
 	description: String,
 	filePath: { type: String, required: true },
@@ -8,5 +8,5 @@ const videoSchema = new mongoose.Schema({
 	uploaded_at: { type: Date, default: Date.now },
 })
 
-const Video = mongoose.model('Video', videoSchema);
+const Video = mongoose.model('Video', VideoSchema);
 export default Video;

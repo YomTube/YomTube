@@ -1,8 +1,7 @@
 import Router from 'express';
-import models from '../../models/index.js';
+import { Video } from '../../models/index.js';
 const router = Router();
 
-const Video = models.Video;
 router.get("/", (req, res) => {
 	Video.find({}, (err, result) => {
 		if (err) throw err;
