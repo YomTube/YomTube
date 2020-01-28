@@ -4,14 +4,14 @@
 
 <script>
 	import { onMount } from "svelte";
-	import Thumbnail from "../components/Thumbnail.svelte";
+	import Videobox from "../components/Videobox.svelte";
 
 	let videos = [];
 
 	onMount(async () => {
 		try {
 			const response = await fetch(
-				`${process.env.BASE_URL}:${process.env.PORT}/api/videos`
+				"https://yomtube.beppp.club/api/videos"
 			);
 			videos = await response.json();
 			console.log(videos);
@@ -24,9 +24,7 @@
 </script>
 
 <svelte:head>
-	<title>Sapper project template</title>
+	<title>Yomtube</title>
 </svelte:head>
 
-{#each videos as video}
-	<Thumbnail id="{video._id}" title="{video.title}" />
-{/each}
+<Videobox title="Latest videos" {videos} />

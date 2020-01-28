@@ -1,0 +1,85 @@
+<style>
+	nav {
+		background-color: var(--background);
+		height: 4em;
+		width: 100%;
+		display: flex;
+		z-index: 2;
+		align-items: center;
+		border-bottom: 4px solid rgba(255, 164, 0, 0.4);
+		box-shadow: 0 -0.4rem 0.9rem 0.2rem rgba(0, 0, 0, 0.5);
+	}
+
+	img {
+		padding-left: 5em;
+		display: block;
+		width: 3.5%;
+		margin: 8px;
+		height: auto;
+	}
+
+	h1 {
+		font-size: 2.5em;
+		font-weight: lighter;
+		color: var(--foreground);
+	}
+
+	a {
+		color: var(--foreground);
+		margin: 1em;
+		font-size: 1.2em;
+		text-decoration: none;
+		transition: 0.08s ease-in;
+	}
+
+	a:hover {
+		color: var(--accent);
+	}
+
+	span {
+		margin-left: auto;
+		display: flex;
+		align-items: center;
+	}
+</style>
+
+<script>
+	import Button from "./Button.svelte";
+	export let icon = "";
+	export let background = "#ffffff";
+	export let foreground = "hsl(216, 7%, 15%)";
+	export let accent = "#ffa400";
+	export let headerText = "YOMTUBE";
+	export let buttons = [
+		{
+			text: "Login",
+			link: "https://paypal.me/ghishnchips?locale.x=sv_SE"
+		}
+	];
+	export let links = [];
+</script>
+
+<headerbar
+	style="--foreground:{foreground}; --background:{background}; --accent:{accent};"
+>
+	<nav>
+
+		<img src="{icon}" alt="an icon" />
+		<h1>{headerText}</h1>
+		<span>
+			{#each links as link}
+				<a href="{link.link}">{link.text}</a>
+			{/each}
+			{#each buttons as button}
+				<Button
+					link="{button.link}"
+					text="{button.text}"
+					{background}
+					foreground="#009ffd"
+				/>
+			{/each}
+
+		</span>
+
+	</nav>
+</headerbar>
