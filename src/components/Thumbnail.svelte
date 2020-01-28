@@ -35,7 +35,7 @@
 
 <script>
 	export let id;
-	export let thumbnail = "url(/matt.jpg)";
+	export let thumbnail = "url(/linus.jpg)";
 	export let title;
 </script>
 
