@@ -1,19 +1,17 @@
-<script>
-  import { onMount } from "svelte";
-  import Videobox from "../components/Videobox.svelte";
+<style>
 
 </style>
 
 <script>
 	import { onMount } from "svelte";
-	import Thumbnail from "../components/Thumbnail.svelte";
+	import Videobox from "../components/Videobox.svelte";
 
 	let videos = [];
 
 	onMount(async () => {
 		try {
 			const response = await fetch(
-				`${process.env.BASE_URL}:${process.env.PORT}/api/videos`
+				"https://yomtube.beppp.club/api/videos"
 			);
 			videos = await response.json();
 			console.log(videos);
@@ -26,7 +24,7 @@
 </script>
 
 <svelte:head>
-  <title>Yomtube</title>
+	<title>Yomtube</title>
 </svelte:head>
 
 <Videobox title="Latest videos" {videos} />
