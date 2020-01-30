@@ -1,14 +1,19 @@
 <style>
 	a {
+		position: absolute;
+		top: 0;
+		left: 0;
+		bottom: 0;
+		right: 0;
 		border-radius: 0.4em;
 		display: block;
-		width: 95%;
-		height: 90%;
 		background-image: var(--thumbnail);
 		background-size: cover;
 		background-position: center;
 		text-decoration: none;
 		transition: all 0.3s;
+		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12),
+			0 1px 2px rgba(0, 0, 0, 0.24);
 	}
 
 	a:hover {
@@ -27,9 +32,41 @@
 		display: flex;
 		justify-content: flex-start;
 		align-items: center;
-		font-size: 90%;
+		font-size: 80%;
 		color: #232528;
-		background-color: rgba(234, 246, 255, 0.658);
+		background-color: #ffffff;
+	}
+
+	span {
+		width: calc(20% - 2em);
+		position: relative;
+		margin: 1em;
+		display: inline-block;
+	}
+
+	span:after {
+		padding-top: 56.25%;
+		/* 16:9 ratio */
+		display: block;
+		content: "";
+	}
+
+	@media only screen and (max-width: 1000px) {
+		span {
+			width: 28%;
+		}
+		div {
+			font-size: 1em;
+		}
+	}
+
+	@media only screen and (max-width: 768px) {
+		span {
+			width: 100%;
+		}
+		div {
+			font-size: 1em;
+		}
 	}
 </style>
 
@@ -39,8 +76,10 @@
 	export let title;
 </script>
 
-<a style="--thumbnail: {thumbnail};" href="/videos/{id}">
-	<div>
-		<p>{title}</p>
-	</div>
-</a>
+<span>
+	<a style="--thumbnail: {thumbnail};" href="/videos/{id}">
+		<div>
+			<p>{title}</p>
+		</div>
+	</a>
+</span>

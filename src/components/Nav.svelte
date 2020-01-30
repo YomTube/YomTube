@@ -53,7 +53,7 @@
 	export let buttons = [
 		{
 			text: "Login",
-			link: "https://paypal.me/ghishnchips?locale.x=sv_SE"
+			link: "/login"
 		}
 	];
 	export let links = [];

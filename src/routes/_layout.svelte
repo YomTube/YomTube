@@ -1,9 +1,15 @@
 <script>
-  import Nav from "../components/Nav.svelte";
+	import Nav from "../components/Nav.svelte";
+	export let segment;
 </script>
 
-<Nav />
+<style>
 
+</style>
+
+{#if segment != 'login'}
+	<Nav />
+{/if}
 <main>
-  <slot />
+	<slot />
 </main>

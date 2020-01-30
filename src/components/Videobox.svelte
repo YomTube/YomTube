@@ -10,16 +10,11 @@
 		width: 100%;
 	}
 	div {
-		display: grid;
-		grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
-		grid-template-rows: 30% 70%;
-		grid-template-areas:
-			"title title title title title"
-			"1 2 3 4 5";
-		justify-items: center;
+		display: flex;
+		justify-content: flex-start;
 		align-items: center;
+		flex-wrap: wrap;
 		width: 80%;
-		height: 10vw;
 		min-height: 200px;
 		background-color: var(--bg);
 		border-radius: 1em;
@@ -27,6 +22,18 @@
 		padding: 1em;
 		box-shadow: 0 19px 38px rgba(0, 0, 0, 0.3),
 			0 15px 12px rgba(0, 0, 0, 0.22);
+	}
+
+	@media only screen and (max-width: 768px) {
+		div {
+			width: 100%;
+			margin: 0;
+			padding: 0;
+			border-radius: 0;
+		}
+		h1 {
+			display: none;
+		}
 	}
 </style>
 
@@ -39,7 +46,7 @@
 	import Thumbnail from "./Thumbnail.svelte";
 </script>
 
-<div style="--bg: {bg}; --fg: {fg}; --accent: {accent};">
+<div id="box" style="--bg: {bg}; --fg: {fg}; --accent: {accent};">
 	<h1>{title}</h1>
 	{#each videos as video, i}
 		<Thumbnail
