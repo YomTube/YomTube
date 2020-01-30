@@ -113,4 +113,5 @@ temp/
 
 __sapper__
 
-/videos/
+# !/videos/
+/videos/*
