@@ -8,7 +8,7 @@ import { promises } from 'fs';
 const router = Router();
 
 const GET_PATH = "/tmp";
-const SAVE_PATH = "videos";
+const SAVE_PATH = process.env.ROOT_DIR + "videos";
 
 const upload = multer({ dest: GET_PATH })
 // Get all videos
@@ -25,13 +25,22 @@ router.get("/", async (req, res) => {
 router.get("/:id", async (req, res) => {
 	let id = req.params.id;
 	try {
+		const video = await Video.findOne({ _id: id });
+		res.send({ video });
+	} catch (err) {
+		res.status(400).send({ error: err.message });
+	}
+});
+
+router.get('/:id/video', async (req, res) => {
+	let id = req.params.id;
+	try {
 		const video = await Video.findOne({ _id: id }, 'filePath');
 		res.sendFile(video.filePath, { root: '/' });
 	} catch (err) {
 		res.status(400).send({ error: err.message });
 	}
-
-});
+})
 
 // Upload video
 router.post("/", auth, upload.single('video'), async (req, res) => {
@@ -51,9 +60,7 @@ router.post("/", auth, upload.single('video'), async (req, res) => {
 		await promises.mkdir(outputPath);
 		video.filePath = outputPath;
 
-		processVideo(`${GET_PATH}/${filename}`, video._id)
-		await video.save();
-
+		await processVideo(`${GET_PATH}/${filename}`, video);
 		res.status(201).send({ video })
 	} catch (err) {
 		res.status(400).send({ error: err.message });
@@ -102,7 +109,8 @@ let transcodeToRes = (path, shortSide, bitrate, videoID, portrait) => {
 	})
 }
 
-let processVideo = async (path, videoID) => {
+let processVideo = async (path, video) => {
+	let videoID = video._id
 	return new Promise(async (res, rej) => {
 		let obj = await getRes(path)
 			.catch(error => console.error(error));
@@ -142,11 +150,14 @@ let processVideo = async (path, videoID) => {
 			if (obj) {
 				let portrait = obj.width <= obj.height;
 				let maxest = Math.max(obj.width, obj.height);
+				// let av = qualities.filter(quality => maxest >= quality.res);
+				// await Promises.all()
 				for (const quality of qualities.filter(quality => maxest >= quality.res)) {
 					await transcodeToRes(path, quality.res, quality.bitrate, videoID, portrait)
 				}
 				await promises.unlink(path);
 				console.log("Finished transcoding for %s", videoID)
+				await video.save();
 				return res();
 			}
 		} catch (err) {
