@@ -3,7 +3,7 @@ import { Video } from '../../models/index.js';
 import multer from 'multer';
 import auth from '../middleware/auth';
 import ffmpeg from 'fluent-ffmpeg'
-import { promises } from 'fs';
+import { promises as fs } from 'fs';
 
 const router = Router();
 
@@ -57,12 +57,14 @@ router.post("/", auth, upload.single('video'), async (req, res) => {
 		await video.save();
 
 		let outputPath = `${SAVE_PATH}/${video._id}`;
-		await promises.mkdir(outputPath);
+		console.log(outputPath)
+		await fs.mkdir(outputPath);
 		video.filePath = outputPath;
 
-		await processVideo(`${GET_PATH}/${filename}`, video);
+		processVideo(`${GET_PATH}/${filename}`, video);
 		res.status(201).send({ video })
 	} catch (err) {
+		console.error(err)
 		res.status(400).send({ error: err.message });
 	}
 })
@@ -150,12 +152,9 @@ let processVideo = async (path, video) => {
 			if (obj) {
 				let portrait = obj.width <= obj.height;
 				let maxest = Math.max(obj.width, obj.height);
-				// let av = qualities.filter(quality => maxest >= quality.res);
-				// await Promises.all()
-				for (const quality of qualities.filter(quality => maxest >= quality.res)) {
-					await transcodeToRes(path, quality.res, quality.bitrate, videoID, portrait)
-				}
-				await promises.unlink(path);
+				let available_qualities = qualities.filter(quality => maxest >= quality.res);
+				await Promise.all(available_qualities.map(quality => transcodeToRes(path, quality.res, quality.bitrate, videoID, portrait)))
+				await fs.unlink(path);
 				console.log("Finished transcoding for %s", videoID)
 				await video.save();
 				return res();
