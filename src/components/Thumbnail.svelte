@@ -51,9 +51,18 @@
 		content: "";
 	}
 
+	@media only screen and (max-width: 1500px) {
+		span {
+			width: calc(25% - 2em);
+		}
+		div {
+			font-size: 1em;
+		}
+	}
+
 	@media only screen and (max-width: 1000px) {
 		span {
-			width: 28%;
+			width: calc(33% - 2em);
 		}
 		div {
 			font-size: 1em;

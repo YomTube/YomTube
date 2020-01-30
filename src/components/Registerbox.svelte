@@ -16,7 +16,6 @@
 	}
 	.img {
 		width: 45%;
-		background-color: var(--accent2);
 		border-radius: 0.4em 0 0 0.4em;
 	}
 
@@ -48,7 +47,7 @@
 
 	.title {
 		color: var(--accent1);
-		margin-bottom: 2em;
+		margin-bottom: 0em;
 	}
 
 	.submit {
@@ -120,6 +119,7 @@
 	export let bg;
 	export let accent1;
 	export let accent2;
+	export let img;
 	let email;
 	let username;
 	let password;
@@ -144,7 +144,7 @@
 	class="registerbox"
 	style="--fg: {fg}; --bg: {bg}; --accent1: {accent1}; --accent2: {accent2};"
 >
-	<div class="img"></div>
+	<div style="background: url({img}) var(--accent2);" class="img"></div>
 	<div class="flexwrapper">
 		<form class="form" action="">
 			<div class="title">
@@ -185,7 +185,7 @@
 			</div>
 			<div class="submit" style="grid-area: submit;">
 				<input
-					on:click="{() => login()}"
+					on:click="{() => register()}"
 					class="input"
 					type="button"
 					value="Register"

@@ -14,7 +14,7 @@
 		justify-content: flex-start;
 		align-items: center;
 		flex-wrap: wrap;
-		width: 80%;
+		width: 85%;
 		min-height: 200px;
 		background-color: var(--bg);
 		border-radius: 1em;
@@ -22,6 +22,12 @@
 		padding: 1em;
 		box-shadow: 0 19px 38px rgba(0, 0, 0, 0.3),
 			0 15px 12px rgba(0, 0, 0, 0.22);
+	}
+
+	@media only screen and (max-width: 1600px) {
+		div {
+			width: calc(100% - 2em);
+		}
 	}
 
 	@media only screen and (max-width: 768px) {

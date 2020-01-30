@@ -3,6 +3,9 @@
 		width: 75vw;
 		height: 50vh;
 		perspective: 1000px;
+		max-width: 1200px;
+		max-height: 600px;
+		min-height: 500px;
 	}
 
 	.flipbox-inner {
@@ -30,8 +33,9 @@
 	}
 	.img {
 		width: 45%;
-		background-color: var(--accent2);
 		border-radius: 0 0.4em 0.4em 0;
+		background-size: cover;
+		background-position: center;
 	}
 
 	.flexwrapper {
@@ -105,7 +109,6 @@
 	.spin {
 		transform: rotateX(180deg);
 	}
-
 	@media only screen and (max-width: 768px) {
 		.img {
 			display: none;
@@ -114,6 +117,7 @@
 			width: 100vw;
 			height: 100vh;
 			overflow: hidden;
+			max-height: none;
 		}
 		.loginbox {
 			border-radius: 0;
@@ -141,10 +145,12 @@
 	export let bg;
 	export let accent1;
 	export let accent2;
+	export let img = "/lowpolyblue.png";
 	let identifier;
 	let password;
 	let flipped;
 	let box;
+
 	const login = async () => {
 		let result = await fetch("yomtube.beppp.club/api/users/login", {
 			body: JSON.stringify({
@@ -214,13 +220,17 @@
 					</div>
 				</form>
 			</div>
-			<div class="img"></div>
+			<div
+				style="background: url({img}) var(--accent2);"
+				class="img"
+			></div>
 		</div>
 		<Registerbox
 			on:flip="{() => (flipped = false)}"
 			bg="#ffffff"
 			accent1="#009ffd"
 			accent2="#ffa400"
+			img="/lowpolyorange.png"
 		/>
 	</div>
 </div>

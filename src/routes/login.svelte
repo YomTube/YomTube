@@ -30,5 +30,11 @@
 </svelte:head>
 
 <div id="boxbox">
-	<Loginbox bg="#ffffff" accent1="#ffa400" accent2="#009ffd" />
+	<Loginbox
+		bg="#ffffff"
+		accent1="#ffa400"
+		accent2="#009ffd"
+		img="/lowpolyblue.png"
+		imgtext="Welcome back"
+	/>
 </div>
