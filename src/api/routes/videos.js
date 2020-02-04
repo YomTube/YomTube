@@ -178,9 +178,9 @@ let processVideo = async (path, video) => {
 		try {
 			if (obj) {
 				let portrait = obj.width <= obj.height;
-				let maxest = Math.max(obj.width, obj.height);
+				let minest = Math.min(obj.width, obj.height);
 				let available_qualities = qualities.filter(
-					quality => maxest >= quality.res
+					quality => minest >= quality.res
 				);
 				await Promise.all(
 					available_qualities.map(quality =>
