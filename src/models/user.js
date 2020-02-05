@@ -34,7 +34,7 @@ const UserSchema = new mongoose.Schema({
 	]
 });
 
-UserSchema.pre("save", async function(next) {
+UserSchema.pre("save", async function (next) {
 	const user = this;
 	if (user.isModified("password"))
 		user.password = await bcrypt.hash(user.password, 10);
@@ -42,7 +42,7 @@ UserSchema.pre("save", async function(next) {
 	next();
 });
 
-UserSchema.methods.genJWTToken = async function() {
+UserSchema.methods.genJWTToken = async function () {
 	const user = this;
 	const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET);
 	user.tokens = user.tokens.concat({ token });
@@ -51,12 +51,11 @@ UserSchema.methods.genJWTToken = async function() {
 };
 
 UserSchema.statics.findUser = async (
-	username = undefined,
-	email = undefined,
+	identifier = undefined,
 	password
 ) => {
 	const user = await User.findOne({
-		$or: [{ username: username }, { email: email }]
+		$or: [{ username: identifier }, { email: identifier }]
 	});
 	if (!user) throw new Error("Invalid login credentials");
 

@@ -1,77 +1,68 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<meta http-equiv="X-UA-Compatible" content="ie=edge" />
-		<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
-		<title>Document</title>
-		<style>
-			* {
-				padding: 0;
-				margin: 0;
-			}
-			body {
-				padding: 1vw;
-			}
-			#inputs {
-				display: flex;
-				justify-content: start;
-				align-items: center;
-				flex-direction: row;
-			}
-			.box {
-				margin: 0 1em;
-			}
-			.box * {
-				margin: 0.5em 0;
-			}
-			h1 {
-				font-family: Arial, Helvetica, sans-serif;
-			}
-			button {
-				min-width: 6em;
-			}
-		</style>
-	</head>
-	<body>
-		<div id="inputs">
-			<div class="box">
-				<input
-					type="text"
-					name="username"
-					id="username"
-					placeholder="Username"
-					value="Tokxhu"
-				/><br />
-				<input
-					type="email"
-					name="email"
-					id="email"
-					placeholder="Email"
-					value="thomas@yommail.tk"
-				/><br />
-				<input
-					type="password"
-					name="password"
-					id="password"
-					placeholder="Password"
-					value="TestPassword123"
-				/><br />
-				<button onclick="login()">Login</button>
-				<button onclick="register()">Register</button><br />
-			</div>
-			<div class="box">
-				<button onclick="me()">Get me!</button><br />
-				<button onclick="logout()">Logout</button><br />
-				<button onclick="logoutAll()">Logout all</button><br />
-			</div>
+
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+	<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+	<title>Document</title>
+	<style>
+		* {
+			padding: 0;
+			margin: 0;
+		}
+
+		body {
+			padding: 1vw;
+		}
+
+		#inputs {
+			display: flex;
+			justify-content: start;
+			align-items: center;
+			flex-direction: row;
+		}
+
+		.box {
+			margin: 0 1em;
+		}
+
+		.box * {
+			margin: 0.5em 0;
+		}
+
+		h1 {
+			font-family: Arial, Helvetica, sans-serif;
+		}
+
+		button {
+			min-width: 6em;
+		}
+	</style>
+</head>
+
+<body>
+	<div id="inputs">
+		<div class="box">
+			<input type="text" name="username" id="username" placeholder="Username / Email" value="Tokxhu" /><br />
+			<input type="email" name="email" id="email" placeholder="Email" value="thomas@yommail.tk" /><br />
+			<input type="password" name="password" id="password" placeholder="Password" value="TestPassword123" /><br />
+			<button onclick="login()">Login</button>
+			<button onclick="register()">Register</button><br />
 		</div>
-		<br />
-		<div id="output">
-			<h1 id="status"></h1>
-			<pre id="text" class="prettyprint"></pre>
+		<div class="box">
+			<button onclick="me()">Get me!</button><br />
+			<button onclick="logout()">Logout</button><br />
+			<button onclick="logoutAll()">Logout all</button><br />
 		</div>
-		<script src="./script.js"></script>
-	</body>
+	</div>
+	<br />
+	<div id="output">
+		<h1 id="status"></h1>
+		<pre id="text" class="prettyprint"></pre>
+	</div>
+	<script src="./script.js"></script>
+</body>
+
 </html>
