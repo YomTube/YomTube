@@ -1,5 +1,5 @@
-import mongoose from 'mongoose';
-import { promises } from 'fs';
+import mongoose from "mongoose";
+import { promises } from "fs";
 
 const VideoSchema = new mongoose.Schema({
 	title: {
@@ -11,11 +11,6 @@ const VideoSchema = new mongoose.Schema({
 		type: String,
 		required: true
 	},
-	user: {
-		type: mongoose.Schema.Types.ObjectId,
-		ref: 'User',
-		required: false
-	},
 	uploaded_at: {
 		type: Date,
 		default: Date.now
@@ -24,22 +19,26 @@ const VideoSchema = new mongoose.Schema({
 		{
 			quality: {
 				type: Number,
-				required: true,
+				required: true
 			}
 		}
 	]
-})
+});
 
-VideoSchema.pre('save', async function (next) {
+VideoSchema.pre("save", async function(next) {
 	const video = this;
-	if (video.isModified('filePath') && video.filePath.includes('videos')) {
-		let qualities = (await promises.readdir(video.filePath)).map(file => parseInt(file.split('.')[0]));
+	if (video.isModified("filePath") && video.filePath.includes("videos")) {
+		let qualities = (await promises.readdir(video.filePath)).map(file =>
+			parseInt(file.split(".")[0])
+		);
 		for (let quality of qualities) {
-			video.available_qualities = video.available_qualities.concat({ quality })
+			video.available_qualities = video.available_qualities.concat({
+				quality
+			});
 		}
 	}
 	next();
-})
+});
 
-const Video = mongoose.model('Video', VideoSchema);
+const Video = mongoose.model("Video", VideoSchema);
 export default Video;

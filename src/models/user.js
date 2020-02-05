@@ -31,10 +31,18 @@ const UserSchema = new mongoose.Schema({
 				required: true
 			}
 		}
+	],
+	videos: [
+		{
+			video: {
+				type: mongoose.Schema.Types.ObjectId,
+				ref: "Video"
+			}
+		}
 	]
 });
 
-UserSchema.pre("save", async function (next) {
+UserSchema.pre("save", async function(next) {
 	const user = this;
 	if (user.isModified("password"))
 		user.password = await bcrypt.hash(user.password, 10);
@@ -42,7 +50,7 @@ UserSchema.pre("save", async function (next) {
 	next();
 });
 
-UserSchema.methods.genJWTToken = async function () {
+UserSchema.methods.genJWTToken = async function() {
 	const user = this;
 	const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET);
 	user.tokens = user.tokens.concat({ token });
@@ -50,10 +58,7 @@ UserSchema.methods.genJWTToken = async function () {
 	return token;
 };
 
-UserSchema.statics.findUser = async (
-	identifier = undefined,
-	password
-) => {
+UserSchema.statics.findUser = async (identifier = undefined, password) => {
 	const user = await User.findOne({
 		$or: [{ username: identifier }, { email: identifier }]
 	});
