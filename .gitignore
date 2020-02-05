@@ -69,7 +69,7 @@ typings/
 
 # dotenv environment variables file
 # Uncomment when entering production
-# .env
+.env
 .env.test
 
 # parcel-bundler cache (https://parceljs.org/)
@@ -112,3 +112,6 @@ temp/
 # End of https://www.gitignore.io/api/node
 
 __sapper__
+
+# !/videos/
+/videos/*

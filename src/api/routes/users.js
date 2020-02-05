@@ -20,8 +20,8 @@ router.post('/', async (req, res) => {
 // Login
 router.post('/login', async (req, res) => {
 	try {
-		const { username, email, password } = req.body;
-		const user = await User.findUser(username, email, password);
+		const { identifier, password } = req.body;
+		const user = await User.findUser(identifier, password);
 		if (!user) return res.status(401).send('Login failed.');
 		const token = await user.genJWTToken();
 		res.send({ user, token });
