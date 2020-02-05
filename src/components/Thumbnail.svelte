@@ -8,12 +8,11 @@
 		border-radius: 0.4em;
 		display: block;
 		background-image: var(--thumbnail);
-		background-size: cover;
-		background-position: center;
+		background-size: 100% calc(100% - 2em);
+		background-repeat: no-repeat;
+		background-position: initial;
 		text-decoration: none;
 		transition: all 0.3s;
-		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12),
-			0 1px 2px rgba(0, 0, 0, 0.24);
 	}
 
 	a:hover {
@@ -35,17 +34,20 @@
 		font-size: 80%;
 		color: #232528;
 		background-color: #ffffff;
+		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12),
+			0 1px 2px rgba(0, 0, 0, 0.24);
 	}
 
 	span {
 		width: calc(20% - 2em);
 		position: relative;
 		margin: 1em;
+		margin-bottom: 2em;
 		display: inline-block;
 	}
 
 	span:after {
-		padding-top: 56.25%;
+		padding-top: 60%;
 		/* 16:9 ratio */
 		display: block;
 		content: "";
