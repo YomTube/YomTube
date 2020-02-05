@@ -1,5 +1,7 @@
-const ffmpeg = require("fluent-ffmpeg");
-const fs = require("fs");
+// const ffmpeg = require("fluent-ffmpeg");
+import ffmpeg from "fluent-ffmpeg";
+// const fs = require("fs");
+import fs from "fs";
 const savePath = "/home/yom/test/out/";
 
 
@@ -95,9 +97,25 @@ function transcodeToRes(path, shortSide, bitrate, videoID, portrait) {
 
 function generateThumbnail(path, videoID) {
 	return new Promise((res, rej) => {
+		let localSavePath = savePath + videoID + "/thumbnail.jpg";
+		let folder = savePath+videoID;
 		ffmpeg()
 			.input(path)
-			.size("1920x1080")
+			.screenshots({
+				timestamps: ["1%"],
+				filename: "thumbnail.png",
+				folder: folder,
+				size: "1600x900"
+			})
+            .on('error', (err) => {
+                console.log("failed thumbnail generation");
+                // console.log(err);
+                rej(err);
+            })
+            .on('end', () => {
+                console.log("thumbnail done");
+                res();
+            });
 	})
 }
 
@@ -157,5 +175,10 @@ export default async function processVideo(path, videoID) {
 	}
 }
 
+// async function run(){
+	// await generateThumbnail("/home/yom/test/input.mp4", "yeet");
+// }
+
+// run();
 // console.log(processVideo("/home/yom/test/Kent_4K_Portrait.mp4", "asdasdasdyfasdfaseeshasd_landscape"));
 // console.log(processVideo("/home/yom/test/VC-1_sample.mkv", "asdasdasdyeeadsfqw32sdfshasd_landscape"));
