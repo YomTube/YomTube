@@ -11,7 +11,7 @@
 	onMount(async () => {
 		try {
 			const response = await fetch(
-				"https://yomtube.beppp.club/api/videos"
+				`${process.env.BASE_URL}:${process.env.PORT}/api/videos/`
 			);
 			videos = await response.json();
 			console.log(videos);

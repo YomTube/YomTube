@@ -32,11 +32,15 @@ router.get("/:id", async (req, res) => {
 	}
 });
 
-router.get("/:id/video", async (req, res) => {
+router.get("/:id/:quality", async (req, res) => {
 	let id = req.params.id;
+	let quality = req.params.quality
 	try {
-		const video = await Video.findOne({ _id: id }, "filePath");
-		res.sendFile(video.filePath, { root: "/" });
+		const video = await Video.findOne({ _id: id })
+		if (!video.available_qualities.includes(quality))
+			throw new Error("Quality doesn't exist")
+
+		res.sendFile(`${video.filePath}/${quality}.mp4`, { root: "/" });
 	} catch (err) {
 		res.status(400).send({ error: err.message });
 	}

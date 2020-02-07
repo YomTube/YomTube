@@ -126,7 +126,7 @@
 	let spinning;
 	let box;
 	const register = () => {
-		fetch("yomtube.beppp.club/api/users/login", {
+		fetch(`${process.env.BASE_URL}:${process.env.PORT}/api/users/login`, {
 			body: JSON.stringify({
 				identifier: identifier,
 				password: password

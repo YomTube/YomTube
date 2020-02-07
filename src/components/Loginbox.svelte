@@ -152,16 +152,19 @@
 	let box;
 
 	const login = async () => {
-		let result = await fetch("yomtube.beppp.club/api/users/login", {
-			body: JSON.stringify({
-				identifier: identifier,
-				password: password
-			}),
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json"
+		let result = await fetch(
+			`${process.env.BASE_URL}:${process.env.PORT}/api/users/login`,
+			{
+				body: JSON.stringify({
+					identifier: identifier,
+					password: password
+				}),
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json"
+				}
 			}
-		});
+		);
 		if (result.status != 201) {
 			alert(result.body);
 		}
