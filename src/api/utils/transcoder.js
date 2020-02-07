@@ -6,7 +6,7 @@ const SAVE_PATH = process.env.ROOT_DIR + "videos";
 function getRes(path) {
 	return new Promise((res, rej) => {
 		console.log("Getting res");
-		ffmpeg.ffprobe(path, function(err, metadata) {
+		ffmpeg.ffprobe(path, function (err, metadata) {
 			if (err) {
 				console.error(err);
 				rej(err);
@@ -26,7 +26,7 @@ function transcodeToRes(path, shortSide, bitrate, videoID, portrait) {
 	return new Promise((res, rej) => {
 		let localSavePath =
 			SAVE_PATH + "/" + videoID + "/" + shortSide + ".mp4";
-		let resolution = portrait ? shortSide + ":-1" : "-1:" + shortSide;
+		let resolution = portrait ? shortSide + "x?" : "?x" + shortSide;
 		let scaleFilter = "scale_npp=" + resolution;
 		ffmpeg()
 			.input(path)
@@ -45,23 +45,39 @@ function transcodeToRes(path, shortSide, bitrate, videoID, portrait) {
 			.videoBitrate(bitrate)
 			.save(localSavePath)
 			.on("error", err => {
-				console.log("Using CPU instead");
 				ffmpeg()
 					.input(path)
-					.videoCodec("h264_nvenc")
-					.videoFilter(["hwupload_cuda", scaleFilter])
 					.native()
-					.audioCodec("aac")
+					.audioCodec('aac')
 					.audioBitrate(128)
 					.audioChannels(2)
+					.videoCodec('libx264')
 					.videoBitrate(bitrate)
+					.size(resolution)
 					.save(localSavePath)
-					.on("error", err => {
+					.on('error', (err) => {
+						console.log("Wower an error")
 						rej(err);
 					})
-					.on("end", () => {
+					.on('end', () => {
 						res();
 					});
+				// 	ffmpeg()
+				// 		.input(path)
+				// 		.videoCodec("h264_nvenc")
+				// 		.videoFilter(["hwupload_cuda", scaleFilter])
+				// 		.native()
+				// 		.audioCodec("aac")
+				// 		.audioBitrate(128)
+				// 		.audioChannels(2)
+				// 		.videoBitrate(bitrate)
+				// 		.save(localSavePath)
+				// 		.on("error", err => {
+				// 			rej(err);
+				// 		})
+				// 		.on("end", () => {
+				// 			res();
+				// 		});
 			})
 			.on("end", () => {
 				res();
@@ -135,14 +151,16 @@ let processVideo = async (path, video) => {
 		console.log(qualities);
 		for await (let quality of qualities) {
 			try {
-				console.log("Started transcode for", quality);
+				console.log("Started transcode for", quality.res);
+				const { res, bitrate } = quality;
 				await transcodeToRes(
 					path,
-					quality.res,
-					quality.bitrate,
+					res,
+					bitrate,
 					videoID,
 					portrait
 				);
+				video.available_qualities.push(res)
 				await video.save();
 			} catch (err) {
 				console.error(err);

@@ -7,9 +7,10 @@
 
 <script context="module">
 	export async function preload(page) {
-		const video = page.params.video;
-		const src = `${process.env.BASE_URL}:${process.env.PORT}/api/videos/${video}`;
-		return { src };
+		const videoID = page.params.video;
+		const src = `${process.env.BASE_URL}:${process.env.PORT}/api/videos/${videoID}`;
+		const video = await this.fetch(src);
+		return { video };
 	}
 </script>
 

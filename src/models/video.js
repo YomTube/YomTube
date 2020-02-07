@@ -20,17 +20,10 @@ const VideoSchema = new mongoose.Schema({
 		type: mongoose.Schema.Types.ObjectId,
 		ref: "User"
 	},
-	available_qualities: [
-		{
-			quality: {
-				type: Number,
-				required: true
-			}
-		}
-	]
+	available_qualities: [Number]
 });
 
-VideoSchema.pre("save", async function(next) {
+VideoSchema.pre("save", async function (next) {
 	const video = this;
 	if (video.isModified("filePath") && video.filePath.includes("videos")) {
 		let qualities = (await promises.readdir(video.filePath)).map(file =>
@@ -43,11 +36,9 @@ VideoSchema.pre("save", async function(next) {
 		}
 	}
 	if (video.isModified("uploaded_by")) {
-		console.log("is modified");
-		await User.findOneAndUpdate(
-			{ _id: video.uploaded_at._id },
-			{ $push: { videos: video } }
-		);
+		let user = await User.findById(video.uploaded_by)
+		user.videos = user.videos.concat({ video })
+		await user.save();
 	}
 
 	next();

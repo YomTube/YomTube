@@ -52,7 +52,7 @@ router.post("/", auth, upload.single("video"), async (req, res) => {
 			title: name,
 			description: desc,
 			filePath: path,
-			uploaded_by: req.user,
+			uploaded_by: req.user._id,
 			uploaded_at: new Date()
 		});
 		await video.save();
