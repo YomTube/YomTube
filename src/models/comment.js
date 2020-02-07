@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 const CommentSchema = new mongoose.Schema({
 	text: {
@@ -7,9 +7,9 @@ const CommentSchema = new mongoose.Schema({
 	},
 	created_at: { type: Date, default: Date.now },
 	edited_at: { type: Date, default: null },
-	likes: { type: Number, default: 0n },
-	user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }
-})
+	score: { type: Number, default: 0n },
+	user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+});
 
-const Comment = new mongoose.model('Comment', CommentSchema)
+const Comment = new mongoose.model("Comment", CommentSchema);
 export default Comment;

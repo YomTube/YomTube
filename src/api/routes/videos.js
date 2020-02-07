@@ -2,8 +2,8 @@ import Router from "express";
 import { Video } from "../../models/index.js";
 import multer from "multer";
 import auth from "../middleware/auth";
-import processVideo from "../utils/transcoder";
 import { promises as fs } from "fs";
+import processVideo from "../utils/transcoder";
 
 const router = Router();
 
@@ -15,7 +15,7 @@ const upload = multer({ dest: GET_PATH });
 router.get("/", async (req, res) => {
 	try {
 		const videos = await Video.find({});
-		res.send({ videos });
+		res.json(videos);
 	} catch (err) {
 		res.status(400).send({ error: err.message });
 	}
@@ -32,11 +32,15 @@ router.get("/:id", async (req, res) => {
 	}
 });
 
-router.get("/:id/video", async (req, res) => {
+router.get("/:id/:quality", async (req, res) => {
 	let id = req.params.id;
+	let quality = req.params.quality
 	try {
-		const video = await Video.findOne({ _id: id }, "filePath");
-		res.sendFile(video.filePath, { root: "/" });
+		const video = await Video.findOne({ _id: id })
+		if (!video.available_qualities.includes(quality))
+			throw new Error("Quality doesn't exist")
+
+		res.sendFile(`${video.filePath}/${quality}.mp4`, { root: "/" });
 	} catch (err) {
 		res.status(400).send({ error: err.message });
 	}
@@ -52,12 +56,12 @@ router.post("/", auth, upload.single("video"), async (req, res) => {
 			title: name,
 			description: desc,
 			filePath: path,
-			user: req.user
+			uploaded_by: req.user._id,
+			uploaded_at: new Date()
 		});
 		await video.save();
 
 		let outputPath = `${SAVE_PATH}/${video._id}`;
-		console.log(outputPath);
 		await fs.mkdir(outputPath);
 		video.filePath = outputPath;
 
@@ -68,4 +72,5 @@ router.post("/", auth, upload.single("video"), async (req, res) => {
 		res.status(400).send({ error: err.message });
 	}
 });
+
 export default router;
