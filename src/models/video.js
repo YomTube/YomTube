@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import { promises } from "fs";
+import User from "./user";
 
 const VideoSchema = new mongoose.Schema({
 	title: {
@@ -13,7 +14,11 @@ const VideoSchema = new mongoose.Schema({
 	},
 	uploaded_at: {
 		type: Date,
-		default: Date.now
+		required: true
+	},
+	uploaded_by: {
+		type: mongoose.Schema.Types.ObjectId,
+		ref: "User"
 	},
 	available_qualities: [
 		{
@@ -37,6 +42,14 @@ VideoSchema.pre("save", async function(next) {
 			});
 		}
 	}
+	if (video.isModified("uploaded_by")) {
+		console.log("is modified");
+		await User.findOneAndUpdate(
+			{ _id: video.uploaded_at._id },
+			{ $push: { videos: video } }
+		);
+	}
+
 	next();
 });
 
