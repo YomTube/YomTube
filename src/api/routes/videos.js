@@ -32,6 +32,16 @@ router.get("/:id", async (req, res) => {
 	}
 });
 
+router.get('/:id/thumbnail', async (req, res) => {
+	let id = req.params.id;
+	try {
+		const video = await Video.findOne({ _id: id });
+		res.sendFile(`${video.filePath}/thumbnail.png`, { root: '/' })
+	} catch (err) {
+		res.status(400).send({ error: err.message })
+	}
+})
+
 router.get("/:id/:quality", async (req, res) => {
 	let id = req.params.id;
 	let quality = req.params.quality

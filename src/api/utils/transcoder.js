@@ -26,7 +26,7 @@ function transcodeToRes(path, shortSide, bitrate, videoID, portrait) {
 	return new Promise((res, rej) => {
 		let localSavePath =
 			SAVE_PATH + "/" + videoID + "/" + shortSide + ".mp4";
-		let resolution = portrait ? shortSide + "x?" : "?x" + shortSide;
+		let resolution = portrait ? shortSide + ":-1" : "-1:" + shortSide;
 		let scaleFilter = "scale_npp=" + resolution;
 		ffmpeg()
 			.input(path)
@@ -38,60 +38,45 @@ function transcodeToRes(path, shortSide, bitrate, videoID, portrait) {
 			])
 			.videoCodec("h264_nvenc")
 			.videoFilter("scale_npp=" + resolution)
-			.native()
 			.audioCodec("aac")
 			.audioBitrate(128)
 			.audioChannels(2)
 			.videoBitrate(bitrate)
 			.save(localSavePath)
+			.on('start', command => console.log("starting", command))
 			.on("error", err => {
+				console.log("Using CPU instead");
 				ffmpeg()
 					.input(path)
-					.native()
-					.audioCodec('aac')
+					.videoCodec("h264_nvenc")
+					.videoFilter(["hwupload_cuda", scaleFilter])
+					.audioCodec("aac")
 					.audioBitrate(128)
 					.audioChannels(2)
-					.videoCodec('libx264')
 					.videoBitrate(bitrate)
-					.size(resolution)
 					.save(localSavePath)
-					.on('error', (err) => {
-						console.log("Wower an error")
+					.on("error", err => {
 						rej(err);
 					})
-					.on('end', () => {
+					.on("end", () => {
 						res();
 					});
-				// 	ffmpeg()
-				// 		.input(path)
-				// 		.videoCodec("h264_nvenc")
-				// 		.videoFilter(["hwupload_cuda", scaleFilter])
-				// 		.native()
-				// 		.audioCodec("aac")
-				// 		.audioBitrate(128)
-				// 		.audioChannels(2)
-				// 		.videoBitrate(bitrate)
-				// 		.save(localSavePath)
-				// 		.on("error", err => {
-				// 			rej(err);
-				// 		})
-				// 		.on("end", () => {
-				// 			res();
-				// 		});
 			})
 			.on("end", () => {
 				res();
 			});
+
 	});
 }
 
 let generateThumbnail = (path, videoID) => {
 	return new Promise((res, rej) => {
-		let folder = SAVE_PATH + videoID;
+		let folder = SAVE_PATH + "/" + videoID;
+		console.log(folder)
 		ffmpeg()
 			.input(path)
 			.screenshots({
-				timestamps: ["1%"],
+				timestamps: ["50%"],
 				filename: "thumbnail.png",
 				folder: folder,
 				size: "1600x900"
@@ -146,9 +131,7 @@ let processVideo = async (path, video) => {
 	if (obj) {
 		let portrait = obj.width <= obj.height;
 		let minest = Math.min(obj.width, obj.height);
-		console.log(minest);
 		qualities = qualities.filter(quality => minest >= quality.res);
-		console.log(qualities);
 		for await (let quality of qualities) {
 			try {
 				console.log("Started transcode for", quality.res);
@@ -161,12 +144,14 @@ let processVideo = async (path, video) => {
 					portrait
 				);
 				video.available_qualities.push(res)
-				await video.save();
 			} catch (err) {
 				console.error(err);
 				throw err;
 			}
 		}
+		await generateThumbnail(path, videoID)
+		await video.save();
+		console.log("Finished transcoding", videoID)
 		await fs.unlink(path);
 	} else {
 		console.log("object not found");

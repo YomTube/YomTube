@@ -161,7 +161,7 @@
 <script context="module">
 	export async function preload(page) {
 		const videoID = page.params.video;
-		const src = `${process.env.BASE_URL}:${process.env.PORT}/api/videos/${videoID}`;
+		const src = `${process.env.BASE_URL}/api/videos/${videoID}`;
 		const resp = await this.fetch(src);
 		const json = await resp.json();
 		const { video } = json;
@@ -171,6 +171,10 @@
 </script>
 
 <script>
+	// TODO Create scrubbing
+	// volume sliding
+	// Bufferbar
+
 	import { onMount } from "svelte";
 	export let video;
 	export let highestSource = video.available_qualities[0];
@@ -218,7 +222,7 @@
 				.toISOString()
 				.substr(11, 8));
 
-		let pausePlayer = () => {
+		let togglePlayer = () => {
 			if (videoElement.paused) runPlayer();
 			else {
 				clearInterval(playerInterval);
@@ -227,9 +231,15 @@
 			playButton.innerHTML = !videoElement.paused ? "Pause" : "Play";
 		};
 
+		let toggleFullScreen = () => {
+			if (document.fullscreenEnabled && document.fullscreenElement)
+				document.exitFullscreen();
+			else videoPlayer.requestFullscreen();
+		};
+
 		let setup = () => {
 			playButton.onclick = () => {
-				if (hasntPlayed) pausePlayer();
+				if (hasntPlayed) togglePlayer();
 				else {
 					currentTime = 0;
 					runPlayer();
@@ -243,13 +253,17 @@
 					percent * videoElement.duration;
 				setCurrentTime();
 			};
-			fullscreenButton.onclick = () => {
-				if (
-					document.fullscreenEnabled &&
-					document.fullscreenElement
-				)
-					document.exitFullscreen();
-				else videoPlayer.requestFullscreen();
+			fullscreenButton.onclick = toggleFullScreen;
+			videoElement.ondblclick = toggleFullScreen;
+			document.onkeypress = e => {
+				switch (e.code) {
+					case "KeyF":
+						toggleFullScreen();
+						break;
+					case "Space":
+						togglePlayer();
+						break;
+				}
 			};
 			if (wasPlaying) {
 				runPlayer();
@@ -279,7 +293,7 @@
 			}
 		};
 
-		videoElement.onclick = pausePlayer;
+		videoElement.onclick = togglePlayer;
 
 		videoPlayer.onmousemove = () => {
 			controls.style.display = "grid";
@@ -357,3 +371,6 @@
 		<source src="{src}/{highestSource}" type="video/mp4" />
 	</video>
 </div>
+
+<h1>{video.title}</h1>
+<p>{video.description}</p>
