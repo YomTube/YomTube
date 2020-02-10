@@ -116,3 +116,5 @@ __sapper__
 # !/videos/
 /videos/*
 !.gitkeep
+
+*.mp4

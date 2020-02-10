@@ -7,9 +7,9 @@
 	}
 
 	:root {
-		--width: 70vmax;
+		--width: 70vw;
 		--height: calc(var(--width) * 9 / 16);
-		--barHeight: 3em;
+		--barHeight: 2em;
 	}
 
 	#videoPlayer {
@@ -35,58 +35,68 @@
 		z-index: 1;
 	}
 
-	video:hover > #controls {
-		display: grid;
+	/* video:hover > #controlContainer {
+	display: grid;
+} */
+
+	.button {
+		width: 4em;
 	}
 
 	.button:hover {
 		background-color: rgba(255, 255, 255, 0.1);
 	}
 
-	#controls {
+	#controlContainer {
 		position: absolute;
-		top: calc(var(--height) - var(--barHeight));
+		bottom: 0;
 		left: 0;
 		z-index: 2;
 		width: var(--width);
-		height: var(--barHeight);
+		height: calc(2 * var(--barHeight));
 		background: rgba(0, 0, 0, 0.6);
 		display: none;
+		flex-direction: column;
+		justify-content: center;
 		align-items: center;
-		grid-template-columns: 1fr 11fr 2fr; /*calc(2 * var(--barHeight)) 1fr calc(
-				4 * var(--barHeight)
-			); */
-		grid-template-rows: 1fr;
-		grid-template-areas: "playcontrols progress settings";
 		text-align: center;
 		color: white;
 	}
 
-	#controls > * {
-		justify-content: center;
+	#controls {
+		height: 100%;
+		width: 100%;
+		display: flex;
+		justify-content: space-between;
 		align-items: center;
-		height: var(--barHeight);
 	}
 
 	#playcontrols {
 		grid-area: playcontrols;
-		width: 100%;
-		height: var(--barHeight);
+		height: 100%;
+		display: flex;
+		justify-content: space-evenly;
+	}
+
+	#play {
+		line-height: var(--barHeight);
+		background-image: url("/play_arrow.svg");
+		height: 100%;
+	}
+
+	#time {
+		grid-area: time;
+		width: 8em;
+		display: flex;
+		justify-content: flex-end;
+		align-items: center;
 	}
 
 	#progress {
 		grid-area: progress;
 		position: relative;
-		height: var(--barHeight);
+		height: 25%;
 		width: 100%;
-		display: grid;
-		grid-template-columns: 1fr 5fr; /*calc(2 * var(--barHeight)) 1fr;*/
-		grid-template-rows: 1fr;
-		grid-template-areas: "time bar";
-	}
-
-	#time {
-		grid-area: time;
 	}
 
 	#bar {
@@ -104,22 +114,20 @@
 		position: absolute;
 		top: 0;
 		left: 0;
-		background-color: rgba(255, 255, 255, 0.8);
+		background-color: #ffa400f0;
 		width: 0;
 		height: 100%;
 	}
 
 	#settings {
 		grid-area: settings;
-		height: var(--barHeight);
-		width: calc(4 * var(--barHeight));
+		height: 100%;
 		display: flex;
 		justify-content: space-evenly;
 	}
 
 	#settings > * {
 		height: 100%;
-		width: 100%;
 	}
 
 	#settings > div > p {
@@ -130,12 +138,8 @@
 		align-items: center;
 	}
 
-	#quality {
+	#qualityContainer {
 		position: relative;
-	}
-
-	#quality:hover #qualities {
-		display: block;
 	}
 
 	#qualities {
@@ -144,6 +148,11 @@
 		width: 100%;
 		display: none;
 		background-color: rgba(0, 0, 0, 0.6);
+		border-radius: 0.25em;
+	}
+
+	#qualities.clicked {
+		display: block;
 	}
 
 	.quality {
@@ -156,19 +165,63 @@
 	.quality:hover {
 		background-color: rgba(255, 255, 255, 0.1);
 	}
-	/* 
-	@media only screen and (max-width: 1500px) {
+
+	.quality#chosen {
+		background-color: #ffa400f0;
+		color: white;
 	}
 
-	@media only screen and (max-width: 1000px) {
-	} */
+	#fullscreen {
+		background-image: url("/fullscreen.svg");
+		height: 100%;
+	}
 
-	@media only screen and (max-width: 768px) and (orientation: portrait) {
-		:root {
-			--width: 100vw;
-			--height: calc(var(--width) * 9 / 16);
-			--barheight: 2em;
-		}
+	#quality {
+		background-image: url("/settings.svg");
+		height: 100%;
+	}
+
+	#volumeContainer {
+		position: relative;
+	}
+
+	#volume {
+		position: absolute;
+		bottom: 150%;
+		left: 25%;
+		height: 12em;
+		width: 50%;
+		background-color: rgba(0, 0, 0, 0.6);
+		border-radius: 0.25em;
+		display: none;
+		justify-content: end;
+		align-items: flex-end;
+	}
+
+	#volume #innerBar {
+		width: 100%;
+		height: 100%;
+		background-color: rgba(255, 255, 255, 0.8);
+		border-radius: 0.25em;
+	}
+
+	#volume.clicked {
+		display: flex;
+	}
+
+	#volumeIcon {
+		position: absolute;
+		top: 0;
+		left: 0;
+		background-image: url("/volume_up.svg");
+		height: 100%;
+		width: 100%;
+	}
+
+	.hasBackground {
+		background-repeat: no-repeat;
+		background-position: center;
+		background-size: 2em;
 	}
 </style>
 
@@ -178,18 +231,21 @@
 	export let highestSource = video.available_qualities[0];
 	import { onMount } from "svelte";
 
-	console.log(JSON.stringify(video));
-
 	let videoElement,
 		videoPlayer,
 		controls,
 		playButton,
 		fullscreenButton,
+		volumeContainer,
 		bar,
 		actualBar,
 		time,
+		volumeBar,
+		volumeInnerBar,
 		currentQuality,
 		qualitiesContainer,
+		volumeButton,
+		qualityButton,
 		qualities = video.available_qualities,
 		currentTime = 0,
 		hasntPlayed = true,
@@ -198,7 +254,10 @@
 		playerInterval,
 		hoverTimeout,
 		currentQ,
-		wasPlaying = true;
+		wasPlaying = true,
+		volumeTimer,
+		qualitiesContainerClicked = false,
+		volumeBarClicked = false;
 
 	onMount(async () => {
 		let runPlayer = () => {
@@ -229,15 +288,20 @@
 				clearInterval(playerInterval);
 				videoElement.pause();
 			}
-			playButton.innerHTML = !videoElement.paused
-				? "pause"
-				: "play_arrow";
+			playButton.style.backgroundImage = `url(./${
+				!videoElement.paused ? "pause" : "play_arrow"
+			}.svg)`;
 		};
 
 		let toggleFullScreen = () => {
 			if (document.fullscreenEnabled && document.fullscreenElement)
 				document.exitFullscreen();
 			else videoPlayer.requestFullscreen();
+			fullscreenButton.style.backgroundImage = `url(${
+				document.fullscreenEnabled && document.fullscreenElement
+					? "fullscreen"
+					: "fullscreen_exit"
+			}.svg)`;
 		};
 
 		let setup = () => {
@@ -264,13 +328,12 @@
 						toggleFullScreen();
 						break;
 					case "Space":
+						e.preventDefault();
 						togglePlayer();
 						break;
 				}
 			};
-			if (wasPlaying) {
-				runPlayer();
-			}
+			runPlayer();
 		};
 
 		if (!videoElement.duration)
@@ -278,8 +341,8 @@
 		else setup();
 
 		videoElement.onended = () => {
-			clearInterval(playerInterval);
 			hasntPlayed = false;
+			clearInterval(playerInterval);
 		};
 
 		videoElement.onwaiting = e => {
@@ -299,32 +362,74 @@
 		videoElement.onclick = togglePlayer;
 
 		videoPlayer.onmousemove = () => {
-			controls.style.display = "grid";
+			controlContainer.style.display = "flex";
 			clearTimeout(hoverTimeout);
 			hoverTimeout = setTimeout(() => {
-				controls.style.display = "none";
+				controlContainer.style.display = "none";
 			}, 3000);
 		};
+		let toggleVolumeSlider = () => {
+			volumeBarClicked = !volumeBarClicked;
+		};
 
-		qualitiesContainer.style.top = `-${qualities.length * 100}%`;
-		currentQuality.innerHTML = highestSource + "p";
+		volumeContainer.onclick = () => {
+			if (volumeBarClicked) {
+				if (volumeTimer) clearTimeout(volumeTimer);
+				volumeTimer = setTimeout(toggleVolumeSlider, 1000);
+			} else toggleVolumeSlider();
+		};
+
+		let down = false;
+
+		volumeBar.onmousedown = e => (down = true);
+		volumeBar.onmouseup = e => {
+			down = false;
+			let percent = (videoElement.volume =
+				(volumeBar.clientHeight - e.layerY) /
+				volumeBar.clientHeight);
+			volumeInnerBar.style.height = `${percent * 100}%`;
+			if (volumeTimer) clearTimeout(volumeTimer);
+			volumeTimer = setTimeout(toggleVolumeSlider, 1000);
+			videoElement.volume = percent;
+		};
+		volumeBar.onmousemove = e => {
+			if (down) {
+				let percent = (videoElement.volume =
+					(volumeBar.clientHeight - e.layerY) /
+					volumeBar.clientHeight);
+				volumeInnerBar.style.height = `${percent * 100}%`;
+				if (volumeTimer) clearTimeout(volumeTimer);
+				volumeTimer = setTimeout(toggleVolumeSlider, 1000);
+				videoElement.volume = percent;
+			}
+		};
+
+		let toggleQualitySettings = () =>
+			(qualitiesContainerClicked = !qualitiesContainerClicked);
+		qualityButton.onclick = toggleQualitySettings;
+
+		qualitiesContainer.style.bottom = `${qualities.length * 16}px`;
 	});
 	let qualityChange = async quality => {
 		if (!changingSource && currentQ !== quality) {
 			try {
+				currentQuality.id = "";
 				changingSource = true;
-				wasPlaying = !videoElement.paused;
+				wasPlaying = !video.paused;
 
-				await videoElement.pause();
+				await video.pause();
 
-				videoElement.src = `${src}/${quality}`;
-				videoElement.currentTime = currentTime;
+				video.src = source;
+				video.currentTime = currentTime;
 				currentQ = quality;
 
-				await videoElement.load();
+				await video.load();
+				if (wasPlaying) await video.play();
 
 				changingSource = false;
-				currentQuality.innerHTML = quality + "p";
+				qP.id = "chosen";
+				currentQuality = qP;
+				toggleQualitySettings();
 			} catch (err) {
 				console.error("Error", err);
 			}
@@ -335,45 +440,67 @@
 <svelte:head>
 	<link
 		href="https://fonts.googleapis.com/icon?family=Material+Icons"
-		rel="stylesheet"
-	/>
+		rel="stylesheet" />
 </svelte:head>
 
 <div id="videoPlayer" bind:this="{videoPlayer}">
-	<div id="controls" bind:this="{controls}">
-		<i
-			id="playcontrols"
-			class="button material-icons"
-			bind:this="{playButton}"
-		>
-			pause
-		</i>
+	<div id="controlContainer" bind="{controls}">
 		<div id="progress">
-			<div id="time" bind:this="{time}"></div>
 			<div id="bar" bind:this="{bar}">
 				<div id="actualBar" bind:this="{actualBar}"></div>
 			</div>
 		</div>
-		<div id="settings">
-			<div id="quality" class="button">
-				<div id="qualities" bind:this="{qualitiesContainer}">
-					{#each video.available_qualities as quality}
-						<p
-							class="quality"
-							on:click="{qualityChange(quality)}"
-						>
-							{quality}p
-						</p>
-					{/each}
+		<div id="controls">
+			<div id="playcontrols">
+				<div
+					id="play"
+					class="button hasBackground"
+					bind:this="{playButton}"></div>
+				<div
+					id="volumeContainer"
+					class="button"
+					bind:this="{volumeContainer}">
+					<div
+						id="volume"
+						class:clicked="{volumeBarClicked}"
+						bind:this="{volumeBar}">
+						<div
+							id="innerBar"
+							bind:this="{volumeInnerBar}"></div>
+					</div>
+					<div
+						id="volumeIcon"
+						class="hasBackground"
+						bind:this="{volumeButton}"></div>
 				</div>
-				<p id="currentQuality" bind:this="{currentQuality}"></p>
+				<div id="time" bind:this="{time}"></div>
 			</div>
-			<div
-				id="fullscreen"
-				class="button"
-				bind:this="{fullscreenButton}"
-			>
-				<p>Fullscreen</p>
+			<div id="settings">
+				<div
+					id="qualityContainer"
+					class="button"
+					bind:this="{qualityButton}">
+					<div
+						id="qualities"
+						class:clicked="{qualitiesContainerClicked}"
+						bind:this="{qualitiesContainer}">
+						{#each video.available_qualities as quality}
+							<p
+								class="quality"
+								on:click="{qualityChange(quality)}">
+								{quality}p
+							</p>
+						{/each}
+					</div>
+					<div
+						id="quality"
+						class="hasBackground"
+						bind:this="{currentQuality}"></div>
+				</div>
+				<div
+					id="fullscreen"
+					class="button hasBackground"
+					bind:this="{fullscreenButton}"></div>
 			</div>
 		</div>
 	</div>
