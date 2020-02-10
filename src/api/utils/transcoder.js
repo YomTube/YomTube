@@ -132,10 +132,13 @@ let processVideo = async (path, video) => {
 		let portrait = obj.width <= obj.height;
 		let minest = Math.min(obj.width, obj.height);
 		qualities = qualities.filter(quality => minest >= quality.res);
+		await generateThumbnail(path, videoID)
+		await video.save();
 		for await (let quality of qualities) {
 			try {
 				console.log("Started transcode for", quality.res);
 				const { res, bitrate } = quality;
+				let startTime = Date.now();
 				await transcodeToRes(
 					path,
 					res,
@@ -143,15 +146,15 @@ let processVideo = async (path, video) => {
 					videoID,
 					portrait
 				);
+				console.log("Finished transcoding %i in %d ms", res, Date.now() - startTime)
 				video.available_qualities.push(res)
+				await video.save();
 			} catch (err) {
 				console.error(err);
 				throw err;
 			}
+			console.log("Finished all transcodes for", video.title)
 		}
-		await generateThumbnail(path, videoID)
-		await video.save();
-		console.log("Finished transcoding", videoID)
 		await fs.unlink(path);
 	} else {
 		console.log("object not found");

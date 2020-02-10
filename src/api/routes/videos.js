@@ -32,23 +32,23 @@ router.get("/:id", async (req, res) => {
 	}
 });
 
-router.get('/:id/thumbnail', async (req, res) => {
+router.get("/:id/thumbnail", async (req, res) => {
 	let id = req.params.id;
 	try {
 		const video = await Video.findOne({ _id: id });
-		res.sendFile(`${video.filePath}/thumbnail.png`, { root: '/' })
+		res.sendFile(`${video.filePath}/thumbnail.png`, { root: "/" });
 	} catch (err) {
-		res.status(400).send({ error: err.message })
+		res.status(400).send({ error: err.message });
 	}
-})
+});
 
 router.get("/:id/:quality", async (req, res) => {
 	let id = req.params.id;
-	let quality = req.params.quality
+	let quality = req.params.quality;
 	try {
-		const video = await Video.findOne({ _id: id })
+		const video = await Video.findOne({ _id: id });
 		if (!video.available_qualities.includes(quality))
-			throw new Error("Quality doesn't exist")
+			throw new Error("Quality doesn't exist");
 
 		res.sendFile(`${video.filePath}/${quality}.mp4`, { root: "/" });
 	} catch (err) {
@@ -60,20 +60,20 @@ router.get("/:id/:quality", async (req, res) => {
 router.post("/", auth, upload.single("video"), async (req, res) => {
 	try {
 		if (!req.file) throw new Error("No file was provided");
-		const { name, desc } = req.body;
+		const { title, description } = req.body;
 		const { filename, path } = req.file;
 		const video = new Video({
-			title: name,
-			description: desc,
+			title: title,
+			description: description,
 			filePath: path,
 			uploaded_by: req.user._id,
 			uploaded_at: new Date()
 		});
-		await video.save();
 
 		let outputPath = `${SAVE_PATH}/${video._id}`;
 		await fs.mkdir(outputPath);
 		video.filePath = outputPath;
+		await video.save();
 
 		processVideo(`${GET_PATH}/${filename}`, video);
 		res.status(201).send({ video });

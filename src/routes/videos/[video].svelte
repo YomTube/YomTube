@@ -10,9 +10,9 @@
 		const src = `${process.env.BASE_URL}/api/videos/${videoID}`;
 		const resp = await this.fetch(src);
 		const json = await resp.json();
-		const { video } = json;
+		const videoJSON = json.video;
 
-		return { video, src };
+		return { videoJSON, src };
 	}
 </script>
 
@@ -22,7 +22,7 @@
 	// Bufferbar
 
 	import Videoplayer from "../../components/Videoplayer.svelte";
-	export let video;
+	export let videoJSON;
 	export let src;
 </script>
 
@@ -30,8 +30,8 @@
 	<title>Yomtube</title>
 </svelte:head>
 
-<Videoplayer {video} {src} />
+<Videoplayer {videoJSON} {src} />
 <div id="sidebar"></div>
 
-<h1>{video.title}</h1>
-<p>{video.description}</p>
+<h1>{videoJSON.title}</h1>
+<p>{videoJSON.description}</p>
