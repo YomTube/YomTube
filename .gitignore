@@ -114,7 +114,7 @@ temp/
 __sapper__
 
 # !/videos/
-/videos/*
+videos/*
 !.gitkeep
 
 *.mp4
