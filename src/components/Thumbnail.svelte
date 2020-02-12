@@ -81,7 +81,7 @@
 
 <script>
 	export let id;
-	export let thumbnail = "url(/stock.jpg)";
+	export let thumbnail = `url(${process.env.BASE_URL}/api/videos/${id}/thumbnail)`;
 	export let title;
 </script>
 

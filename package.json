@@ -3,7 +3,8 @@
 	"description": "clean",
 	"version": "0.0.1",
 	"scripts": {
-		"dev": "env-cmd -f ./.env sapper dev",
+		"dev": "TYPE=local env-cmd -f ./.env sapper dev",
+		"dev:public": "TYPE=public env-cmd -f ./.env sapper dev",
 		"build": "sapper build --legacy",
 		"export": "sapper export --legacy",
 		"start": "node __sapper__/build",
@@ -22,8 +23,11 @@
 		"jsonwebtoken": "^8.5.1",
 		"mongoose": "^5.8.9",
 		"multer": "^1.4.2",
+		"node-sass": "^4.13.1",
 		"polka": "next",
+		"scss": "^0.2.4",
 		"sirv": "^0.4.0",
+		"svelte-preprocess": "^3.4.0",
 		"validator": "^12.2.0"
 	},
 	"devDependencies": {

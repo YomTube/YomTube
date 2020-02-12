@@ -1,36 +1,33 @@
-const ffmpeg = require("fluent-ffmpeg");
-const fs = require("fs");
-const savePath = "/home/yom/test/out/";
+import ffmpeg from "fluent-ffmpeg";
+import { promises as fs } from "fs";
 
-
+const SAVE_PATH = process.env.ROOT_DIR + "videos";
 
 function getRes(path) {
 	return new Promise((res, rej) => {
-
+		console.log("Getting res");
 		ffmpeg.ffprobe(path, function (err, metadata) {
 			if (err) {
+				console.error(err);
 				rej(err);
 			} else {
-				console.log(metadata.streams[0])
 				let obj = {
 					width: metadata.streams[0].width,
 					height: metadata.streams[0].height
 				};
+				console.log("Got res", obj);
 				res(obj);
 			}
 		});
-
-	})
-
+	});
 }
-
 
 function transcodeToRes(path, shortSide, bitrate, videoID, portrait) {
 	return new Promise((res, rej) => {
-		let localSavePath = savePath + videoID + "/" + shortSide + ".mp4";
-		let resolution = portrait ? "-1:" + shortSide : shortSide + ":-1";
+		let localSavePath =
+			SAVE_PATH + "/" + videoID + "/" + shortSide + ".mp4";
+		let resolution = portrait ? shortSide + ":-1" : "-1:" + shortSide;
 		let scaleFilter = "scale_npp=" + resolution;
-		console.log("starting hardware encode")
 		ffmpeg()
 			.input(path)
 			.inputOption([
@@ -41,73 +38,64 @@ function transcodeToRes(path, shortSide, bitrate, videoID, portrait) {
 			])
 			.videoCodec("h264_nvenc")
 			.videoFilter("scale_npp=" + resolution)
-			.native()
-			.audioCodec('aac')
+			.audioCodec("aac")
 			.audioBitrate(128)
 			.audioChannels(2)
-			// .videoCodec('libx264')
 			.videoBitrate(bitrate)
-			// .size(resolution)
-			// .keepDAR()
 			.save(localSavePath)
-			.on('error', (err) => {
-				//rej(err);
-
-				console.log("failed hardware transcode" + resolution);
-				console.log("starting software transcode " + resolution);
-
+			.on('start', command => console.log("starting", command))
+			.on("error", err => {
+				console.log("Using CPU instead");
 				ffmpeg()
 					.input(path)
 					.videoCodec("h264_nvenc")
-					.videoFilter([
-						"hwupload_cuda",
-						scaleFilter
-					])
-					.native()
-					.audioCodec('aac')
+					.videoFilter(["hwupload_cuda", scaleFilter])
+					.audioCodec("aac")
 					.audioBitrate(128)
 					.audioChannels(2)
-					// .videoCodec('libx264')
 					.videoBitrate(bitrate)
-					// .size(resolution)
-					// .keepDAR()
 					.save(localSavePath)
-					.on('error', (err) => {
-						console.log("failed software transocde" + resolution)
-						// console.log(err);
+					.on("error", err => {
 						rej(err);
 					})
-					.on('end', () => {
-						console.log("sw" + resolution + " done")
+					.on("end", () => {
 						res();
 					});
-
 			})
-			.on('end', () => {
-				console.log("hw " + resolution + " done");
+			.on("end", () => {
 				res();
 			});
 
-	}
-
-	)
+	});
 }
 
-function generateThumbnail(path, videoID) {
+let generateThumbnail = (path, videoID) => {
 	return new Promise((res, rej) => {
+		let folder = SAVE_PATH + "/" + videoID;
+		console.log(folder)
 		ffmpeg()
 			.input(path)
-			.size("1920x1080")
-	})
-}
+			.screenshots({
+				timestamps: ["50%"],
+				filename: "thumbnail.png",
+				folder: folder,
+				size: "1600x900"
+			})
+			.on("error", err => {
+				rej(err);
+			})
+			.on("end", () => {
+				res();
+			});
+	});
+};
 
-export default async function processVideo(path, videoID) {
-	let obj = await getRes(path)
-		.catch(error => console.error('GetResError', error));
-
-	if (!fs.existsSync(savePath + videoID)) {
-		fs.mkdirSync(savePath + videoID);
-	}
+let processVideo = async (path, video) => {
+	console.log("Processing");
+	let videoID = video._id;
+	let obj = await getRes(path).catch(err =>
+		console.error("GetResError", err)
+	);
 
 	let qualities = [
 		{
@@ -132,30 +120,45 @@ export default async function processVideo(path, videoID) {
 		},
 		{
 			res: 360,
-			bitrate: 1000,
+			bitrate: 1000
 		},
 		{
 			res: 240,
-			bitrate: 500,
+			bitrate: 500
 		}
-	]
+	];
 
 	if (obj) {
 		let portrait = obj.width <= obj.height;
 		let minest = Math.min(obj.width, obj.height);
 		qualities = qualities.filter(quality => minest >= quality.res);
-		console.log(portrait);
-		console.log(minest);
-		console.log(qualities);
+		await generateThumbnail(path, videoID)
+		await video.save();
 		for await (let quality of qualities) {
 			try {
-				await transcodeToRes(path, quality.res, quality.bitrate, videoID, portrait)
+				console.log("Started transcode for", quality.res);
+				const { res, bitrate } = quality;
+				let startTime = Date.now();
+				await transcodeToRes(
+					path,
+					res,
+					bitrate,
+					videoID,
+					portrait
+				);
+				console.log("Finished transcoding %i in %d ms", res, Date.now() - startTime)
+				video.available_qualities.push(res)
+				await video.save();
 			} catch (err) {
-				console.error(err)
+				console.error(err);
+				throw err;
 			}
+			console.log("Finished all transcodes for", video.title)
 		}
+		await fs.unlink(path);
+	} else {
+		console.log("object not found");
 	}
-}
+};
 
-// console.log(processVideo("/home/yom/test/Kent_4K_Portrait.mp4", "asdasdasdyfasdfaseeshasd_landscape"));
-// console.log(processVideo("/home/yom/test/VC-1_sample.mkv", "asdasdasdyeeadsfqw32sdfshasd_landscape"));
+export default processVideo;

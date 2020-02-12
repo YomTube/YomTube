@@ -9,7 +9,7 @@ Tro mig, det funkar bara.
 PORT=
 JWT_SECRET=
 MONGODB_URL=mongodb://localhost:27017/yomtube
-BASE_URL=
 ROOT_DIR=
 ```
-Tänker inte includa den längre för vi har alla olika settings ¯\\\_(ツ)\_/¯
+Tänker inte includa den längre för vi har alla olika settings ¯\\\_(ツ)\_/¯  
+Nu kan man köra `npm run dev:local` och `npm run dev:public`, men man får själv gå in och ändra på vad `BASE_URL` ska vara i `package.json`

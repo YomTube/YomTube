@@ -2,8 +2,8 @@ import Router from "express";
 import { Video } from "../../models/index.js";
 import multer from "multer";
 import auth from "../middleware/auth";
-import processVideo from "../utils/transcoder";
 import { promises as fs } from "fs";
+import processVideo from "../utils/transcoder";
 
 const router = Router();
 
@@ -32,11 +32,25 @@ router.get("/:id", async (req, res) => {
 	}
 });
 
-router.get("/:id/video", async (req, res) => {
+router.get("/:id/thumbnail", async (req, res) => {
 	let id = req.params.id;
 	try {
-		const video = await Video.findOne({ _id: id }, "filePath");
-		res.sendFile(video.filePath, { root: "/" });
+		const video = await Video.findOne({ _id: id });
+		res.sendFile(`${video.filePath}/thumbnail.png`, { root: "/" });
+	} catch (err) {
+		res.status(400).send({ error: err.message });
+	}
+});
+
+router.get("/:id/:quality", async (req, res) => {
+	let id = req.params.id;
+	let quality = req.params.quality;
+	try {
+		const video = await Video.findOne({ _id: id });
+		if (!video.available_qualities.includes(quality))
+			throw new Error("Quality doesn't exist");
+
+		res.sendFile(`${video.filePath}/${quality}.mp4`, { root: "/" });
 	} catch (err) {
 		res.status(400).send({ error: err.message });
 	}
@@ -46,20 +60,20 @@ router.get("/:id/video", async (req, res) => {
 router.post("/", auth, upload.single("video"), async (req, res) => {
 	try {
 		if (!req.file) throw new Error("No file was provided");
-		const { title, desc } = req.body;
+		const { title, description } = req.body;
 		const { filename, path } = req.file;
 		const video = new Video({
 			title: title,
-			description: desc,
+			description: description,
 			filePath: path,
-			user: req.user
+			uploaded_by: req.user._id,
+			uploaded_at: new Date()
 		});
-		await video.save();
 
 		let outputPath = `${SAVE_PATH}/${video._id}`;
-		console.log(outputPath);
 		await fs.mkdir(outputPath);
 		video.filePath = outputPath;
+		await video.save();
 
 		processVideo(`${GET_PATH}/${filename}`, video);
 		res.status(201).send({ video });
@@ -68,4 +82,5 @@ router.post("/", auth, upload.single("video"), async (req, res) => {
 		res.status(400).send({ error: err.message });
 	}
 });
+
 export default router;
