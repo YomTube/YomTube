@@ -10,6 +10,7 @@ const dev = NODE_ENV === "development";
 const app = Express();
 import backend from "./api/index.js";
 
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use("/api", backend);
 app.use("/test", Express.static("test"));

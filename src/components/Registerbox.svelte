@@ -120,15 +120,16 @@
 	export let accent1;
 	export let accent2;
 	export let img;
-	let email;
-	let username;
-	let password;
+	let email = "";
+	let username = "";
+	let password = "";
 	let spinning;
 	let box;
-	const register = () => {
-		fetch("yomtube.beppp.club/api/users/login", {
+	const register = async () => {
+		let result = await fetch(process.env.BASE_URL + "/api/users/", {
 			body: JSON.stringify({
-				identifier: identifier,
+				email: email,
+				username: username,
 				password: password
 			}),
 			method: "POST",
@@ -136,6 +137,13 @@
 				"Content-Type": "application/json"
 			}
 		});
+		let json = await result.json();
+		if (result.status != 201) {
+			alert(JSON.stringify(json));
+		} else {
+			document.cookie = `token=${json.token}`;
+			window.location.href = process.env.BASE_URL;
+		}
 	};
 </script>
 

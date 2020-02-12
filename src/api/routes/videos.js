@@ -15,7 +15,7 @@ const upload = multer({ dest: GET_PATH });
 router.get("/", async (req, res) => {
 	try {
 		const videos = await Video.find({});
-		res.send({ videos });
+		res.json(videos);
 	} catch (err) {
 		res.status(400).send({ error: err.message });
 	}
@@ -46,10 +46,10 @@ router.get("/:id/video", async (req, res) => {
 router.post("/", auth, upload.single("video"), async (req, res) => {
 	try {
 		if (!req.file) throw new Error("No file was provided");
-		const { name, desc } = req.body;
+		const { title, desc } = req.body;
 		const { filename, path } = req.file;
 		const video = new Video({
-			title: name,
+			title: title,
 			description: desc,
 			filePath: path,
 			user: req.user
