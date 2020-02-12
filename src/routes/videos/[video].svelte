@@ -1,24 +1,28 @@
 <style>
-	video {
-		width: 80vw;
-		height: 80vh;
+	body {
+		width: 100vw;
 	}
 </style>
 
 <script context="module">
 	export async function preload(page) {
 		const videoID = page.params.video;
-		const src = `${process.env.BASE_URL}:${process.env.PORT}/api/videos/${videoID}`;
+		const src = `${process.env.BASE_URL}/api/videos/${videoID}`;
 		const resp = await this.fetch(src);
 		const json = await resp.json();
-		const { video } = json;
+		const videoJSON = json.video;
 
-		return { video, src };
+		return { videoJSON, src };
 	}
 </script>
 
 <script>
-	export let video;
+	// TODO Create scrubbing
+	// volume sliding
+	// Bufferbar
+
+	import Videoplayer from "../../components/Videoplayer.svelte";
+	export let videoJSON;
 	export let src;
 </script>
 
@@ -26,11 +30,8 @@
 	<title>Yomtube</title>
 </svelte:head>
 
-<video controls>
-	{#each video.available_qualities as quality}
-		<source src="{src}/{quality}" type="video/mp4" />
-	{/each}
-</video>
+<Videoplayer {videoJSON} {src} />
+<div id="sidebar"></div>
 
-<h1>{video.title}</h1>
-<p>{video.description}</p>
+<h1>{videoJSON.title}</h1>
+<p>{videoJSON.description}</p>
