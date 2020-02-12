@@ -63,7 +63,7 @@ router.post("/", auth, upload.single("video"), async (req, res) => {
 		const { title, description } = req.body;
 		const { filename, path } = req.file;
 		const video = new Video({
-			title: filename,
+			title: title,
 			description: description,
 			filePath: path,
 			uploaded_by: req.user._id,
