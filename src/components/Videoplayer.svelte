@@ -468,12 +468,8 @@
 		bind:currentTime
 		preload="metadata"
 		on:click="{togglePlaying}"
-		on:playing="{() => (
-			loading = false;
-		)}"
-		on:waiting="{() => (
-			loading = true;
-		)}"
+		on:playing="{() => (loading = false)}"
+		on:waiting="{() => (loading = true)}"
 		on:emptied="{() => {
 			if (video.buffered.length > 0) findClosestBuffer();
 			timeBeforeChange ? (currentTime = timeBeforeChange) : null;
