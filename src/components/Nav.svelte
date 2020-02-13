@@ -45,11 +45,13 @@
 
 <script>
 	import Button from "./Button.svelte";
+	import Loginicon from "./Loginicon.svelte";
 	export let icon = "";
 	export let background = "#ffffff";
 	export let foreground = "hsl(216, 7%, 15%)";
 	export let accent = "#ffa400";
 	export let headerText = "YOMTUBE";
+
 	export let buttons = [
 		{
 			text: "Login",
@@ -57,6 +59,16 @@
 		}
 	];
 	export let links = [];
+	let loggedIn = false;
+
+	import { onMount } from "svelte";
+
+	onMount(async () => {
+		if (document.cookie.includes("token")) {
+			loggedIn = true;
+			console.log("loggedin !");
+		}
+	});
 </script>
 
 <headerbar
@@ -70,16 +82,20 @@
 			{#each links as link}
 				<a href="{link.link}">{link.text}</a>
 			{/each}
-			{#each buttons as button}
-				<Button
-					link="{button.link}"
-					text="{button.text}"
-					{background}
-					foreground="#009ffd"
-				/>
-			{/each}
+			{#if !loggedIn}
+				{#each buttons as button}
+					<Button
+						link="{button.link}"
+						text="{button.text}"
+						{background}
+						foreground="#009ffd"
+					/>
+				{/each}
+			{:else}
+				<Loginicon img="url(/stock.jpg)" />
+			{/if}
 
 		</span>
-
+		<p>{loggedIn}</p>
 	</nav>
 </headerbar>

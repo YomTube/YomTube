@@ -6,9 +6,10 @@
 		bottom: 0;
 		right: 0;
 		border-radius: 0.4em;
-		display: block;
+		display: flex;
+		align-items: flex-end;
 		background-image: var(--thumbnail);
-		background-size: 100% calc(100% - 2em);
+		background-size: 100% calc(100%);
 		background-repeat: no-repeat;
 		background-position: initial;
 		text-decoration: none;
@@ -26,8 +27,6 @@
 		border-bottom-right-radius: 0.4em;
 		padding-left: 0.5em;
 		width: 100%;
-		position: relative;
-		top: calc(100% - 2em);
 		display: flex;
 		justify-content: flex-start;
 		align-items: center;
@@ -42,7 +41,6 @@
 		width: calc(20% - 2em);
 		position: relative;
 		margin: 1em;
-		margin-bottom: 2em;
 		display: inline-block;
 	}
 

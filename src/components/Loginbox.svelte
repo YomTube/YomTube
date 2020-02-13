@@ -152,7 +152,11 @@
 	let box;
 
 	const login = async () => {
+<<<<<<< HEAD
+		let result = await fetch(process.env.BASE_URL + "/api/users/login", {
+=======
 		let result = await fetch(`${process.env.BASE_URL}/api/users/login`, {
+>>>>>>> origin/master
 			body: JSON.stringify({
 				identifier: identifier,
 				password: password
@@ -162,9 +166,8 @@
 				"Content-Type": "application/json"
 			}
 		});
-		if (result.status != 201) {
-			alert(result.body);
-		}
+		let json = await result.text();
+		if (!result.ok) return alert(json);
 	};
 </script>
 
