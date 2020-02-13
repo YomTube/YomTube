@@ -3,7 +3,7 @@ import { Video } from "../../models/index.js";
 import multer from "multer";
 import auth from "../middleware/auth";
 import { promises as fs } from "fs";
-import processVideo from "../utils/transcoder";
+import addToTranscoderQueue from "../utils/transcoder";
 
 const router = Router();
 
@@ -14,7 +14,7 @@ const upload = multer({ dest: GET_PATH });
 // Get all videos
 router.get("/", async (req, res) => {
 	try {
-		const videos = await Video.find({});
+		const videos = await Video.find({ waitingOnTranscode: false });
 		res.json(videos);
 	} catch (err) {
 		res.status(400).send({ error: err.message });
@@ -62,7 +62,7 @@ router.post("/", auth, upload.single("video"), async (req, res) => {
 		if (!req.file) throw new Error("No file was provided");
 		const { title, description } = req.body;
 		const { filename, path } = req.file;
-		const video = new Video({
+		let video = new Video({
 			title: title,
 			description: description,
 			filePath: path,
@@ -73,9 +73,9 @@ router.post("/", auth, upload.single("video"), async (req, res) => {
 		let outputPath = `${SAVE_PATH}/${video._id}`;
 		await fs.mkdir(outputPath);
 		video.filePath = outputPath;
+		await addToTranscoderQueue(`${GET_PATH}/${filename}`, video);
 		await video.save();
 
-		processVideo(`${GET_PATH}/${filename}`, video);
 		res.status(201).send({ video });
 	} catch (err) {
 		console.error(err);
