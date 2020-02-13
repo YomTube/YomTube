@@ -85,7 +85,6 @@ function transcodeToRes(path, shortSide, bitrate, videoID, portrait) {
 						console.log("GPU Scaling failed. Using only CPU!")
 						ffmpeg()
 							.input(path)
-							.native()
 							.audioCodec('aac')
 							.audioBitrate(128)
 							.audioChannels(2)
