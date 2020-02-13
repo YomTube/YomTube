@@ -71,7 +71,7 @@ function transcodeToRes(path, shortSide, bitrate, videoID, portrait) {
 			.videoBitrate(bitrate)
 			.save(localSavePath)
 			.on("error", err => {
-				console.log("GPU Transcoding failed. Using CPU instead!");
+				console.log("GPU Transcoding failed. Using CPU with GPU scaling!");
 				ffmpeg()
 					.input(path)
 					.videoCodec("h264_nvenc")
@@ -81,7 +81,21 @@ function transcodeToRes(path, shortSide, bitrate, videoID, portrait) {
 					.audioChannels(2)
 					.videoBitrate(bitrate)
 					.save(localSavePath)
-					.on("error", err => rej(err))
+					.on("error", err => {
+						console.log("GPU Scaling failed. Using only CPU!")
+						ffmpeg()
+							.input(path)
+							.native()
+							.audioCodec('aac')
+							.audioBitrate(128)
+							.audioChannels(2)
+							.videoCodec('libx264')
+							.videoBitrate(bitrate)
+							.size(resolution)
+							.save(localSavePath)
+							.on('error', (err) => rej(err))
+							.on('end', res);
+					})
 					.on("end", res);
 			})
 			.on("end", res)
