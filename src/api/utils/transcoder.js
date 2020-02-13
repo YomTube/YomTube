@@ -90,7 +90,7 @@ function transcodeToRes(path, shortSide, bitrate, videoID, portrait) {
 							.audioChannels(2)
 							.videoCodec('libx264')
 							.videoBitrate(bitrate)
-							.size(resolution)
+							.size(portrait ? shortSide + "x?" : "?x" + shortSide)
 							.save(localSavePath)
 							.on('error', (err) => rej(err))
 							.on('end', res);
