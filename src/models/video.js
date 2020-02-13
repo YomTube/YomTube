@@ -40,5 +40,20 @@ VideoSchema.pre("save", async function (next) {
 	next();
 });
 
+VideoSchema.pre('remove', async function (next) {
+	const video = this;
+
+	try {
+		let user = await User.findById(video.uploaded_by);
+		if (!user)
+			throw new Error("Couldn't find user")
+		user.videos = user.videos.filter(v => v.video != video._id);
+		await user.save();
+	} catch (err) {
+		console.error("Errore!!!!!", err)
+	}
+	next();
+})
+
 const Video = mongoose.model("Video", VideoSchema);
 export default Video;

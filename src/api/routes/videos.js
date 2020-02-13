@@ -56,6 +56,25 @@ router.get("/:id/:quality", async (req, res) => {
 	}
 });
 
+// Delete a video
+router.delete('/:id', auth, async (req, res) => {
+	let id = req.params.id;
+	try {
+		const video = await Video.findOne({ _id: id });
+		if (!video)
+			throw new Error("That video doesn't exist.")
+		let uploaderID = "" + video.uploaded_by;
+		let userID = "" + req.user._id;
+		if (uploaderID != userID)
+			throw new Error("You don't own that video.")
+
+		video.remove();
+		res.send("Successfully removed video.")
+	} catch (err) {
+		res.status(403).send({ error: err.message });
+	}
+})
+
 // Upload video
 router.post("/", auth, upload.single("video"), async (req, res) => {
 	try {

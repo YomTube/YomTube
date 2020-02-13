@@ -4,12 +4,8 @@ import compression from "compression";
 import * as sapper from "@sapper/server";
 import bodyParser from "body-parser";
 
-const { NODE_ENV, TYPE, PUBLIC_URL, LOCAL_URL } = process.env;
+const { NODE_ENV } = process.env;
 const dev = NODE_ENV === "development";
-
-process.env.BASE_URL = TYPE === "public" ? PUBLIC_URL : LOCAL_URL
-
-console.log(LOCAL_URL, PUBLIC_URL, process.env.BASE_URL)
 
 const app = Express();
 import backend from "./api/index.js";

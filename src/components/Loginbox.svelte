@@ -152,12 +152,12 @@
 	let box;
 
 	const login = async () => {
-		let result = await fetch(`${process.env.BASE_URL}/api/users/login`, {
+		let result = await fetch(`/api/users/login`, {
 			body: JSON.stringify({
 				identifier: identifier,
 				password: password
 			}),
-			method: "POST",
+			method: "GET",
 			headers: {
 				"Content-Type": "application/json"
 			}

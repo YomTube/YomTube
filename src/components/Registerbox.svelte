@@ -126,7 +126,7 @@
 	let spinning;
 	let box;
 	const register = () => {
-		fetch(`${process.env.BASE_URL}/api/users/login`, {
+		fetch(`/api/users/login`, {
 			body: JSON.stringify({
 				identifier: identifier,
 				password: password
