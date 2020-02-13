@@ -400,7 +400,8 @@
 				on:input="{() => (buffered.length > 0 ? findClosestBuffer(currentTime) : undefined)}"
 				on:click="{() => (buffered.length > 0 ? findClosestBuffer(currentTime) : undefined)}"
 				style="background: linear-gradient(90deg, #ffa000f0 {(currentTime / videoLength) * 100}%,
-				rgba(255, 255, 255, 0.1) {(currentTime / videoLength) * 100}%)" />
+				rgba(255, 255, 255, 0.1) {(currentTime / videoLength) * 100}%)"
+			/>
 			<div id="buffered" style="width: {bufferWidth}%"></div>
 		</div>
 
@@ -410,13 +411,15 @@
 					id="play"
 					class="hasBackground"
 					on:click="{togglePlaying}"
-					style="background-image: url('/{paused ? 'play' : 'pause'}.svg')"></div>
+					style="background-image: url('/{paused ? 'play' : 'pause'}.svg')"
+				></div>
 				<div id="volume">
 					<div
 						id="icon"
 						class="hasBackground"
 						on:click="{muteVolume}"
-						style="background-image: url('/{!muted ? 'volume_up' : 'volume_off'}.svg')"></div>
+						style="background-image: url('/{!muted ? 'volume_up' : 'volume_off'}.svg')"
+					></div>
 					<input
 						type="range"
 						bind:value="{volumeValue}"
@@ -427,7 +430,8 @@
 						id="innerBar"
 						style="background: linear-gradient(90deg,
 						#loadingffa000f0 {volumeValue}%, rgba(255, 255,
-						255, 0.1) {volumeValue}%)" />
+						255, 0.1) {volumeValue}%)"
+					/>
 				</div>
 			</div>
 			<div id="right">
@@ -435,13 +439,15 @@
 					<div
 						id="icon"
 						class="hasBackground"
-						on:click="{() => (qualitiesHidden = !qualitiesHidden)}"></div>
+						on:click="{() => (qualitiesHidden = !qualitiesHidden)}"
+					></div>
 					<div id="qualities" class:hidden="{qualitiesHidden}">
 						{#each videoJSON.available_qualities as quality}
 							<p
 								class="quality"
 								class:chosen="{chosenQuality == quality}"
-								on:click="{() => chooseQuality(quality)}">
+								on:click="{() => chooseQuality(quality)}"
+							>
 								{quality}
 							</p>
 						{/each}
@@ -451,14 +457,16 @@
 					id="fullscreen"
 					on:click="{toggleFullscreen}"
 					class="hasBackground"
-					style="background-image: url('/{fullscreenEnabled ? 'fullscreen_exit' : 'fullscreen'}.svg');"></div>
+					style="background-image: url('/{fullscreenEnabled ? 'fullscreen_exit' : 'fullscreen'}.svg');"
+				></div>
 			</div>
 		</div>
 	</div>
 	<div
 		id="spinner"
 		class:hidden="{!loading}"
-		on:mousemove="{hoveringControls}">
+		on:mousemove="{hoveringControls}"
+	>
 		<div id="spin"></div>
 	</div>
 	<video
@@ -468,12 +476,8 @@
 		bind:currentTime
 		preload="metadata"
 		on:click="{togglePlaying}"
-		on:playing="{() => (
-			loading = false;
-		)}"
-		on:waiting="{() => (
-			loading = true;
-		)}"
+		on:playing="{() => (loading = false)}"
+		on:waiting="{() => (loading = true)}"
 		on:emptied="{() => {
 			if (video.buffered.length > 0) findClosestBuffer();
 			timeBeforeChange ? (currentTime = timeBeforeChange) : null;
@@ -481,5 +485,6 @@
 		on:mousemove="{hoveringControls}"
 		src="{src}/{chosenQuality}"
 		type="video/mp4"
-		autoplay></video>
+		autoplay
+	></video>
 </div>
