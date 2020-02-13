@@ -120,15 +120,16 @@
 	export let accent1;
 	export let accent2;
 	export let img;
-	let email;
-	let username;
-	let password;
+	let email = "";
+	let username = "";
+	let password = "";
 	let spinning;
 	let box;
-	const register = () => {
+	const register = async () => {
 		fetch(`/api/users/login`, {
 			body: JSON.stringify({
-				identifier: identifier,
+				email: email,
+				username: username,
 				password: password
 			}),
 			method: "POST",
@@ -136,14 +137,20 @@
 				"Content-Type": "application/json"
 			}
 		});
+		let json = await result.json();
+		if (result.status != 201) {
+			alert(JSON.stringify(json));
+		} else {
+			document.cookie = `token=${json.token}`;
+			window.location.href = "/";
+		}
 	};
 </script>
 
 <div
 	bind:this="{box}"
 	class="registerbox"
-	style="--fg: {fg}; --bg: {bg}; --accent1: {accent1}; --accent2: {accent2};"
->
+	style="--fg: {fg}; --bg: {bg}; --accent1: {accent1}; --accent2: {accent2};">
 	<div style="background: url({img}) var(--accent2);" class="img"></div>
 	<div class="flexwrapper">
 		<form class="form" action="">
@@ -158,8 +165,7 @@
 					class="input"
 					type="text"
 					name="Email"
-					placeholder="Email"
-				/>
+					placeholder="Email" />
 			</div>
 			<div class="username">
 				Username
@@ -169,8 +175,7 @@
 					class="input"
 					type="text"
 					name="username"
-					placeholder="Username"
-				/>
+					placeholder="Username" />
 			</div>
 			<div>
 				Password
@@ -180,16 +185,14 @@
 					class="password input"
 					type="password"
 					name="password"
-					placeholder="Password"
-				/>
+					placeholder="Password" />
 			</div>
 			<div class="submit" style="grid-area: submit;">
 				<input
 					on:click="{() => register()}"
 					class="input"
 					type="button"
-					value="Register"
-				/>
+					value="Register" />
 				<p class="register">
 					Already have an account?
 					<coloure on:click="{() => dispatch('flip')}">
