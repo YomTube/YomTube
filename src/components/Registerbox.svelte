@@ -120,16 +120,15 @@
 	export let accent1;
 	export let accent2;
 	export let img;
-	let email = "";
-	let username = "";
-	let password = "";
+	let email;
+	let username;
+	let password;
 	let spinning;
 	let box;
-	const register = async () => {
-		let result = await fetch(process.env.BASE_URL + "/api/users/", {
+	const register = () => {
+		fetch(`${process.env.BASE_URL}/api/users/login`, {
 			body: JSON.stringify({
-				email: email,
-				username: username,
+				identifier: identifier,
 				password: password
 			}),
 			method: "POST",
@@ -137,13 +136,6 @@
 				"Content-Type": "application/json"
 			}
 		});
-		let json = await result.json();
-		if (result.status != 201) {
-			alert(JSON.stringify(json));
-		} else {
-			document.cookie = `token=${json.token}`;
-			window.location.href = process.env.BASE_URL;
-		}
 	};
 </script>
 
