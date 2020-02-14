@@ -162,8 +162,9 @@
 				"Content-Type": "application/json"
 			}
 		});
-		let json = await result.text();
-		if (!result.ok) return alert(json);
+		if (result.status != 201) {
+			alert(result.body);
+		}
 	};
 </script>
 
