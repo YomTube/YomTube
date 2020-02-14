@@ -1,7 +1,5 @@
 <style>
-	body {
-		width: 100vw;
-	}
+	
 </style>
 
 <script context="module">

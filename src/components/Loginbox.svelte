@@ -162,8 +162,13 @@
 				"Content-Type": "application/json"
 			}
 		});
-		let json = await result.text();
-		if (!result.ok) return alert(json);
+		let json = await result.json();
+		if (!result.ok) {
+			return alert(json);
+		} else {
+			document.cookie = `token=${json.token}`;
+			document.location.href = "/";
+		}
 	};
 </script>
 
@@ -172,8 +177,7 @@
 		<div
 			bind:this="{box}"
 			class="loginbox"
-			style="--fg: {fg}; --bg: {bg}; --accent1: {accent1}; --accent2: {accent2};"
-		>
+			style="--fg: {fg}; --bg: {bg}; --accent1: {accent1}; --accent2: {accent2};">
 			<div class="flexwrapper">
 				<form class="form" action="">
 					<div class="title">
@@ -187,8 +191,7 @@
 							class="input"
 							type="text"
 							name="username"
-							placeholder="Username"
-						/>
+							placeholder="Username" />
 					</div>
 					<div>
 						Password
@@ -198,8 +201,7 @@
 							class="password input"
 							type="password"
 							name="password"
-							placeholder="Password"
-						/>
+							placeholder="Password" />
 						<input type="checkbox" />
 						Remember me
 					</div>
@@ -208,8 +210,7 @@
 							on:click="{() => login()}"
 							class="input"
 							type="button"
-							value="Sign in"
-						/>
+							value="Sign in" />
 						<p class="register">
 							Don't have an account?
 							<coloure on:click="{() => (flipped = true)}">
@@ -221,15 +222,13 @@
 			</div>
 			<div
 				style="background: url({img}) var(--accent2);"
-				class="img"
-			></div>
+				class="img"></div>
 		</div>
 		<Registerbox
 			on:flip="{() => (flipped = false)}"
 			bg="#ffffff"
 			accent1="#009ffd"
 			accent2="#ffa400"
-			img="/lowpolyorange.png"
-		/>
+			img="/lowpolyorange.png" />
 	</div>
 </div>

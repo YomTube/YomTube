@@ -66,14 +66,12 @@
 	onMount(async () => {
 		if (document.cookie.includes("token")) {
 			loggedIn = true;
-			console.log("loggedin !");
 		}
 	});
 </script>
 
 <headerbar
-	style="--foreground:{foreground}; --background:{background}; --accent:{accent};"
->
+	style="--foreground:{foreground}; --background:{background}; --accent:{accent};">
 	<nav>
 
 		<img src="{icon}" alt="an icon" />
@@ -88,8 +86,7 @@
 						link="{button.link}"
 						text="{button.text}"
 						{background}
-						foreground="#009ffd"
-					/>
+						foreground="#009ffd" />
 				{/each}
 			{:else}
 				<Loginicon img="url(/stock.jpg)" />

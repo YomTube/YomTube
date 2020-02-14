@@ -126,7 +126,7 @@
 	let spinning;
 	let box;
 	const register = async () => {
-		let result = await fetch(process.env.BASE_URL + "/api/users/", {
+		let result = await fetch("/api/users/", {
 			body: JSON.stringify({
 				email: email,
 				username: username,
@@ -142,7 +142,7 @@
 			alert(JSON.stringify(json));
 		} else {
 			document.cookie = `token=${json.token}`;
-			window.location.href = process.env.BASE_URL;
+			window.location.href = "/";
 		}
 	};
 </script>
@@ -150,8 +150,7 @@
 <div
 	bind:this="{box}"
 	class="registerbox"
-	style="--fg: {fg}; --bg: {bg}; --accent1: {accent1}; --accent2: {accent2};"
->
+	style="--fg: {fg}; --bg: {bg}; --accent1: {accent1}; --accent2: {accent2};">
 	<div style="background: url({img}) var(--accent2);" class="img"></div>
 	<div class="flexwrapper">
 		<form class="form" action="">
@@ -166,8 +165,7 @@
 					class="input"
 					type="text"
 					name="Email"
-					placeholder="Email"
-				/>
+					placeholder="Email" />
 			</div>
 			<div class="username">
 				Username
@@ -177,8 +175,7 @@
 					class="input"
 					type="text"
 					name="username"
-					placeholder="Username"
-				/>
+					placeholder="Username" />
 			</div>
 			<div>
 				Password
@@ -188,16 +185,14 @@
 					class="password input"
 					type="password"
 					name="password"
-					placeholder="Password"
-				/>
+					placeholder="Password" />
 			</div>
 			<div class="submit" style="grid-area: submit;">
 				<input
 					on:click="{() => register()}"
 					class="input"
 					type="button"
-					value="Register"
-				/>
+					value="Register" />
 				<p class="register">
 					Already have an account?
 					<coloure on:click="{() => dispatch('flip')}">
