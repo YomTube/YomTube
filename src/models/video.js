@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import User from "./user";
+import { promises as fs } from 'fs';
 
 const VideoSchema = new mongoose.Schema({
 	title: {
@@ -44,8 +45,14 @@ VideoSchema.pre('remove', async function (next) {
 			throw new Error("Couldn't find user")
 		user.videos = user.videos.filter(v => v.video != video._id);
 		await user.save();
+		let videoDir = `${process.env.ROOT_DIR}/videos/${video.id}`;
+		for (let quality of video.available_qualities) {
+			await fs.unlink(`${videoDir}/${quality}.mp4`)
+		}
+		await fs.unlink(`${videoDir}/thumbnail.png`)
+		await fs.rmdir(videoDir);
 	} catch (err) {
-		console.error("Errore!!!!!", err)
+		console.error("Remove Error:", err)
 	}
 	next();
 })

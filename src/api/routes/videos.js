@@ -1,9 +1,9 @@
 import Router from "express";
-import { Video } from "../../models/index.js";
+import Video from "../../models/video";
 import multer from "multer";
 import auth from "../middleware/auth";
 import { promises as fs } from "fs";
-import addToTranscoderQueue from "../utils/transcoder";
+import addToTranscoderQueue from "../../utils/transcoder";
 
 const router = Router();
 
