@@ -18,13 +18,13 @@ router.post("/", async (req, res) => {
 });
 
 // Login
-router.post("/login", async (req, res) => {
+router.get("/", async (req, res) => {
 	try {
 		const { identifier, password } = req.body;
 		const user = await User.findUser(identifier, password);
 		if (!user) return res.status(401).send("Login failed.");
 		const token = await user.genJWTToken();
-		res.send({ user, token });
+		res.send({ token });
 	} catch (err) {
 		res.status(400).send({ error: err.message });
 	}

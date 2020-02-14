@@ -12,20 +12,18 @@
 	let token;
 	let me;
 	onMount(async () => {
-		if (!document.cookie.includes("token")) {
+		if (!document.cookie.includes("token"))
 			return (window.location.href = "/");
-		}
+
 		let cookies = document.cookie;
-		console.log("hastoken!");
 		token = cookies.split("=")[1];
-		let resp = await fetch(process.env.BASE_URL + "/api/users/me", {
+		let resp = await fetch("/api/users/me", {
 			method: "GET",
 			headers: {
 				"Content-Type": "application/json",
 				Authorization: "Bearer " + token
 			}
 		});
-		console.log(resp);
 		me = await resp.text();
 	});
 </script>
