@@ -50,7 +50,7 @@
 	export let accent = "#ffa400";
 	export let title = "Default";
 	import Thumbnail from "./Thumbnail.svelte";
-	console.log(videos);
+	// console.log(videos);
 </script>
 
 <div id="box" style="--bg: {bg}; --fg: {fg}; --accent: {accent};">
