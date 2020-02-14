@@ -27,7 +27,6 @@ Kör `npm run setup`, den lägger till testdata i mongoDB.
 
 #### Test Videos
 
-| ID                         | Uploader ID                | Title            | Desc                                                                                                                                                      |
-| -------------------------- | -------------------------- | ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `5e46d35b8d9fce4d0a02ec3e` | `5e46d2dc2729694cb256aab0` | Big Buck Bunny   | Big Buck Bunny tells the story of a giant rabbit with a heart bigger than himself. When one sunny day three rodents rudely harass him, something snaps... |
-| `5e46d48d8d9fce4d0a02ec40` | `5e4702013b9f0d1ebbc8b5e7` | Kenneth Agenneth | Kent Agent test video                                                                                                                                     |
+| ID                         | Uploader ID                | Title            | Desc                  |
+| -------------------------- | -------------------------- | ---------------- | --------------------- |
+| `5e4702edcea6a6216e41dfdb` | `5e4702013b9f0d1ebbc8b5e7` | Kenneth Agenneth | Kent Agent test video |

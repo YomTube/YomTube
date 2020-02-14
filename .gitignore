@@ -117,4 +117,5 @@ __sapper__
 videos/*
 !.gitkeep
 
-*.mp4
+# Test Data
+!videos/5e4702edcea6a6216e41dfdb
