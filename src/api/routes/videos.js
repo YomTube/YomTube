@@ -8,7 +8,6 @@ import addToTranscoderQueue from "../utils/transcoder";
 const router = Router();
 
 const GET_PATH = "/tmp";
-const SAVE_PATH = process.env.ROOT_DIR + "videos";
 
 const upload = multer({ dest: GET_PATH });
 // Get all videos
@@ -36,7 +35,7 @@ router.get("/:id/thumbnail", async (req, res) => {
 	let id = req.params.id;
 	try {
 		const video = await Video.findOne({ _id: id });
-		res.sendFile(`${video.filePath}/thumbnail.png`, { root: "/" });
+		res.sendFile(`videos/${video.id}/thumbnail.png`, { root: process.env.ROOT_DIR });
 	} catch (err) {
 		res.status(400).send({ error: err.message });
 	}
@@ -50,7 +49,7 @@ router.get("/:id/:quality", async (req, res) => {
 		if (!video.available_qualities.includes(quality))
 			throw new Error("Quality doesn't exist");
 
-		res.sendFile(`${video.filePath}/${quality}.mp4`, { root: "/" });
+		res.sendFile(`videos/${video.id}/${quality}.mp4`, { root: process.env.ROOT_DIR });
 	} catch (err) {
 		res.status(400).send({ error: err.message });
 	}
@@ -63,8 +62,8 @@ router.delete('/:id', auth, async (req, res) => {
 		const video = await Video.findOne({ _id: id });
 		if (!video)
 			throw new Error("That video doesn't exist.")
-		let uploaderID = "" + video.uploaded_by;
-		let userID = "" + req.user._id;
+		let uploaderID = video.uploaded_by.toString();
+		let userID = req.user._id.toString();
 		if (uploaderID != userID)
 			throw new Error("You don't own that video.")
 
@@ -84,14 +83,12 @@ router.post("/", auth, upload.single("video"), async (req, res) => {
 		let video = new Video({
 			title: title,
 			description: description,
-			filePath: path,
 			uploaded_by: req.user._id,
 			uploaded_at: new Date()
 		});
 
-		let outputPath = `${SAVE_PATH}/${video._id}`;
-		await fs.mkdir(outputPath);
-		video.filePath = outputPath;
+		let outputPath = `videos/${video._id}`;
+		await fs.mkdir(process.env.ROOT_DIR + outputPath)
 		await addToTranscoderQueue(`${GET_PATH}/${filename}`, video);
 		await video.save();
 

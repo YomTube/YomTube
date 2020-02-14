@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-import { promises } from "fs";
 import User from "./user";
 
 const VideoSchema = new mongoose.Schema({
@@ -8,10 +7,6 @@ const VideoSchema = new mongoose.Schema({
 		required: true
 	},
 	description: String,
-	filePath: {
-		type: String,
-		required: true
-	},
 	uploaded_at: {
 		type: Date,
 		required: true

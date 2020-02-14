@@ -152,7 +152,7 @@
 	let box;
 
 	const login = async () => {
-		let result = await fetch(`/api/users/login`, {
+		let result = await fetch(`/api/users/`, {
 			body: JSON.stringify({
 				identifier: identifier,
 				password: password
