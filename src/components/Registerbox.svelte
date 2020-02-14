@@ -108,15 +108,16 @@
 	export let accent1;
 	export let accent2;
 	export let img;
-	let email;
-	let username;
-	let password;
+	let email = "";
+	let username = "";
+	let password = "";
 	let spinning;
 	let box;
 	const register = async () => {
 		let result = await fetch("/api/users/", {
 			body: JSON.stringify({
-				identifier: identifier,
+				email: email,
+				username: username,
 				password: password
 			}),
 			method: "POST",
