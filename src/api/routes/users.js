@@ -32,8 +32,9 @@ router.get("/", async (req, res) => {
 });
 
 // Get current user
-router.get("/me", auth, (req, res) => {
-	res.send(req.user);
+router.get("/me", auth, async (req, res) => {
+	let { user } = req
+	res.send({ user });
 });
 
 router.get('/me/videos', auth, async (req, res) => {
