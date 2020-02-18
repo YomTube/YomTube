@@ -25,6 +25,10 @@ const UserSchema = new mongoose.Schema({
 		required: true,
 		minlength: 8
 	},
+	profilePicture: {
+		data: Buffer,
+		contentType: String
+	},
 	tokens: [
 		{
 			token: {

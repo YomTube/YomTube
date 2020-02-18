@@ -3,6 +3,7 @@ import express from "express";
 import auth from "../middleware/auth";
 
 import User from "../../models/user";
+import Video from "../../models/video";
 const router = express.Router();
 
 // Register
@@ -31,9 +32,19 @@ router.get("/", async (req, res) => {
 });
 
 // Get current user
-router.get("/me", auth, (req, res) => {
-	res.send(req.user);
+router.get("/me", auth, async (req, res) => {
+	let { user } = req
+	res.send({ user });
 });
+
+router.get('/me/videos', auth, async (req, res) => {
+	try {
+		let videos = await Video.find({ _id: { $in: req.user.videos.map(v => v.video) } })
+		res.send(videos);
+	} catch (err) {
+		res.status(400).send({ error: err.message })
+	}
+})
 
 // Get other user
 router.get('/username/:username', (req, res) => {

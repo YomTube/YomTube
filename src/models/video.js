@@ -21,7 +21,12 @@ const VideoSchema = new mongoose.Schema({
 	waitingOnTranscode: {
 		type: Boolean,
 		default: true,
-	}
+	},
+	comments: [
+		{
+			comment: { type: mongoose.Schema.Types.ObjectId, ref: 'Comment' }
+		}
+	]
 });
 
 VideoSchema.pre("save", async function (next) {

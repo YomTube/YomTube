@@ -24,7 +24,12 @@ router.get("/", async (req, res) => {
 router.get("/:id", async (req, res) => {
 	let id = req.params.id;
 	try {
-		const video = await Video.findOne({ _id: id });
+		const video = await Video.findOne({ _id: id })
+			.populate({
+				path: 'uploaded_by',
+				populate: { path: 'uploaded_by' }
+			})
+
 		res.send({ video });
 	} catch (err) {
 		res.status(400).send({ error: err.message });
