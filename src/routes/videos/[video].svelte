@@ -1,18 +1,11 @@
 <style>
-	.playerbox {
-		display: inline-block;
-		margin: 1em;
-		background-color: white;
-		border-radius: 1em;
-		padding: 1em;
-		color: #ffa40f;
-	}
+
 </style>
 
 <script context="module">
 	export async function preload(page) {
 		const videoID = page.params.video;
-		const src = `${process.env.BASE_URL}/api/videos/${videoID}`;
+		const src = `/api/videos/${videoID}`;
 		const resp = await this.fetch(src);
 		const json = await resp.json();
 		const videoJSON = json.video;

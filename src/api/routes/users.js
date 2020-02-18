@@ -2,7 +2,7 @@ import express from "express";
 
 import auth from "../middleware/auth";
 
-import { User } from "../../models/index.js";
+import User from "../../models/user";
 const router = express.Router();
 
 // Register
@@ -11,20 +11,20 @@ router.post("/", async (req, res) => {
 		const user = new User(req.body);
 		await user.save();
 		const token = await user.genJWTToken();
-		res.status(201).send({ user, token });
+		res.status(201).send({ token });
 	} catch (err) {
 		res.status(400).send({ error: err.message });
 	}
 });
 
 // Login
-router.post("/login", async (req, res) => {
+router.get("/", async (req, res) => {
 	try {
 		const { identifier, password } = req.body;
 		const user = await User.findUser(identifier, password);
 		if (!user) return res.status(401).send("Login failed.");
 		const token = await user.genJWTToken();
-		res.send({ user, token });
+		res.send({ token });
 	} catch (err) {
 		res.status(400).send({ error: err.message });
 	}
@@ -35,8 +35,14 @@ router.get("/me", auth, (req, res) => {
 	res.send(req.user);
 });
 
+// Get other user
+router.get('/username/:username', (req, res) => {
+	let user = req.params.username;
+	res.send(user)
+})
+
 // Logout of current session
-router.get("/logout", auth, async (req, res) => {
+router.get("/me/logout", auth, async (req, res) => {
 	try {
 		req.user.tokens = req.user.tokens.filter(
 			obj => obj.token != req.token
@@ -49,7 +55,7 @@ router.get("/logout", auth, async (req, res) => {
 });
 
 // Logout of all sessions
-router.get("/logout/all", auth, async (req, res) => {
+router.get("/me/logout/all", auth, async (req, res) => {
 	try {
 		req.user.tokens = [];
 		await req.user.save();

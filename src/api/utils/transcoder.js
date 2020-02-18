@@ -39,7 +39,7 @@ const transcodingQueue = []
 
 let getRes = (path) => {
 	return new Promise((res, rej) => {
-		ffmpeg.ffprobe(path, function (err, metadata) {
+		ffmpeg.ffprobe(path, (err, metadata) => {
 			if (err) rej(err);
 			res({
 				width: metadata.streams[0].width,
@@ -49,7 +49,7 @@ let getRes = (path) => {
 	});
 }
 
-function transcodeToRes(path, shortSide, bitrate, videoID, portrait) {
+let transcodeToRes = (path, shortSide, bitrate, videoID, portrait) => {
 	return new Promise((res, rej) => {
 		let localSavePath =
 			SAVE_PATH + "/" + videoID + "/" + shortSide + ".mp4";

@@ -6,6 +6,10 @@
 	}
 </style>
 
+<script context="module">
+	export async function preload(page, session) {}
+</script>
+
 <script>
 	import { onMount } from "svelte";
 	import Videobox from "../components/Videobox.svelte";
@@ -40,6 +44,7 @@
 			videos.push(video);
 			videos = videos;
 		}
+
 	});
 	let string = toString(videos);
 </script>
