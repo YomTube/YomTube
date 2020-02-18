@@ -27,9 +27,9 @@
 <svelte:head>
 	<title>Yomtube</title>
 </svelte:head>
-
-<Videoplayer {videoJSON} {src} />
+<div class="playerbox">
+	<Videoplayer {videoJSON} {src} />
+	<h1>{videoJSON.title}</h1>
+	<details>{videoJSON.description}</details>
+</div>
 <div id="sidebar"></div>
-
-<h1>{videoJSON.title}</h1>
-<p>{videoJSON.description}</p>
