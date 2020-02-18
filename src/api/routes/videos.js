@@ -9,7 +9,35 @@ const router = Router();
 
 const GET_PATH = "/tmp";
 
-const upload = multer({ dest: GET_PATH });
+const upload = multer({
+	dest: GET_PATH,
+	fileFilter: (req, file, cb) => {
+		if (!['video/x-msvideo',
+			'video/ogg',
+			'video/mpeg',
+			'video/webm',
+			'video/3gpp',
+			'video/3gpp2',
+			"video/h264",
+			"video/h265",
+			"video/mp4",
+			"video/mpeg",
+			"video/mpv",
+			"video/ogg",
+			"video/v9",
+			"video/x-flv",
+			"video/mp4",
+			"video/MP2T",
+			"video/3gpp",
+			"video/quicktime",
+			"video/x-ms-wmv"].includes(file.mimetype)) {
+			req.fileValidationError = 'Wrong filetype';
+			return cb(null, false, new Error('Wrong filetype'))
+		}
+		cb(null, true);
+	}
+});
+
 // Get all videos
 router.get("/", async (req, res) => {
 	try {
@@ -35,7 +63,7 @@ router.get("/:id/thumbnail", async (req, res) => {
 	let id = req.params.id;
 	try {
 		const video = await Video.findOne({ _id: id });
-		res.sendFile(`videos/${video.id}/thumbnail.png`, { root: process.env.ROOT_DIR });
+		res.sendFile(`videos/${video.id}/thumbnail.png`, { root: process.cwd() });
 	} catch (err) {
 		res.status(400).send({ error: err.message });
 	}
@@ -49,7 +77,7 @@ router.get("/:id/:quality", async (req, res) => {
 		if (!video.available_qualities.includes(quality))
 			throw new Error("Quality doesn't exist");
 
-		res.sendFile(`videos/${video.id}/${quality}.mp4`, { root: process.env.ROOT_DIR });
+		res.sendFile(`videos/${video.id}/${quality}.mp4`, { root: process.cwd() });
 	} catch (err) {
 		res.status(400).send({ error: err.message });
 	}
@@ -88,7 +116,7 @@ router.post("/", auth, upload.single("video"), async (req, res) => {
 		});
 
 		let outputPath = `videos/${video._id}`;
-		await fs.mkdir(process.env.ROOT_DIR + outputPath)
+		await fs.mkdir(process.cwd() + outputPath)
 		await addToTranscoderQueue(`${GET_PATH}/${filename}`, video);
 		await video.save();
 

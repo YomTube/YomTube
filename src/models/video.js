@@ -45,7 +45,7 @@ VideoSchema.pre('remove', async function (next) {
 			throw new Error("Couldn't find user")
 		user.videos = user.videos.filter(v => v.video != video._id);
 		await user.save();
-		let videoDir = `${process.env.ROOT_DIR}/videos/${video.id}`;
+		let videoDir = `${process.cwd()}/videos/${video.id}`;
 		for (let quality of video.available_qualities) {
 			await fs.unlink(`${videoDir}/${quality}.mp4`)
 		}
