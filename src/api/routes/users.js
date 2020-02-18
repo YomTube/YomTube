@@ -3,8 +3,6 @@ import express from "express";
 import auth from "../middleware/auth";
 
 import User from "../../models/user";
-<<<<<<< Updated upstream
-=======
 import multer from "multer";
 import { promises as fs } from 'fs';
 
@@ -21,7 +19,6 @@ const upload = multer({
 	}
 });
 
->>>>>>> Stashed changes
 const router = express.Router();
 
 // Register
@@ -60,8 +57,6 @@ router.get("/me", auth, (req, res) => {
 	res.send(req.user);
 });
 
-<<<<<<< Updated upstream
-=======
 // TODO global put request for change, like /me/:part
 
 // Set profile picture
@@ -80,7 +75,6 @@ router.put('/me/picture', auth, upload.single('profilePicture'), async (req, res
 	}
 })
 
->>>>>>> Stashed changes
 // Get other user
 router.get('/:userID', (req, res) => {
 	let user = req.params.userID;
