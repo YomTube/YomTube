@@ -1,7 +1,7 @@
 import ffmpeg from "fluent-ffmpeg";
 import { promises as fs } from "fs";
 
-const SAVE_PATH = process.env.ROOT_DIR + "videos";
+const SAVE_PATH = process.cwd() + "videos";
 
 const supportedQualities = [
 	{

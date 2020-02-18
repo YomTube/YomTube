@@ -3,13 +3,34 @@ import express from "express";
 import auth from "../middleware/auth";
 
 import User from "../../models/user";
-import Video from "../../models/video";
+import multer from "multer";
+import { promises as fs } from 'fs';
+
+const GET_PATH = "/tmp";
+
+const upload = multer({
+	dest: GET_PATH,
+	fileFilter: (req, file, cb) => {
+		if (file.mimetype !== 'image/png' && file.mimetype !== 'image/jpeg' && file.mimetype !== 'image/gif') {
+			req.fileValidationError = 'Wrong filetype';
+			return cb(null, false, new Error('Wrong filetype'))
+		}
+		cb(null, true);
+	}
+});
+
 const router = express.Router();
 
 // Register
-router.post("/", async (req, res) => {
+router.post("/register", async (req, res) => {
 	try {
-		const user = new User(req.body);
+		let user = new User(req.body);
+		if (!user.profilePicture) {
+			user.profilePicture = {
+				data: await fs.readFile(process.cwd() + '/static/stock-profile-pic.png'),
+				contentType: 'image/png'
+			}
+		}
 		await user.save();
 		const token = await user.genJWTToken();
 		res.status(201).send({ token });
@@ -19,7 +40,7 @@ router.post("/", async (req, res) => {
 });
 
 // Login
-router.get("/", async (req, res) => {
+router.post("/login", async (req, res) => {
 	try {
 		const { identifier, password } = req.body;
 		const user = await User.findUser(identifier, password);
@@ -37,19 +58,28 @@ router.get("/me", auth, async (req, res) => {
 	res.send({ user });
 });
 
-router.get('/me/videos', auth, async (req, res) => {
+// TODO global put request for change, like /me/:part
+
+// Set profile picture
+router.put('/me/picture', auth, upload.single('profilePicture'), async (req, res) => {
+	if (req.fileValidationError) return res.end(req.fileValidationError);
 	try {
-		let videos = await Video.find({ _id: { $in: req.user.videos.map(v => v.video) } })
-		res.send(videos);
+		let user = await User.findById(req.user.id);
+		user.profilePicture = {
+			data: await fs.readFile(req.file.path),
+			contentType: req.file.mimetype
+		}
+		await user.save();
+		res.send("Changed profile picture")
 	} catch (err) {
-		res.status(400).send({ error: err.message })
+		res.status(400).send(err.message)
 	}
 })
 
 // Get other user
-router.get('/username/:username', (req, res) => {
-	let user = req.params.username;
-	res.send(user)
+router.get('/:userID', (req, res) => {
+	let user = req.params.userID;
+	res.send({ user })
 })
 
 // Logout of current session
