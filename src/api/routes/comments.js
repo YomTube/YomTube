@@ -39,7 +39,23 @@ router.post('/:videoID', auth, async (req, res) => {
 })
 
 router.put('/:videoID/:commendID', auth, async (req, res) => {
+	let { videoID, commentID } = req.params;
+	let { text } = req.body
+	try {
+		let video = await Video.findById(videoID)
+		let comment = await Comment.findById(commentID);
+		if (!video || !comment) throw new Error("Resource couldn't be found")
+		if (comment.user != req.user.id) throw new Error("You dont have permission to remove that comment")
+		if (video.id != comment.video) throw new Error("Comment doesn't belong to that video")
+		if (!text || text.length == 0) throw new Error("Comment can't be empty")
 
+		comment.text = text;
+		await comment.save();
+
+		res.send("Changed comment")
+	} catch (err) {
+		res.status(400).send({ error: err.message })
+	}
 })
 
 // Delete a comment
