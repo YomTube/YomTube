@@ -45,14 +45,16 @@
 </script>
 
 <svelte:head>
-	<title>Login</title>
+	<title>Me</title>
 </svelte:head>
 
 <div class="wrapper">
-	<Userbanner />
+	{#if me != undefined}
+		<Userbanner username="{me.username}" />
+	{/if}
 	{#if videos[0] != undefined}
 		<Videobox title="My videos" {videos} />
 	{:else}
-		<h1>You have no</h1>
+		<h1>You have no videos :(</h1>
 	{/if}
 </div>

@@ -6,7 +6,7 @@
 		display: flex;
 		z-index: 2;
 		align-items: center;
-		border-bottom: 4px solid rgba(255, 164, 0, 0.4);
+		border-bottom: 3px solid rgba(255, 164, 0, 0.6);
 		box-shadow: 0 -0.4rem 0.9rem 0.2rem rgba(0, 0, 0, 0.5);
 	}
 
@@ -73,9 +73,10 @@
 <headerbar
 	style="--foreground:{foreground}; --background:{background}; --accent:{accent};">
 	<nav>
-
-		<img src="{icon}" alt="an icon" />
-		<h1>{headerText}</h1>
+		<a href="/">
+			<!-- <img src="{icon}" alt="an icon" /> -->
+			<h1>{headerText}</h1>
+		</a>
 		<span>
 			{#each links as link}
 				<a href="{link.link}">{link.text}</a>
@@ -93,6 +94,5 @@
 			{/if}
 
 		</span>
-		<p>{loggedIn}</p>
 	</nav>
 </headerbar>
