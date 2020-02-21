@@ -2,7 +2,7 @@
 	div {
 		display: flex;
 		flex-direction: column;
-		height: calc(100vh - 4em);
+		min-height: calc(100vh - 4em);
 		align-items: center;
 		justify-content: center;
 	}
@@ -15,11 +15,17 @@
 
 	let title;
 	let uploading = false;
+	let videoID;
 
 	function drop(e) {
 		title = e.detail.title;
 		uploading = true;
 	}
+
+	function uploaded(e) {
+		videoID = e.detail.videoID;
+	}
+	
 </script>
 
 <svelte:head>
@@ -29,6 +35,7 @@
 <div>
 	<Uploadbox
 	on:filedrop="{drop}"
+	on:fileuploaded="{uploaded}"
 		bg="#ffffff"
 		accent1="#ffa400"
 		accent2="#009ffd"
@@ -44,6 +51,7 @@
         icon="/uploadicon.svg"
 		videotitle={title}
 		vissible={uploading}
+		videoID={videoID}
 		message="Details"
 	/>
 </div>

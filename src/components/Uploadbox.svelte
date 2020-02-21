@@ -110,7 +110,23 @@
 
 	.progress {
 		width: 90%;
+		appearance: none;
+		-webkit-appearance: none;
+		-moz-appearance: none;
+		-ms-progress-appearance: none;
+		background-color: blueviolet;
+		border-radius: 100px;
 	}
+
+	progress[value]::-webkit-progress-bar{
+		background-color: #EAF6FF;
+	}
+
+	progress[value]::-webkit-progress-value {
+		background-color: #FFA400;
+		border-radius: 100px;
+	}
+
 
 	@keyframes breathing {
 		0% {
@@ -141,15 +157,7 @@
 	import { createEventDispatcher } from "svelte";
 	const dispatch = createEventDispatcher();
 
-	let isAdvancedUpload = (function() {
-		let div = document.createElement("div");
-		return (
-			("draggable" in div ||
-				("ondragstart" in div && "ondrop" in div)) &&
-			"FormData" in window &&
-			"FileReader" in window
-		);
-	})();
+	let isAdvancedUpload = true;
 
 	let uploadForm;
 	let droppedFiles = false;
@@ -177,32 +185,6 @@
 	let videoID;
 	let fileName;
 
-	console.log("creating request");
-
-	let data = new FormData();
-
-	let xhr = new XMLHttpRequest();
-	xhr.withCredentials = true;
-
-	xhr.addEventListener("readystatechange", function() {
-		if (this.readyState === 4) {
-			console.log(this.responseText);
-		}
-	});
-
-	xhr.open("POST", "/videos/");
-	xhr.setRequestHeader(
-		"Authorization",
-		"Bearer " +
-			document.cookie
-				.split(";")
-				.filter(c => c.startsWith("token"))
-				.split("=")[1]
-	);
-	xhr.setRequestHeader("Content-Type", "multipart/form-data");
-
-	
-
 	function fileDrop(e) {
 		fileLeave();
 
@@ -210,10 +192,37 @@
 			return;
 		}
 
-		fileName = e.dataTransfer.files[0].name;
+		let data = new FormData();
+		let xhr = new XMLHttpRequest();
+		xhr.withCredentials = true;
 
-		data.append("video", fileInput.files[0]);
+		xhr.addEventListener("readystatechange", function() {
+			if (this.readyState === 4) {
+				console.log(this.responseText);
+				uploaded(this);
+			}
+		});
+
+		console.log(document.cookie);
+		xhr.open("POST", "/api/videos/");
+		xhr.setRequestHeader(
+			"Authorization",
+			"Bearer " +
+				document.cookie
+					.split(";")
+					.filter(c => c.startsWith("token"))[0]
+					.split("=")[1]
+		);
+
+		fileName = e.dataTransfer.files[0].name;
+		data.append("video", e.dataTransfer.files[0]);
 		data.append("title", fileName);
+
+		// xhr.upload.addEventListener("load", uploaded);
+		xhr.upload.addEventListener("progress", updateProgress);
+		// xhr.addEventListener("error", transferFailed);
+		// xhr.addEventListener("abort", transferCanceled);
+
 		xhr.send(data);
 
 		//TODO: fixa så den klagar om man lägger upp flera filer samtidigt
@@ -225,14 +234,33 @@
 		});
 	}
 
-	function uploaded() {}
+	let progressbar;
+
+	function updateProgress(e) {
+		if (e.lengthComputable) {
+			progressbar.max = e.total;
+			progressbar.value = e.loaded;
+			// progressbar.value = (e.loaded / e.total) * 100;
+		} else {
+			// Unable to compute progress information since the total size is unknown
+		}
+	}
+
+	function uploaded(ue) {
+		console.log("uploaded");
+		console.log(ue);
+		console.log("videoID: " + JSON.parse(ue.response).video._id);
+		videoID = JSON.parse(ue.response).video._id;
+		dispatch("fileuploaded", {
+			videoID: videoID
+		})
+	}
 </script>
 
 <div
 	id="container"
 	style="--fg: {fg}; --bg: {bg}; --accent1: {accent1}; --accent2: {accent2};
-	--upload-icon: url({icon})"
->
+	--upload-icon: url({icon})">
 
 	<form
 		bind:this="{uploadForm}"
@@ -249,8 +277,7 @@
 		class="upload-form"
 		method="POST"
 		action=""
-		enctype="multipart/form-data"
-	>
+		enctype="multipart/form-data">
 
 		<div class="upload_dropUpload">
 			<input type="file" id="file" class="upload_file" />
@@ -259,8 +286,7 @@
 				<div
 					class="upload_icon"
 					class:file_hover_icon="{hasHover}"
-					on:click="{fileLabel.click()}"
-				></div>
+					on:click="{fileLabel.click()}"></div>
 			</div>
 			<label for="file" class="upload_label" bind:this="{fileLabel}">
 				<h1>Upload video</h1>
@@ -277,7 +303,11 @@
 
 	<div class="progress_container" class:hidden="{!uploading}">
 		<h1>Uploading</h1>
-		<progress class="progress" value="20" max="100"></progress>
+		<progress
+			class="progress"
+			value="0"
+			max="100"
+			bind:this="{progressbar}"></progress>
 	</div>
 
 </div>

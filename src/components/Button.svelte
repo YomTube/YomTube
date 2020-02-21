@@ -16,7 +16,6 @@
     font-size: 1.2em;
     align-items: center;
     align-content: center;
-    margin: 1em;
     z-index: 1;
     overflow: hidden;
     background: none;
