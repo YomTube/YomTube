@@ -79,6 +79,7 @@
 	}
 	@media only screen and (max-width: 768px) {
 		.registerbox {
+			transform: translateX(100%);
 			border-radius: 0;
 			max-height: initial;
 			display: flex;
@@ -111,9 +112,9 @@
 	let email = "";
 	let username = "";
 	let password = "";
-	let spinning;
 	let box;
-	const register = async () => {
+
+	export const register = async () => {
 		let result = await fetch("/api/users/", {
 			body: JSON.stringify({
 				email: email,

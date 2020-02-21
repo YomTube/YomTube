@@ -7,7 +7,6 @@
 		max-height: 600px;
 		min-height: 500px;
 	}
-
 	.flipbox-inner {
 		will-change: transform;
 		transform-style: preserve-3d;
@@ -21,6 +20,7 @@
 		position: absolute;
 		width: 100%;
 		height: 100%;
+		transition: all 0.3s ease-in-out;
 		backface-visibility: hidden;
 		max-width: 1200px;
 		max-height: 600px;
@@ -37,14 +37,12 @@
 		background-size: cover;
 		background-position: center;
 	}
-
 	.flexwrapper {
 		display: flex;
 		align-items: center;
 		justify-content: center;
 		width: 55%;
 	}
-
 	.form {
 		padding: 3em;
 		width: 100%;
@@ -52,7 +50,6 @@
 		display: flex;
 		flex-direction: column;
 	}
-
 	.input {
 		width: 100%;
 		border-radius: 0.5em;
@@ -63,21 +60,17 @@
 		margin-bottom: 1em;
 		margin-top: 1em;
 	}
-
 	.title {
 		color: var(--accent1);
 		margin-bottom: 2em;
 	}
-
 	.submit {
 		width: 75%;
 		margin-left: 12.5%;
 	}
-
 	.password {
 		margin-bottom: 10px;
 	}
-
 	.submit input {
 		background-color: var(--accent1);
 		color: var(--bg);
@@ -91,12 +84,10 @@
 		appearance: none;
 		-webkit-appearance: none;
 	}
-
 	.submit input:hover {
 		box-shadow: 0 14px 28px rgba(255, 164, 0, 0.25),
 			0 10px 10px rgba(255, 164, 0, 0.22);
 	}
-
 	.register {
 		text-align: center;
 	}
@@ -105,10 +96,10 @@
 		text-decoration: none;
 		color: #009ffd;
 	}
-
 	.spin {
 		transform: rotateX(180deg);
 	}
+
 	@media only screen and (max-width: 768px) {
 		.img {
 			display: none;
@@ -131,10 +122,15 @@
 			height: 100%;
 			overflow: hidden;
 		}
-
 		.form {
 			width: 100%;
 			height: 100%;
+		}
+		.spin {
+			transform: rotateX(0deg);
+		}
+		.slide {
+			transform: translateX(-100%);
 		}
 	}
 </style>
@@ -146,10 +142,31 @@
 	export let accent1;
 	export let accent2;
 	export let img = "/lowpolyblue.png";
-	let identifier;
+	let identifier = "";
 	let password;
-	let flipped;
+	let flipped = false;
 	let box;
+	let noanim = true;
+	let flipbox;
+	let regbox;
+
+	const flip = () => {
+		console.log("flip");
+		if (flipped == false) {
+			noanim = false;
+			flipped = true;
+		} else {
+			flipped = false;
+		}
+	};
+
+	const handleKeydown = event => {
+		if (event.key == "Enter" && flipped == false) {
+			login();
+		} else if (event.key == "Enter" && flipped == true) {
+			regbox.register();
+		}
+	};
 
 	const login = async () => {
 		let result = await fetch(`/api/users/`, {
@@ -162,13 +179,24 @@
 				"Content-Type": "application/json"
 			}
 		});
-		let json = await result.text();
-		if (!result.ok) return alert(json);
+		let json = await result.json();
+		if (!result.ok) {
+			return alert(JSON.stringify(json));
+		} else {
+			document.cookie = `token=${json.token}`;
+			document.location.href = "/";
+		}
 	};
 </script>
 
+<svelte:window on:keydown="{handleKeydown}" />
+
 <div class="flipbox">
-	<div class="flipbox-inner" class:spin="{flipped}">
+	<div
+		class:slide="{flipped}"
+		class:spin="{flipped}"
+		class="flipbox-inner"
+		bind:this="{flipbox}">
 		<div
 			bind:this="{box}"
 			class="loginbox"
@@ -202,15 +230,13 @@
 					</div>
 					<div class="submit" style="grid-area: submit;">
 						<input
-							on:click="{() => login()}"
+							on:click="{login}"
 							class="input"
 							type="button"
 							value="Sign in" />
 						<p class="register">
 							Don't have an account?
-							<coloure on:click="{() => (flipped = true)}">
-								Sign up
-							</coloure>
+							<coloure on:click="{flip}">Sign up</coloure>
 						</p>
 					</div>
 				</form>
@@ -220,7 +246,8 @@
 				class="img"></div>
 		</div>
 		<Registerbox
-			on:flip="{() => (flipped = false)}"
+			bind:this="{regbox}"
+			on:flip="{flip}"
 			bg="#ffffff"
 			accent1="#009ffd"
 			accent2="#ffa400"

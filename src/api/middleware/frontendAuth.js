@@ -8,6 +8,7 @@ const authUrls = [
 
 const frontendAuth = async (req, res, next) => {
 	if (!req.url.startsWith('/client/')) {
+		console.log("Request IP:", req.headers['x-forwarded-for'] || req.connection.remoteAddress)
 		if (authUrls.includes(req.originalUrl)) {
 			console.log("Got auth URL:", req.originalUrl)
 			try {

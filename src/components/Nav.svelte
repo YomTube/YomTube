@@ -6,7 +6,7 @@
 		display: flex;
 		z-index: 2;
 		align-items: center;
-		border-bottom: 4px solid rgba(255, 164, 0, 0.4);
+		border-bottom: 3px solid rgba(255, 164, 0, 0.6);
 		box-shadow: 0 -0.4rem 0.9rem 0.2rem rgba(0, 0, 0, 0.5);
 	}
 
@@ -66,18 +66,17 @@
 	onMount(async () => {
 		if (document.cookie.includes("token")) {
 			loggedIn = true;
-			console.log("loggedin !");
 		}
 	});
 </script>
 
 <headerbar
-	style="--foreground:{foreground}; --background:{background}; --accent:{accent};"
->
+	style="--foreground:{foreground}; --background:{background}; --accent:{accent};">
 	<nav>
-
-		<img src="{icon}" alt="an icon" />
-		<h1>{headerText}</h1>
+		<a href="/">
+			<!-- <img src="{icon}" alt="an icon" /> -->
+			<h1>{headerText}</h1>
+		</a>
 		<span>
 			{#each links as link}
 				<a href="{link.link}">{link.text}</a>
@@ -88,14 +87,12 @@
 						link="{button.link}"
 						text="{button.text}"
 						{background}
-						foreground="#009ffd"
-					/>
+						foreground="#009ffd" />
 				{/each}
 			{:else}
 				<Loginicon img="url(/stock.jpg)" />
 			{/if}
 
 		</span>
-		<p>{loggedIn}</p>
 	</nav>
 </headerbar>
