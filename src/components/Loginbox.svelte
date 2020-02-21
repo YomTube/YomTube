@@ -150,15 +150,7 @@
 	let flipbox;
 	let regbox;
 
-	const flip = () => {
-		console.log("flip");
-		if (flipped == false) {
-			noanim = false;
-			flipped = true;
-		} else {
-			flipped = false;
-		}
-	};
+	const flip = () => (flipped = !flipped);
 
 	const handleKeydown = event => {
 		if (event.key == "Enter" && flipped == false) {
@@ -174,7 +166,6 @@
 				identifier: identifier,
 				password: password
 			}),
-			method: "GET",
 			headers: {
 				"Content-Type": "application/json"
 			}

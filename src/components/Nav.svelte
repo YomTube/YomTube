@@ -41,6 +41,15 @@
 		display: flex;
 		align-items: center;
 	}
+
+	.search {
+		margin: auto;
+		width: 40%;
+		height: 65%;
+		border: 2px solid var(--accent);
+		border-radius: 0.3em;
+		padding: 0.5em;
+	}
 </style>
 
 <script>
@@ -77,6 +86,7 @@
 			<!-- <img src="{icon}" alt="an icon" /> -->
 			<h1>{headerText}</h1>
 		</a>
+		<input placeholder="Search" class="search" type="text" />
 		<span>
 			{#each links as link}
 				<a href="{link.link}">{link.text}</a>
