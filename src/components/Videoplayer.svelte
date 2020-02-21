@@ -208,8 +208,12 @@
 						&::-moz-range-thumb {
 							-webkit-appearance: none;
 							appearance: none;
-							height: calc(var(--buttons-height) * 0.15);
-							width: calc(var(--buttons-height) * 0.15);
+							height: calc(
+								var(--buttons-height) * 0.15
+							);
+							width: calc(
+								var(--buttons-height) * 0.15
+							);
 							background: white;
 							cursor: pointer;
 							border-radius: calc(
@@ -325,120 +329,6 @@
 	}
 </style>
 
-<script>
-	export let videoJSON;
-	export let src;
-
-	import { onMount } from "svelte";
-	import { fade } from "svelte/transition";
-
-	let chosenQuality =
-		videoJSON.available_qualities[
-			videoJSON.available_qualities.length - 1
-		];
-
-	let video = undefined;
-	let player = undefined;
-	let videoTimer = undefined;
-	let barWidth = 0;
-	let videoLength = 0;
-	let buffered = [];
-	let closestBuffer = 0;
-	let fullscreenEnabled = false;
-	let paused = false;
-	let muted = false;
-	let volumeValue = 100;
-	let currentTime = 0;
-	let qualitiesHidden = true;
-	let timeBeforeChange = undefined;
-	let pausedBeforeChange = undefined;
-	let bufferWidth = 0;
-	let controlHoverTimer = undefined;
-	let hovering = false;
-	let loading = false;
-
-	$: if (video) video.muted = muted;
-
-	$: if (video) video.volume = volumeValue / 100;
-
-	$: if (buffered.length > 0 && buffered.length > closestBuffer) {
-		bufferWidth = (video.buffered.end(closestBuffer) / videoLength) * 100;
-	}
-
-	$: if (buffered.length > 0) findClosestBuffer();
-
-	let setup = () => {
-		paused = video.paused;
-		videoLength = video.duration;
-		if (
-			/Chrome/.test(navigator.userAgent) &&
-			/Google Inc/.test(navigator.vendor)
-		)
-			paused = false;
-	};
-
-	let toggleFullscreen = async () => {
-		// så dehär borde inte funka
-		// but it do
-		timeBeforeChange = currentTime;
-		fullscreenEnabled =
-			document.fullscreenEnabled && document.fullscreenElement;
-		if (fullscreenEnabled) await document.exitFullscreen();
-		else {
-			await videoPlayer.requestFullscreen();
-		}
-		fullscreenEnabled =
-			document.fullscreenEnabled && document.fullscreenElement;
-	};
-
-	let togglePlaying = () => {
-		paused ? video.play() : video.pause();
-	};
-
-	let muteVolume = () => (muted = !muted);
-
-	let chooseQuality = quality => {
-		closestBuffer = 0;
-		pausedBeforeChange = paused;
-		timeBeforeChange = currentTime;
-		chosenQuality = quality;
-		qualitiesHidden = !qualitiesHidden;
-	};
-
-	let findClosestBuffer = ct => {
-		let array = [];
-		for (let i = 0; i < video.buffered.length; i++) {
-			array.push({
-				start: video.buffered.start(i),
-				end: video.buffered.end(i)
-			});
-		}
-		closestBuffer = array.indexOf(
-			array.reduce((prev, curr) => {
-				return Math.abs(curr.start - video.currentTime) <
-					Math.abs(prev.start - video.currentTime)
-					? curr
-					: prev;
-			})
-		);
-	};
-
-	let hoveringControls = () => {
-		hovering = true;
-		if (controlHoverTimer) clearTimeout(controlHoverTimer);
-		if (qualitiesHidden)
-			controlHoverTimer = setTimeout(() => (hovering = false), 3000);
-	};
-
-	onMount(async () => {
-		if (!video.duration) {
-			video.addEventListener("loadedmetadata", setup, {
-				once: true
-			});
-		} else setup();
-	});
-</script>
-
 <div id="videoPlayer" bind:this="{player}">
 	<div id="controls" on:mousemove="{hoveringControls}" class:hovering>
 
@@ -485,13 +375,15 @@
 						}}"
 						id="innerBar"
 						style="background: linear-gradient(90deg,
-						#ffa000f0 {volumeValue}%, rgba(255, 255, 255, 0.1)
-						{volumeValue}%)" />
+						#ffa000f0 {volumeValue}%, rgba(255, 255,
+						255, 0.1) {volumeValue}%)" />
 				</div>
 				<div id="duration">
 					{new Date(currentTime * 1000)
 						.toISOString()
-						.substr(14, 5)} / {new Date(videoLength * 1000)
+						.substr(14, 5)} / {new Date(
+						videoLength * 1000
+					)
 						.toISOString()
 						.substr(14, 5)}
 				</div>
@@ -506,7 +398,9 @@
 							if (qualitiesHidden) controlHoverTimer = setTimeout(() => (hovering = false), 3000);
 							else clearTimeout(controlHoverTimer);
 						}}"></div>
-					<div id="qualities" class:hidden="{qualitiesHidden}">
+					<div
+						id="qualities"
+						class:hidden="{qualitiesHidden}">
 						{#each videoJSON.available_qualities as quality}
 							<p
 								class="quality"
@@ -546,9 +440,127 @@
 		}}"
 		on:emptied="{() => {
 			if (video.buffered.length > 0) findClosestBuffer();
-			timeBeforeChange ? (currentTime = timeBeforeChange) : null;
+			if (timeBeforeChange) currentTime = timeBeforeChange;
 		}}"
+		on:loadeddata="{() => (timeBeforeChange ? (currentTime = timeBeforeChange) : null)}"
 		on:mousemove="{hoveringControls}"
 		src="{src}/{chosenQuality}"
 		type="video/mp4"></video>
 </div>
+
+<script>
+	export let videoJSON;
+	export let src;
+
+	import { onMount } from "svelte";
+	import { fade } from "svelte/transition";
+
+	let chosenQuality =
+		videoJSON.available_qualities[
+			videoJSON.available_qualities.length - 1
+		];
+
+	let video = undefined;
+	let player = undefined;
+	let videoTimer = undefined;
+	let barWidth = 0;
+	let videoLength = 0;
+	let buffered = [];
+	let closestBuffer = 0;
+	let fullscreenEnabled = false;
+	let paused = false;
+	let muted = false;
+	let volumeValue = 100;
+	let currentTime = 0;
+	let qualitiesHidden = true;
+	let timeBeforeChange = undefined;
+	let pausedBeforeChange = undefined;
+	let bufferWidth = 0;
+	let controlHoverTimer = undefined;
+	let hovering = false;
+	let loading = false;
+
+	$: if (video) video.muted = muted;
+
+	$: if (video) video.volume = volumeValue / 100;
+
+	$: if (buffered.length > 0 && buffered.length > closestBuffer) {
+		bufferWidth =
+			(video.buffered.end(closestBuffer) / videoLength) * 100;
+	}
+
+	$: if (buffered.length > 0) findClosestBuffer();
+
+	let setup = () => {
+		console.log("Running setup");
+		paused = video.paused;
+		videoLength = video.duration;
+		if (
+			/Chrome/.test(navigator.userAgent) &&
+			/Google Inc/.test(navigator.vendor)
+		)
+			paused = false;
+	};
+
+	let toggleFullscreen = async () => {
+		// så dehär borde inte funka
+		// but it do
+		timeBeforeChange = currentTime;
+		fullscreenEnabled =
+			document.fullscreenEnabled && document.fullscreenElement;
+		if (fullscreenEnabled) await document.exitFullscreen();
+		else {
+			await videoPlayer.requestFullscreen();
+		}
+		fullscreenEnabled =
+			document.fullscreenEnabled && document.fullscreenElement;
+	};
+
+	let togglePlaying = () => (paused ? video.play() : video.pause());
+
+	let muteVolume = () => (muted = !muted);
+
+	let chooseQuality = quality => {
+		closestBuffer = 0;
+		pausedBeforeChange = paused;
+		timeBeforeChange = currentTime;
+		chosenQuality = quality;
+		qualitiesHidden = !qualitiesHidden;
+	};
+
+	let findClosestBuffer = ct => {
+		let array = [];
+		for (let i = 0; i < video.buffered.length; i++) {
+			array.push({
+				start: video.buffered.start(i),
+				end: video.buffered.end(i)
+			});
+		}
+		closestBuffer = array.indexOf(
+			array.reduce((prev, curr) => {
+				return Math.abs(curr.start - video.currentTime) <
+					Math.abs(prev.start - video.currentTime)
+					? curr
+					: prev;
+			})
+		);
+	};
+
+	let hoveringControls = () => {
+		hovering = true;
+		if (controlHoverTimer) clearTimeout(controlHoverTimer);
+		if (qualitiesHidden)
+			controlHoverTimer = setTimeout(
+				() => (hovering = false),
+				3000
+			);
+	};
+
+	onMount(async () => {
+		if (!video.duration) {
+			video.addEventListener("loadedmetadata", setup, {
+				once: true
+			});
+		} else setup();
+	});
+</script>
