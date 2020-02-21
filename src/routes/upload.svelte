@@ -50,7 +50,7 @@
 		imgtext="Welcome back"
         icon="/uploadicon.svg"
 		videotitle={title}
-		vissible={uploading}
+		visible={uploading}
 		videoID={videoID}
 		message="Details"
 	/>
