@@ -18,6 +18,7 @@
 		width: 5em;
 		margin: 1em;
 		background-image: var(--icon);
+		background-color: rgba(0, 0, 0, 0);
 		background-size: cover;
 		background-position: center;
 		background-repeat: no-repeat;
@@ -25,17 +26,17 @@
 	}
 
 	.banner__image:hover {
-		filter: brightness(50%);
+		background-color: rgba(0, 0, 0, 0.5);
+		background-blend-mode: multiply;
 	}
 
 	.banner__image p {
-		font-size: 0.8em;
+		font-size: 0.75em;
 		color: rgba(255, 255, 255, 0);
 		transition: all 0.1s ease-in-out;
 	}
 
 	.banner__image:hover p {
-		filter: brightness(250%);
 		color: rgba(255, 255, 255, 1);
 	}
 
