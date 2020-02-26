@@ -2,6 +2,7 @@
 	.banner {
 		width: 100vw;
 		height: 20vh;
+		padding: 0 2%;
 		background-color: var(--color);
 		display: flex;
 		align-items: center;
@@ -9,11 +10,33 @@
 	}
 
 	.banner__image {
+		display: flex;
+		justify-content: center;
+		align-items: center;
 		border-radius: 100%;
-		height: 8vh;
-		width: 8vh;
+		height: 5em;
+		width: 5em;
 		margin: 1em;
-		object-fit: cover;
+		background-image: var(--icon);
+		background-size: cover;
+		background-position: center;
+		background-repeat: no-repeat;
+		transition: all 0.1s ease-in-out;
+	}
+
+	.banner__image:hover {
+		filter: brightness(50%);
+	}
+
+	.banner__image p {
+		font-size: 0.8em;
+		color: rgba(255, 255, 255, 0);
+		transition: all 0.1s ease-in-out;
+	}
+
+	.banner__image:hover p {
+		filter: brightness(250%);
+		color: rgba(255, 255, 255, 1);
 	}
 
 	.banner__textbox {
@@ -40,8 +63,10 @@
 	}
 </script>
 
-<div style="--color: {color};" class="banner">
-	<img class="banner__image" src="{img}" alt="Profile image" />
+<div style="--color: {color}; --icon: url({img});" class="banner">
+	<div class="banner__image">
+		<p>Upload image</p>
+	</div>
 	<span class="banner__textbox">
 		<h1 class="banner__header">{username}</h1>
 		<p class="p--light">{subscribers} {text}</p>
