@@ -4,15 +4,13 @@ import compression from "compression";
 import * as sapper from "@sapper/server";
 import bodyParser from "body-parser";
 
-const { NODE_ENV, TYPE, PUBLIC_URL, LOCAL_URL } = process.env;
+import backend from "./api/";
+import frontendAuth from './api/middleware/frontendAuth'
+
+const { NODE_ENV } = process.env;
 const dev = NODE_ENV === "development";
 
-process.env.BASE_URL = TYPE === "public" ? PUBLIC_URL : LOCAL_URL
-
-console.log(LOCAL_URL, PUBLIC_URL, process.env.BASE_URL)
-
 const app = Express();
-import backend from "./api/index.js";
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -21,6 +19,7 @@ app.use("/test", Express.static("test"));
 
 app.use(
 	compression({ threshold: 0 }),
+	frontendAuth,
 	sirv("./static", { dev }),
 	sapper.middleware()
 );

@@ -7,10 +7,10 @@
 	}
 
 	:root {
-		--video-height: 70vh;
-		--video-width: calc(var(--video-height) * 16 / 9);
+		--video-width: 100vmin;
+		--video-height: calc(var(--video-width) * 9 / 16);
 
-		--bar-height: calc(var(--video-height) * 0.1);
+		--bar-height: 3em;
 	}
 
 	#videoPlayer {
@@ -24,7 +24,7 @@
 	video {
 		height: 100%;
 		width: 100%;
-
+		background-color: black;
 		position: absolute;
 		top: 0;
 		left: 0;
@@ -52,8 +52,8 @@
 			display: none;
 		}
 		#spin {
-			width: 20vh;
-			height: 20vh;
+			width: calc(var(--bar-height) * 2);
+			height: calc(var(--bar-height) * 2);
 			background-image: url("/loading.svg");
 			background-size: cover;
 			animation: spin 2s infinite;
@@ -171,29 +171,34 @@
 				}
 
 				#play {
+					display: none;
 					background-image: url("/play_arrow.svg");
 				}
 				#volume {
 					position: relative;
 					transition: all 0.45s ease-in-out;
 					overflow: hidden;
+					white-space: nowrap;
 
 					#icon {
-						position: absolute;
-						top: 0;
-						left: 0;
+						// position: absolute;
+						// top: 0;
+						// left: 0;
 						width: var(--buttons-height);
 						height: 100%;
-						display: block;
+						display: inline-block;
+						vertical-align: middle;
 						overflow: hidden;
 					}
 
 					#innerBar {
-						position: absolute;
-						top: 42.5%;
-						left: var(--buttons-height);
+						// position: absolute;
+						// top: 42.5%;
+						// left: var(--buttons-height);
 						width: calc(2 * var(--buttons-height));
 						align-self: center;
+						display: inline-block;
+						vertical-align: middle;
 						height: 15%;
 						border-radius: var(--buttons-height);
 						outline: none;
@@ -217,6 +222,13 @@
 						width: calc(3 * var(--buttons-height));
 					}
 				}
+
+				#duration {
+					width: unset;
+					text-align: center;
+					padding: 0 1vw;
+					line-height: var(--buttons-height);
+				}
 				#fullscreen {
 					background-image: url("/fullscreen.svg");
 				}
@@ -236,11 +248,10 @@
 						display: flex;
 						justify-content: center;
 						align-items: center;
-						flex-direction: column;
-						width: 100%;
+						flex-direction: row;
 						position: absolute;
 						bottom: 150%;
-						left: 0;
+						right: 0;
 						border-radius: 0.25em;
 						background-color: rgba(0, 0, 0, 0.8);
 						.quality {
@@ -249,12 +260,13 @@
 							display: flex;
 							justify-content: center;
 							align-items: center;
-							padding: 0.5vh 0;
+							padding: 0.5vh 1vw;
+
 							&:first-child {
-								border-radius: 0.25em 0.25em 0 0;
+								border-radius: 0.25em 0 0 0.25em;
 							}
 							&:last-child {
-								border-radius: 0 0 0.25em 0.25em;
+								border-radius: 0 0.25em 0.25em 0;
 							}
 							&.chosen {
 								background-color: #ffa000f0;
@@ -274,6 +286,37 @@
 
 						&.hidden {
 							display: none;
+						}
+					}
+				}
+			}
+		}
+	}
+
+	@media only screen and (orientation: landscape) {
+		:root {
+			--bar-height: 4em;
+		}
+
+		#controls {
+			#buttons > div {
+				#play {
+					display: block;
+				}
+				#qualityChooser {
+					#qualities {
+						flex-direction: column;
+						right: 0;
+						left: unset;
+						width: unset;
+						.quality {
+							width: 100%;
+							&:first-child {
+								border-radius: 0.25em 0.25em 0 0;
+							}
+							&:last-child {
+								border-radius: 0 0 0.25em 0.25em;
+							}
 						}
 					}
 				}
@@ -317,6 +360,7 @@
 	$: if (video) video.muted = muted;
 
 	$: if (video) video.volume = volumeValue / 100;
+
 	$: if (buffered.length > 0 && buffered.length > closestBuffer) {
 		bufferWidth = (video.buffered.end(closestBuffer) / videoLength) * 100;
 	}
@@ -326,6 +370,11 @@
 	let setup = () => {
 		paused = video.paused;
 		videoLength = video.duration;
+		if (
+			/Chrome/.test(navigator.userAgent) &&
+			/Google Inc/.test(navigator.vendor)
+		)
+			paused = false;
 	};
 
 	let toggleFullscreen = async () => {
@@ -342,7 +391,9 @@
 			document.fullscreenEnabled && document.fullscreenElement;
 	};
 
-	let togglePlaying = () => (paused ? video.play() : video.pause());
+	let togglePlaying = () => {
+		paused ? video.play() : video.pause();
+	};
 
 	let muteVolume = () => (muted = !muted);
 
@@ -390,17 +441,25 @@
 
 <div id="videoPlayer" bind:this="{player}">
 	<div id="controls" on:mousemove="{hoveringControls}" class:hovering>
+
 		<div id="bar">
 			<input
 				id="progress"
 				type="range"
 				max="{videoLength}"
 				bind:value="{currentTime}"
-				on:change="{() => (buffered.length > 0 ? findClosestBuffer(currentTime) : undefined)}"
-				on:input="{() => (buffered.length > 0 ? findClosestBuffer(currentTime) : undefined)}"
+				on:change="{e => {
+					paused = false;
+					buffered.length > 0 ? findClosestBuffer(currentTime) : undefined;
+				}}"
+				on:input="{e => {
+					paused = true;
+					buffered.length > 0 ? findClosestBuffer(currentTime) : undefined;
+				}}"
 				on:click="{() => (buffered.length > 0 ? findClosestBuffer(currentTime) : undefined)}"
 				style="background: linear-gradient(90deg, #ffa000f0 {(currentTime / videoLength) * 100}%,
-				rgba(255, 255, 255, 0.1) {(currentTime / videoLength) * 100}%)" />
+				rgba(255, 255, 255, 0.1) {(currentTime / videoLength) * 100}%)"
+				step="{(1 / (videoLength * 10000)).toFixed(5)}" />
 			<div id="buffered" style="width: {bufferWidth}%"></div>
 		</div>
 
@@ -426,8 +485,15 @@
 						}}"
 						id="innerBar"
 						style="background: linear-gradient(90deg,
-						#loadingffa000f0 {volumeValue}%, rgba(255, 255,
-						255, 0.1) {volumeValue}%)" />
+						#ffa000f0 {volumeValue}%, rgba(255, 255, 255, 0.1)
+						{volumeValue}%)" />
+				</div>
+				<div id="duration">
+					{new Date(currentTime * 1000)
+						.toISOString()
+						.substr(14, 5)} / {new Date(videoLength * 1000)
+						.toISOString()
+						.substr(14, 5)}
 				</div>
 			</div>
 			<div id="right">
@@ -435,7 +501,11 @@
 					<div
 						id="icon"
 						class="hasBackground"
-						on:click="{() => (qualitiesHidden = !qualitiesHidden)}"></div>
+						on:click="{() => {
+							qualitiesHidden = !qualitiesHidden;
+							if (qualitiesHidden) controlHoverTimer = setTimeout(() => (hovering = false), 3000);
+							else clearTimeout(controlHoverTimer);
+						}}"></div>
 					<div id="qualities" class:hidden="{qualitiesHidden}">
 						{#each videoJSON.available_qualities as quality}
 							<p
@@ -468,14 +538,17 @@
 		bind:currentTime
 		preload="metadata"
 		on:click="{togglePlaying}"
-		on:playing="{() => (loading = false)}"
-		on:waiting="{() => (loading = true)}"
+		on:playing="{() => {
+			loading = false;
+		}}"
+		on:waiting="{() => {
+			loading = true;
+		}}"
 		on:emptied="{() => {
 			if (video.buffered.length > 0) findClosestBuffer();
 			timeBeforeChange ? (currentTime = timeBeforeChange) : null;
 		}}"
 		on:mousemove="{hoveringControls}"
 		src="{src}/{chosenQuality}"
-		type="video/mp4"
-		autoplay></video>
+		type="video/mp4"></video>
 </div>

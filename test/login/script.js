@@ -4,11 +4,8 @@ const password = document.querySelector("input[type=password]");
 const status = document.querySelector("div#output #status");
 const outputText = document.querySelector("div#output #text");
 
-// Om man forwardar the runningport ens egna dator funkar dethär
-const BASE_URL = "http://localhost:3000/api";
-
 let login = () => {
-	fetch(`${BASE_URL}/users/login`, {
+	fetch(`/users/login`, {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json"
@@ -37,7 +34,7 @@ let login = () => {
 };
 
 let register = () => {
-	fetch(`${BASE_URL}/users/`, {
+	fetch(`/users/`, {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json"
@@ -72,7 +69,7 @@ let me = () => {
 		.filter(cookie => cookie.startsWith("token"))[0]
 		.split("=")[1];
 
-	fetch(`${BASE_URL}/users/me`, {
+	fetch(`/users/me`, {
 		headers: {
 			Authorization: "Bearer " + token
 		}
@@ -99,7 +96,7 @@ let logout = () => {
 		.split(";")
 		.filter(cookie => cookie.startsWith("token"))[0]
 		.split("=")[1];
-	fetch(`${BASE_URL}/users/logout`, {
+	fetch(`/users/logout`, {
 		headers: {
 			Authorization: "Bearer " + token
 		}
@@ -126,7 +123,7 @@ let logoutAll = () => {
 		.split(";")
 		.filter(cookie => cookie.startsWith("token"))[0]
 		.split("=")[1];
-	fetch(`${BASE_URL}/users/logout/all`, {
+	fetch(`/users/logout/all`, {
 		headers: {
 			Authorization: "Bearer " + token
 		}

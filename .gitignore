@@ -69,7 +69,7 @@ typings/
 
 # dotenv environment variables file
 # Uncomment when entering production
-.env
+# .env
 .env.test
 
 # parcel-bundler cache (https://parceljs.org/)
@@ -117,4 +117,5 @@ __sapper__
 videos/*
 !.gitkeep
 
-*.mp4
+# Test Data
+!videos/5e4702edcea6a6216e41dfdb

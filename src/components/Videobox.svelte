@@ -9,6 +9,15 @@
 		align-self: center;
 		width: 100%;
 	}
+	h2 {
+		color: var(--fg);
+		grid-area: title;
+		justify-self: start;
+		font-size: 1.7em;
+		font-weight: bold;
+		align-self: center;
+		width: 100%;
+	}
 	div {
 		display: flex;
 		justify-content: flex-start;
@@ -50,15 +59,18 @@
 	export let accent = "#ffa400";
 	export let title = "Default";
 	import Thumbnail from "./Thumbnail.svelte";
+	// console.log(videos);
 </script>
 
 <div id="box" style="--bg: {bg}; --fg: {fg}; --accent: {accent};">
 	<h1>{title}</h1>
-	{#each videos as video, i}
-		<Thumbnail
-			style="grid-area:{i};"
-			id="{video._id}"
-			title="{video.title}"
-		/>
+	{#each videos as video}
+			<Thumbnail
+				id="{video._id}"
+				title="{video.title}"
+			/>
+		
+	{:else}
+		<h2>loading......</h2>
 	{/each}
 </div>

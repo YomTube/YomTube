@@ -18,14 +18,12 @@
 		width: 45%;
 		border-radius: 0.4em 0 0 0.4em;
 	}
-
 	.flexwrapper {
 		display: flex;
 		align-items: center;
 		justify-content: center;
 		width: 55%;
 	}
-
 	.form {
 		padding: 3em;
 		width: 100%;
@@ -33,7 +31,6 @@
 		display: flex;
 		flex-direction: column;
 	}
-
 	.input {
 		width: 100%;
 		border-radius: 0.5em;
@@ -44,21 +41,17 @@
 		margin-bottom: 1em;
 		margin-top: 1em;
 	}
-
 	.title {
 		color: var(--accent1);
 		margin-bottom: 0em;
 	}
-
 	.submit {
 		width: 75%;
 		margin-left: 12.5%;
 	}
-
 	.password {
 		margin-bottom: 10px;
 	}
-
 	.submit input {
 		background-color: var(--accent1);
 		color: var(--bg);
@@ -72,12 +65,10 @@
 		appearance: none;
 		-webkit-appearance: none;
 	}
-
 	.submit input:hover {
 		box-shadow: 0 14px 28px rgba(0, 159, 253, 0.25),
 			0 10px 10px rgba(0, 159, 253, 0.22);
 	}
-
 	.register {
 		text-align: center;
 	}
@@ -86,9 +77,9 @@
 		text-decoration: none;
 		color: var(--accent2);
 	}
-
 	@media only screen and (max-width: 768px) {
 		.registerbox {
+			transform: translateX(100%);
 			border-radius: 0;
 			max-height: initial;
 			display: flex;
@@ -103,7 +94,6 @@
 			height: 100%;
 			overflow: hidden;
 		}
-
 		.form {
 			width: 100%;
 			height: 100%;
@@ -113,22 +103,22 @@
 
 <script>
 	import { createEventDispatcher } from "svelte";
-
 	const dispatch = createEventDispatcher();
 	export let fg;
 	export let bg;
 	export let accent1;
 	export let accent2;
 	export let img;
-	let email;
-	let username;
-	let password;
-	let spinning;
+	let email = "";
+	let username = "";
+	let password = "";
 	let box;
-	const register = () => {
-		fetch(`${process.env.BASE_URL}/api/users/login`, {
+
+	export const register = async () => {
+		let result = await fetch("/api/users/", {
 			body: JSON.stringify({
-				identifier: identifier,
+				email: email,
+				username: username,
 				password: password
 			}),
 			method: "POST",
@@ -136,14 +126,20 @@
 				"Content-Type": "application/json"
 			}
 		});
+		let json = await result.json();
+		if (result.status != 201) {
+			alert(JSON.stringify(json));
+		} else {
+			document.cookie = `token=${json.token}`;
+			window.location.href = "/";
+		}
 	};
 </script>
 
 <div
 	bind:this="{box}"
 	class="registerbox"
-	style="--fg: {fg}; --bg: {bg}; --accent1: {accent1}; --accent2: {accent2};"
->
+	style="--fg: {fg}; --bg: {bg}; --accent1: {accent1}; --accent2: {accent2};">
 	<div style="background: url({img}) var(--accent2);" class="img"></div>
 	<div class="flexwrapper">
 		<form class="form" action="">
@@ -158,8 +154,7 @@
 					class="input"
 					type="text"
 					name="Email"
-					placeholder="Email"
-				/>
+					placeholder="Email" />
 			</div>
 			<div class="username">
 				Username
@@ -169,8 +164,7 @@
 					class="input"
 					type="text"
 					name="username"
-					placeholder="Username"
-				/>
+					placeholder="Username" />
 			</div>
 			<div>
 				Password
@@ -180,16 +174,14 @@
 					class="password input"
 					type="password"
 					name="password"
-					placeholder="Password"
-				/>
+					placeholder="Password" />
 			</div>
 			<div class="submit" style="grid-area: submit;">
 				<input
 					on:click="{() => register()}"
 					class="input"
 					type="button"
-					value="Register"
-				/>
+					value="Register" />
 				<p class="register">
 					Already have an account?
 					<coloure on:click="{() => dispatch('flip')}">
