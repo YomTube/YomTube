@@ -6,7 +6,13 @@
 		align-items: center;
 		justify-content: center;
 	}
-	
+
+	@media only screen and (max-width: 768px) {
+		div {
+			background-color: #ffffff;
+			justify-content: flex-start;
+		}
+	}
 </style>
 
 <script>
@@ -25,7 +31,6 @@
 	function uploaded(e) {
 		videoID = e.detail.videoID;
 	}
-	
 </script>
 
 <svelte:head>
@@ -34,24 +39,23 @@
 
 <div>
 	<Uploadbox
-	on:filedrop="{drop}"
-	on:fileuploaded="{uploaded}"
+		on:filedrop="{drop}"
+		on:fileuploaded="{uploaded}"
 		bg="#ffffff"
 		accent1="#ffa400"
 		accent2="#009ffd"
 		imgtext="Welcome back"
-        icon="/uploadicon.svg"
-	/>
+		icon="/uploadvideo.svg"
+		uploadtype="video" />
 
 	<Metadataform
 		bg="#ffffff"
 		accent1="#ffa400"
 		accent2="#009ffd"
 		imgtext="Welcome back"
-        icon="/uploadicon.svg"
-		videotitle={title}
-		visible={uploading}
-		videoID={videoID}
-		message="Details"
-	/>
+		icon="/uploadimage.svg"
+		videotitle="{title}"
+		visible="{uploading}"
+		{videoID}
+		message="Details" />
 </div>

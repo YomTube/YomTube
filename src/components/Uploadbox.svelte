@@ -9,7 +9,7 @@
 		transition: all 1s;
 	}
 
-	.upload-form {
+	.upload_form {
 		width: 70vw;
 		height: 45vh;
 		padding: 100px;
@@ -43,12 +43,12 @@
 		height: 100px;
 		margin-left: 6%;
 		cursor: pointer;
-		transition: all 0.2s;
+		transition: opacity 0.2s;
 	}
 
 	.upload_icon:hover {
 		filter: opacity(1);
-		transition: all 0.2s;
+		transition: opacity 0.2s;
 	}
 
 	.upload_uploading,
@@ -62,12 +62,12 @@
 		display: none;
 	}
 
-	.upload-form.supports-drag-n-drop {
+	.upload_form.supports-drag-n-drop {
 		color: var(--accent1);
 		outline-offset: -10px;
 	}
 
-	.upload-form.supports-drag-n-drop .upload_dropUpload {
+	.upload_form.supports-drag-n-drop .upload_dropUpload {
 		display: flex;
 		flex-direction: column;
 	}
@@ -118,15 +118,14 @@
 		border-radius: 100px;
 	}
 
-	progress[value]::-webkit-progress-bar{
-		background-color: #EAF6FF;
+	progress[value]::-webkit-progress-bar {
+		background-color: #eaf6ff;
 	}
 
 	progress[value]::-webkit-progress-value {
-		background-color: #FFA400;
+		background-color: #ffa400;
 		border-radius: 100px;
 	}
-
 
 	@keyframes breathing {
 		0% {
@@ -145,6 +144,29 @@
 			background-color: rgba(101, 224, 255, 0.1);
 		}
 	}
+
+	@media only screen and (max-width: 768px) {
+		#container {
+			overflow: hidden;
+			width: 100vw;
+			border-radius: 0;
+		}
+
+		.upload_form {
+			width: 100vw;
+			height: calc(100vh - 4em);
+		}
+
+		.progress_container {
+			width: 100vw !important;
+		}
+
+		.progress_container > div {
+			width: 90%;
+			display: flex;
+			align-items: flex-start;
+		}
+	}
 </style>
 
 <script>
@@ -153,6 +175,7 @@
 	export let accent1;
 	export let accent2;
 	export let icon;
+	export let uploadtype;
 
 	import { createEventDispatcher } from "svelte";
 	const dispatch = createEventDispatcher();
@@ -187,10 +210,13 @@
 
 	function fileDrop(e) {
 		fileLeave();
+		console.log(e);
 
-		if (e.dataTransfer.files.length < 1) {
-			return;
-		}
+		try {
+			if (e.dataTransfer.files.length < 1) {
+				return;
+			}
+		} catch {}
 
 		let data = new FormData();
 		let xhr = new XMLHttpRequest();
@@ -214,8 +240,25 @@
 					.split("=")[1]
 		);
 
-		fileName = e.dataTransfer.files[0].name;
-		data.append("video", e.dataTransfer.files[0]);
+		// console.log(e.dataTransfer.files[0].name);
+
+		try {
+			if (e.dataTransfer.files[0].name) {
+				console.log("bingbong");
+				data.append("video", e.dataTransfer.files[0]);
+				fileName = e.dataTransfer.files[0].name;
+			}
+		} catch {}
+
+		try {
+			if (e.srcElement.files[0].name) {
+				console.log("clown");
+				data.append("video", e.srcElement.files[0]);
+				fileName = e.srcElement.files[0].name;
+			}
+		} catch {}
+
+		// data.append("video", e.dataTransfer.files[0]);
 		data.append("title", fileName);
 
 		// xhr.upload.addEventListener("load", uploaded);
@@ -253,7 +296,7 @@
 		videoID = JSON.parse(ue.response).video._id;
 		dispatch("fileuploaded", {
 			videoID: videoID
-		})
+		});
 	}
 </script>
 
@@ -274,24 +317,28 @@
 		on:dragend|preventDefault|stopPropagation="{fileLeave}"
 		on:drop|preventDefault|stopPropagation="{fileDrop}"
 		class:hidden="{uploading}"
-		class="upload-form"
+		on:click="{fileLabel.click()}"
+		class="upload_form"
 		method="POST"
 		action=""
 		enctype="multipart/form-data">
 
 		<div class="upload_dropUpload">
-			<input type="file" id="file" class="upload_file" />
+			<input
+				type="file"
+				id="file"
+				class="upload_file"
+				on:change="{fileDrop}" />
 
 			<div class="upload_icon_container">
 				<div
 					class="upload_icon"
-					class:file_hover_icon="{hasHover}"
-					on:click="{fileLabel.click()}"></div>
+					class:file_hover_icon="{hasHover}"></div>
 			</div>
 			<label for="file" class="upload_label" bind:this="{fileLabel}">
-				<h1>Upload video</h1>
+				<h1>Upload {uploadtype}</h1>
 				<b>Choose</b>
-				or drop a video here
+				or drop a {uploadtype} here
 			</label>
 
 			<button class="upload_button">Upload</button>
@@ -302,7 +349,9 @@
 	</form>
 
 	<div class="progress_container" class:hidden="{!uploading}">
-		<h1>Uploading</h1>
+		<div>
+			<h1>Uploading</h1>
+		</div>
 		<progress
 			class="progress"
 			value="0"

@@ -25,6 +25,7 @@
 
   .button:hover {
     color: var(--background);
+    cursor: pointer;
   }
 
   .button:before {
