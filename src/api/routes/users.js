@@ -52,6 +52,60 @@ router.post("/login", async (req, res) => {
 	}
 });
 
+// Get other user
+router.get('/:userID', async (req, res) => {
+	let { userID } = req.params;
+	try {
+		let user = await User.findById(userID, 'username id email profilePicture');
+		res.send(user)
+	} catch (err) {
+		res.status(404).send({ error: "User not found" })
+	}
+})
+
+// Subscribe to another user
+router.post('/:userID/subscribe', auth, async (req, res) => {
+	let { userID } = req.params;
+	try {
+		if (userID === req.user.id) throw new Error("Can't subscribe to yourself")
+		let user = await User.findById(userID);
+		if (user.subscriptions.filter(u => u.user.toString() == req.user.id).length !== 0) throw new Error("Already subscribed")
+		user.subscriptions = user.subscriptions.concat({ user: req.user });
+		await user.save();
+		res.status(200).send(`Subscribed to ${req.user.username}`)
+	} catch (err) {
+		res.status(400).send({ error: err.message })
+	}
+})
+
+router.delete('/:userID/subscribe', auth, async (req, res) => {
+	let { userID } = req.params;
+	try {
+		if (userID === req.user.id) throw new Error("Can't unsubscribe from yourself")
+		let user = await User.findById(userID);
+		let subscribed = false;
+		for (let u of user.subscriptions) {
+			if (u.user.toString() == req.user.id) {
+				subscribed = true;
+				break;
+			}
+		}
+		if (user.subscriptions.filter(u => u.user.toString() == req.user.id).length === 0) throw new Error("Not subscribed")
+
+		for (let i in user.subscriptions) {
+			let u = user.subscriptions[i];
+			if (u.user.toString() === req.user.id) {
+				user.subscriptions.slice(i, 1);
+				break;
+			}
+		}
+		await user.save();
+		res.status(200).send(`Unsubscribed from ${req.user.username}`)
+	} catch (err) {
+		res.status(400).send({ error: err.message })
+	}
+})
+
 // Get current user
 router.get("/me", auth, async (req, res) => {
 	let { user } = req
@@ -74,12 +128,6 @@ router.put('/me/picture', auth, upload.single('profilePicture'), async (req, res
 	} catch (err) {
 		res.status(400).send(err.message)
 	}
-})
-
-// Get other user
-router.get('/:userID', (req, res) => {
-	let user = req.params.userID;
-	res.send({ user })
 })
 
 // Logout of current session
@@ -105,5 +153,6 @@ router.get("/me/logout/all", auth, async (req, res) => {
 		res.status(500).send(error);
 	}
 });
+
 
 export default router;

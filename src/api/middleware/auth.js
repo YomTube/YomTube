@@ -13,6 +13,7 @@ const auth = async (req, res, next) => {
 		req.token = token;
 		next();
 	} catch (error) {
+		console.log(error.message)
 		res.status(401).send('Not authorized');
 	}
 }
