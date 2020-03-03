@@ -41,15 +41,27 @@
 		display: flex;
 		align-items: center;
 	}
+
+	@media only screen and (max-width: 768px) {
+		h1 {
+			font-size: 1.4em;
+		}
+
+		span {
+			margin: 0;
+		}
+	}
 </style>
 
 <script>
 	import Button from "./Button.svelte";
 	import Loginicon from "./Loginicon.svelte";
+	import Searchbox from "./Searchbox.svelte";
 	export let icon = "";
 	export let background = "#ffffff";
 	export let foreground = "hsl(216, 7%, 15%)";
 	export let accent = "#ffa400";
+	export let accent2 = "#009ffd";
 	export let headerText = "YOMTUBE";
 
 	export let buttons = [
@@ -71,12 +83,14 @@
 </script>
 
 <headerbar
-	style="--foreground:{foreground}; --background:{background}; --accent:{accent};">
+	style="--foreground:{foreground}; --background:{background}; --accent:{accent};
+	--accent2:{accent2};">
 	<nav>
 		<a href="/">
 			<!-- <img src="{icon}" alt="an icon" /> -->
 			<h1>{headerText}</h1>
 		</a>
+		<Searchbox />
 		<span>
 			{#each links as link}
 				<a href="{link.link}">{link.text}</a>

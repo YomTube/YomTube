@@ -27,7 +27,7 @@
 			.filter(c => c.startsWith("token"))[0]
 			.split("=")[1];
 
-		let resp = await fetch(process.env.BASE_URL + "/api/users/me", {
+		let resp = await fetch("/api/users/me", {
 			method: "GET",
 			headers: {
 				"Content-Type": "application/json",
@@ -44,7 +44,6 @@
 			videos.push(video);
 			videos = videos;
 		}
-
 	});
 	let string = toString(videos);
 </script>

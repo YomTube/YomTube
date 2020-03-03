@@ -1,11 +1,3 @@
-<script>
-  export let text = "button";
-  export let link = "#";
-  export let icon = "";
-  export let background = "black";
-  export let foreground = "#ff3e00";
-</script>
-
 <style>
   .button {
     position: relative;
@@ -28,30 +20,37 @@
     cursor: pointer;
   }
 
-  .button:before {
-    content: "";
-    position: absolute;
-    background: var(--foreground);
-    bottom: 0;
-    left: 0;
-    right: 0;
-    top: 100%;
-    z-index: -1;
-    transition: top 0.09s ease-in;
-  }
+	.button:hover {
+		color: var(--background);
+	}
 
-  .button:hover:before {
-    top: 0;
-  }
+	.button:before {
+		content: "";
+		position: absolute;
+		background: var(--foreground);
+		bottom: 0;
+		left: 0;
+		right: 0;
+		top: 100%;
+		z-index: -1;
+		transition: top 0.09s ease-in;
+	}
 
+	.button:hover:before {
+		top: 0;
+	}
 </style>
 
+<script>
+	export let text = "button";
+	export let link = "#";
+	export let background = "black";
+	export let foreground = "#ff3e00";
+</script>
+
 <button
-  onclick="window.location.href = '{link}';"
-  style="--foreground:{foreground}; --background:{background};"
-  class="button">
-  {#if { icon } != ''}
-    {@html icon}
-  {/if}
-  {text}
+	onclick="window.location.href = '{link}';"
+	style="--foreground:{foreground}; --background:{background};"
+	class="button">
+	{text}
 </button>

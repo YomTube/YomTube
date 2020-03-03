@@ -115,7 +115,7 @@
 	let box;
 
 	export const register = async () => {
-		let result = await fetch("/api/users/", {
+		let result = await fetch("/api/users/register", {
 			body: JSON.stringify({
 				email: email,
 				username: username,

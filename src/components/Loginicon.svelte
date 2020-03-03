@@ -13,10 +13,14 @@
 
 	a {
 		text-decoration: none;
+		display: block;
+		width: 100%;
+		height: 100%;
 	}
 
 	ul {
 		width: 250%;
+		z-index: 20;
 		perspective: 1000px;
 		position: absolute;
 		top: 105%;
