@@ -1,5 +1,5 @@
 <style>
-	div {
+	.maincontainer {
 		display: flex;
 		flex-direction: column;
 		min-height: calc(100vh - 4em);
@@ -7,8 +7,16 @@
 		justify-content: center;
 	}
 
+	.uploadcontainer{
+		width: 70vw;
+		height: 70vh;
+		display: flex;
+		/* align-items: center; */
+		justify-content: center;
+	}
+
 	@media only screen and (max-width: 768px) {
-		div {
+		.maincontainer {
 			background-color: #ffffff;
 			justify-content: flex-start;
 		}
@@ -37,7 +45,8 @@
 	<title>Upload</title>
 </svelte:head>
 
-<div>
+<div class="maincontainer">
+	<div class="uploadcontainer">
 	<Uploadbox
 		on:filedrop="{drop}"
 		on:fileuploaded="{uploaded}"
@@ -46,7 +55,8 @@
 		accent2="#009ffd"
 		imgtext="Welcome back"
 		icon="/uploadvideo.svg"
-		uploadtype="video" />
+		uploadtype="video"/>
+	</div>
 
 	<Metadataform
 		bg="#ffffff"

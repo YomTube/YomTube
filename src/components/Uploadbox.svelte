@@ -7,13 +7,17 @@
 		border-radius: 0.4em;
 		background-color: var(--bg);
 		transition: all 1s;
+		width: 100%;
+		height: 100%;
 	}
 
 	.upload_form {
-		width: 70vw;
-		height: 45vh;
+		/* width: 70vw; */
+		/* height: 45vh; */
+		width: 100%;
+		height: 100%;
 		padding: 100px;
-		min-height: 30em;
+		/* min-height: 30em; */
 		display: flex;
 		align-items: center;
 		justify-content: center;
@@ -108,23 +112,38 @@
 		width: 70vw !important;
 	}
 
-	.progress {
+	progress {
 		width: 90%;
 		appearance: none;
 		-webkit-appearance: none;
 		-moz-appearance: none;
 		-ms-progress-appearance: none;
-		background-color: blueviolet;
+		background-color: #eaf6ff;
+		border-radius: 100px;
+		box-shadow: none;
+	}
+
+	progress::-webkit-progress-bar {
+		background-color: #eaf6ff;
 		border-radius: 100px;
 	}
 
-	progress[value]::-webkit-progress-bar {
-		background-color: #eaf6ff;
-	}
-
-	progress[value]::-webkit-progress-value {
+	progress::-webkit-progress-value {
 		background-color: #ffa400;
 		border-radius: 100px;
+	}
+
+	progress::-moz-progress-bar {
+		background-color: #ffa400;
+		border-radius: 100px;
+		box-shadow: none;
+	}
+
+	progress::-moz
+
+	.uploaded{
+		background-color: #5cb85c;
+		color: #5cb85c;
 	}
 
 	@keyframes breathing {
@@ -289,10 +308,13 @@
 		}
 	}
 
+	let uploadText;
+
 	function uploaded(ue) {
-		console.log("uploaded");
-		console.log(ue);
-		console.log("videoID: " + JSON.parse(ue.response).video._id);
+		// console.log("uploaded");
+		// console.log(ue);
+		// console.log("videoID: " + JSON.parse(ue.response).video._id);
+		uploadText.innerText = "Uploaded";
 		videoID = JSON.parse(ue.response).video._id;
 		dispatch("fileuploaded", {
 			videoID: videoID
@@ -350,7 +372,7 @@
 
 	<div class="progress_container" class:hidden="{!uploading}">
 		<div>
-			<h1>Uploading</h1>
+			<h1 bind:this="{uploadText}">Uploading</h1>
 		</div>
 		<progress
 			class="progress"

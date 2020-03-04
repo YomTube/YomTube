@@ -86,16 +86,16 @@
 		z-index: -1;
 	}
 
-	.thumbnailProgress {
+	/* .thumbnailProgress {
 		background-color: aqua;
 		width: 100%;
-		height: 100%;
+		height: 100%; */
 		/* z-index: -1000; */
-		border-radius: 0.2em;
+		/* border-radius: 0.2em;
 		top: 0;
 		left: 0;
 		position: relative;
-	}
+	} */
 
 	.thumbSelected {
 		/* outline: 0.2em solid lime; */
