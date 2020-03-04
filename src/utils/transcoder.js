@@ -1,7 +1,7 @@
 import ffmpeg from "fluent-ffmpeg";
 import { promises as fs } from "fs";
 
-const SAVE_PATH = process.cwd() + "videos";
+const SAVE_PATH = process.cwd() + "/videos";
 
 const supportedQualities = [
 	{
@@ -104,13 +104,14 @@ let transcodeToRes = (path, shortSide, bitrate, videoID, portrait) => {
 
 let generateThumbnail = (path, videoID) => {
 	return new Promise((res, rej) => {
+		console.log("Generating thumbnails...")
 		let folder = SAVE_PATH + "/" + videoID;
 		ffmpeg()
 			.input(path)
 			.screenshots({
-				timestamps: ["50%"],
-				filename: "thumbnail.png",
-				folder: folder,
+				count: 3,
+				filename: 'thumbnail-%i.png',
+				folder,
 				size: "1600x900"
 			})
 			.on("error", err => rej(err))
@@ -131,7 +132,8 @@ let processVideo = async (videoElement) => {
 		transcodingQueue.push(videoElement);
 		return processVideo(transcodingQueue.shift())
 	}
-	console.log("Started transcoding for %s", video.title)
+	console.group("Transcoding for", video.title)
+	console.time("Transcoder Timer")
 
 	let portrait = obj.width <= obj.height;
 	let minest = Math.min(obj.width, obj.height);
@@ -140,7 +142,6 @@ let processVideo = async (videoElement) => {
 	for await (let quality of localSupportedQualities) {
 		try {
 			const { res, bitrate } = quality;
-			let startTime = Date.now();
 			await transcodeToRes(
 				path,
 				res,
@@ -148,19 +149,19 @@ let processVideo = async (videoElement) => {
 				videoID,
 				portrait
 			);
-			console.log("Finished transcoding %i p in %d ms", res, Date.now() - startTime)
+			console.timeLog("Transcoder Timer", `\t${video.title}`, `\t${res}p`)
 			video.available_qualities.push(res)
 		} catch (err) {
 			console.error(err);
 		}
 	}
-	console.log("Finished all transcodes for", video.title)
+	console.groupEnd("Transcoding for ", video.title)
+	console.timeEnd("Transcoder Timer")
 	video.waitingOnTranscode = false;
 	await video.save();
 	await fs.unlink(path);
 	if (transcodingQueue.length > 0) return processVideo(transcodingQueue.shift())
 	isTranscoding = false;
-	console.log("Queue is empty.")
 };
 
 let addToTranscoderQueue = async (path, video) => {
