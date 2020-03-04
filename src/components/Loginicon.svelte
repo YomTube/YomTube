@@ -3,7 +3,6 @@
 		background-image: var(--img);
 		width: 3em;
 		height: 3em;
-		margin-right: 2em;
 		background-size: cover;
 		background-position: center;
 		border-radius: 100%;
@@ -82,6 +81,21 @@
 	}
 </style>
 
+<div
+	bind:this="{icon}"
+	on:click="{() => menu()}"
+	style="--img: {img}; --accent: {accent};"
+	id="img">
+	<ul>
+		<li>
+			<a href="/me">My Profile</a>
+		</li>
+		<li>
+			<a on:click="{logout}" href="#">Logout</a>
+		</li>
+	</ul>
+</div>
+
 <script>
 	export let img = "url(/stock.jpg)";
 	export let accent = "#ffa400";
@@ -102,18 +116,3 @@
 		document.location.href = "/";
 	};
 </script>
-
-<div
-	bind:this="{icon}"
-	on:click="{() => menu()}"
-	style="--img: {img}; --accent: {accent};"
-	id="img">
-	<ul>
-		<li>
-			<a href="/me">My Profile</a>
-		</li>
-		<li>
-			<a on:click="{logout}" href="#">Logout</a>
-		</li>
-	</ul>
-</div>

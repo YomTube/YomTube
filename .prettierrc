@@ -1,7 +1,7 @@
 {
 	"tabWidth": 6,
 	"useTabs": true,
-	"svelteSortOrder": "styles-markup-scripts",
+	"svelteSortOrder": "styles-scripts-markup",
 	"svelteStrictMode": true,
 	"svelteBracketNewLine": false,
 	"svelteAllowShorthand": false
