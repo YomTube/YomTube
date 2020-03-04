@@ -7,13 +7,17 @@
 		border-radius: 0.4em;
 		background-color: var(--bg);
 		transition: all 1s;
+		width: 100%;
+		height: 100%;
 	}
 
 	.upload_form {
-		width: 70vw;
-		height: 45vh;
+		/* width: 70vw; */
+		/* height: 45vh; */
+		width: 100%;
+		height: 100%;
 		padding: 100px;
-		min-height: 30em;
+		/* min-height: 30em; */
 		display: flex;
 		align-items: center;
 		justify-content: center;
@@ -105,26 +109,41 @@
 		flex-direction: column;
 		color: var(--accent1);
 		min-height: 8em;
-		width: 70vw !important;
+		width: 100% !important;
 	}
 
-	.progress {
+	progress {
 		width: 90%;
 		appearance: none;
 		-webkit-appearance: none;
 		-moz-appearance: none;
 		-ms-progress-appearance: none;
-		background-color: blueviolet;
+		background-color: #eaf6ff;
+		border-radius: 100px;
+		box-shadow: none;
+	}
+
+	progress::-webkit-progress-bar {
+		background-color: #eaf6ff;
 		border-radius: 100px;
 	}
 
-	progress[value]::-webkit-progress-bar {
-		background-color: #eaf6ff;
-	}
-
-	progress[value]::-webkit-progress-value {
+	progress::-webkit-progress-value {
 		background-color: #ffa400;
 		border-radius: 100px;
+	}
+
+	progress::-moz-progress-bar {
+		background-color: #ffa400;
+		border-radius: 100px;
+		box-shadow: none;
+	}
+
+	progress::-moz
+
+	.uploaded{
+		background-color: #5cb85c;
+		color: #5cb85c;
 	}
 
 	@keyframes breathing {
@@ -175,7 +194,9 @@
 	export let accent1;
 	export let accent2;
 	export let icon;
-	export let uploadtype;
+	export let uploadType;
+	export let requestType;
+	export let requestURL;
 
 	import { createEventDispatcher } from "svelte";
 	const dispatch = createEventDispatcher();
@@ -230,7 +251,7 @@
 		});
 
 		console.log(document.cookie);
-		xhr.open("POST", "/api/videos/");
+		xhr.open(requestType, requestURL);
 		xhr.setRequestHeader(
 			"Authorization",
 			"Bearer " +
@@ -245,7 +266,7 @@
 		try {
 			if (e.dataTransfer.files[0].name) {
 				console.log("bingbong");
-				data.append("video", e.dataTransfer.files[0]);
+				data.append("file", e.dataTransfer.files[0]);
 				fileName = e.dataTransfer.files[0].name;
 			}
 		} catch {}
@@ -289,10 +310,13 @@
 		}
 	}
 
+	let uploadText;
+
 	function uploaded(ue) {
-		console.log("uploaded");
-		console.log(ue);
-		console.log("videoID: " + JSON.parse(ue.response).video._id);
+		// console.log("uploaded");
+		// console.log(ue);
+		// console.log("videoID: " + JSON.parse(ue.response).video._id);
+		uploadText.innerText = "Uploaded";
 		videoID = JSON.parse(ue.response).video._id;
 		dispatch("fileuploaded", {
 			videoID: videoID
@@ -336,9 +360,9 @@
 					class:file_hover_icon="{hasHover}"></div>
 			</div>
 			<label for="file" class="upload_label" bind:this="{fileLabel}">
-				<h1>Upload {uploadtype}</h1>
+				<h1>Upload {uploadType}</h1>
 				<b>Choose</b>
-				or drop a {uploadtype} here
+				or drop a {uploadType} here
 			</label>
 
 			<button class="upload_button">Upload</button>
@@ -350,7 +374,7 @@
 
 	<div class="progress_container" class:hidden="{!uploading}">
 		<div>
-			<h1>Uploading</h1>
+			<h1 bind:this="{uploadText}">Uploading</h1>
 		</div>
 		<progress
 			class="progress"
