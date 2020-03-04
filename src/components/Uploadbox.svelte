@@ -197,6 +197,8 @@
 	export let requestURL;
 
 	import { createEventDispatcher } from "svelte";
+	import { slide } from "svelte/transition";
+
 	const dispatch = createEventDispatcher();
 
 	let isAdvancedUpload = true;
@@ -370,7 +372,7 @@
 		<div class="upload_error" id="upload_error">error</div>
 	</form>
 
-	<div class="progress_container" class:hidden="{!uploading}">
+	<div class="progress_container" class:hidden="{!uploading}" transition:slide>
 		<div>
 			<h1 bind:this="{uploadText}">Uploading</h1>
 		</div>
