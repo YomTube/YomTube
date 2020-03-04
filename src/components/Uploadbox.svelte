@@ -109,7 +109,7 @@
 		flex-direction: column;
 		color: var(--accent1);
 		min-height: 8em;
-		width: 70vw !important;
+		width: 100% !important;
 	}
 
 	progress {

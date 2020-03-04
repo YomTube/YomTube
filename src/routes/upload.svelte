@@ -7,12 +7,17 @@
 		justify-content: center;
 	}
 
-	.uploadcontainer{
+	.uploadcontainer {
 		width: 70vw;
 		height: 70vh;
 		display: flex;
 		/* align-items: center; */
 		justify-content: center;
+	}
+
+	.uploading {
+		height: unset;
+		min-height: 8em;
 	}
 
 	@media only screen and (max-width: 768px) {
@@ -22,6 +27,36 @@
 		}
 	}
 </style>
+
+<svelte:head>
+	<title>Upload</title>
+</svelte:head>
+
+<div class="maincontainer">
+	<div class="uploadcontainer" class:uploading>
+		<Uploadbox
+			on:filedrop="{drop}"
+			on:fileuploaded="{uploaded}"
+			bg="#ffffff"
+			accent1="#ffa400"
+			accent2="#009ffd"
+			icon="/uploadvideo.svg"
+			uploadType="video"
+			requestType="POST"
+			requestURL="/api/videos/" />
+	</div>
+
+	<Metadataform
+		bg="#ffffff"
+		accent1="#ffa400"
+		accent2="#009ffd"
+		imgtext="Welcome back"
+		icon="/uploadimage.svg"
+		videotitle="{title}"
+		visible="{uploading}"
+		{videoID}
+		message="Details" />
+</div>
 
 <script>
 	import Uploadbox from "../components/Uploadbox.svelte";
@@ -38,35 +73,6 @@
 
 	function uploaded(e) {
 		videoID = e.detail.videoID;
+		console.log(videoID);
 	}
 </script>
-
-<svelte:head>
-	<title>Upload</title>
-</svelte:head>
-
-<div class="maincontainer">
-	<div class="uploadcontainer">
-	<Uploadbox
-		on:filedrop="{drop}"
-		on:fileuploaded="{uploaded}"
-		bg="#ffffff"
-		accent1="#ffa400"
-		accent2="#009ffd"
-		icon="/uploadvideo.svg"
-		uploadType="video"
-		requestType="POST"
-		requestURL="/api/videos/"/>
-	</div>
-
-	<Metadataform
-		bg="#ffffff"
-		accent1="#ffa400"
-		accent2="#009ffd"
-		imgtext="Welcome back"
-		icon="/uploadimage.svg"
-		videotitle="{title}"
-		visible="{uploading}"
-		{videoID}
-		message="Details" />
-</div>
