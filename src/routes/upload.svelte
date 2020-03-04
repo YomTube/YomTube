@@ -18,6 +18,11 @@
 	.uploading {
 		height: unset;
 		min-height: 8em;
+		padding-top: 2em;
+	}
+
+	.metadatacontainer{
+		padding-bottom: 2em;
 	}
 
 	@media only screen and (max-width: 768px) {
@@ -46,16 +51,20 @@
 			requestURL="/api/videos/" />
 	</div>
 
-	<Metadataform
-		bg="#ffffff"
-		accent1="#ffa400"
-		accent2="#009ffd"
-		imgtext="Welcome back"
-		icon="/uploadimage.svg"
-		videotitle="{title}"
-		visible="{uploading}"
-		{videoID}
-		message="Details" />
+	{#if uploading}
+		<div class="metadatacontainer">
+			<Metadataform
+				bg="#ffffff"
+				accent1="#ffa400"
+				accent2="#009ffd"
+				imgtext="Welcome back"
+				icon="/uploadimage.svg"
+				videotitle="{title}"
+				visible="{uploading}"
+				{videoID}
+				message="Details" />
+		</div>
+	{/if}
 </div>
 
 <script>
