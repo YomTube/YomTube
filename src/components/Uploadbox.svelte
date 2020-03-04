@@ -139,8 +139,6 @@
 		box-shadow: none;
 	}
 
-	progress::-moz
-
 	.uploaded{
 		background-color: #5cb85c;
 		color: #5cb85c;
@@ -274,7 +272,7 @@
 		try {
 			if (e.srcElement.files[0].name) {
 				console.log("clown");
-				data.append("video", e.srcElement.files[0]);
+				data.append("file", e.srcElement.files[0]);
 				fileName = e.srcElement.files[0].name;
 			}
 		} catch {}
