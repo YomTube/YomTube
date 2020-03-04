@@ -159,10 +159,9 @@ router.patch('/:id', auth, thumbnailUpload.single("file"), async (req, res) => {
 		}
 		if ((primaryThumbnail == 0 && video.customThumbnail) || (primaryThumbnail >= 1 && primaryThumbnail <= 3))
 			video.primaryThumbnail = primaryThumbnail
-		else return res.status(404).send("Thumbnail doesn't exist.")
 		if (title) video.title = title;
 		if (description) video.description = description;
-		await video.save();
+		await video.save()
 		res.send(video)
 	} catch (err) {
 		res.status(400).send({ error: err.message })
