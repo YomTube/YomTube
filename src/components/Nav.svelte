@@ -3,6 +3,7 @@
 		background-color: var(--background);
 		height: 4em;
 		width: 100%;
+		padding-right: 2%;
 		display: flex;
 		z-index: 2;
 		align-items: center;
@@ -53,35 +54,6 @@
 	}
 </style>
 
-<script>
-	import Button from "./Button.svelte";
-	import Loginicon from "./Loginicon.svelte";
-	import Searchbox from "./Searchbox.svelte";
-	export let icon = "";
-	export let background = "#ffffff";
-	export let foreground = "hsl(216, 7%, 15%)";
-	export let accent = "#ffa400";
-	export let accent2 = "#009ffd";
-	export let headerText = "YOMTUBE";
-
-	export let buttons = [
-		{
-			text: "Login",
-			link: "/login"
-		}
-	];
-	export let links = [];
-	let loggedIn = false;
-
-	import { onMount } from "svelte";
-
-	onMount(async () => {
-		if (document.cookie.includes("token")) {
-			loggedIn = true;
-		}
-	});
-</script>
-
 <headerbar
 	style="--foreground:{foreground}; --background:{background}; --accent:{accent};
 	--accent2:{accent2};">
@@ -110,3 +82,32 @@
 		</span>
 	</nav>
 </headerbar>
+
+<script>
+	import Button from "./Button.svelte";
+	import Loginicon from "./Loginicon.svelte";
+	import Searchbox from "./Searchbox.svelte";
+	export let icon = "";
+	export let background = "#ffffff";
+	export let foreground = "hsl(216, 7%, 15%)";
+	export let accent = "#ffa400";
+	export let accent2 = "#009ffd";
+	export let headerText = "YOMTUBE";
+
+	export let buttons = [
+		{
+			text: "Login",
+			link: "/login"
+		}
+	];
+	export let links = [];
+	let loggedIn = false;
+
+	import { onMount } from "svelte";
+
+	onMount(async () => {
+		if (document.cookie.includes("token")) {
+			loggedIn = true;
+		}
+	});
+</script>

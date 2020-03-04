@@ -31,7 +31,8 @@
 	}
 
 	.banner__image p {
-		font-size: 0.75em;
+		font-size: 65%;
+		word-wrap: none;
 		color: rgba(255, 255, 255, 0);
 		transition: all 0.1s ease-in-out;
 	}
@@ -51,21 +52,8 @@
 	}
 </style>
 
-<script>
-	export let color = "#009ffd";
-	export let img = "/stock.jpg";
-	export let subscribers = "about three fiddy";
-	export let username = "Clean";
-	let text;
-	if (subscribers == 1) {
-		text = " subscriber";
-	} else {
-		text = " subscribers";
-	}
-</script>
-
 <div style="--color: {color}; --icon: url({img});" class="banner">
-	<div class="banner__image">
+	<div on:click="{() => dispatch('upload')}" class="banner__image">
 		<p>Upload image</p>
 	</div>
 	<span class="banner__textbox">
@@ -74,3 +62,19 @@
 	</span>
 
 </div>
+
+<script>
+	import { createEventDispatcher } from "svelte";
+	const dispatch = createEventDispatcher();
+
+	export let color = "#009ffd";
+	export let img = "/stock.jpg";
+	export let subscribers = "about three fiddy";
+	export let username = "You shouldn't be seeing this";
+	let text;
+	if (subscribers == 1) {
+		text = " subscriber";
+	} else {
+		text = " subscribers";
+	}
+</script>
