@@ -53,9 +53,10 @@
 		bg="#ffffff"
 		accent1="#ffa400"
 		accent2="#009ffd"
-		imgtext="Welcome back"
 		icon="/uploadvideo.svg"
-		uploadtype="video"/>
+		uploadType="video"
+		requestType="POST"
+		requestURL="/api/videos/"/>
 	</div>
 
 	<Metadataform

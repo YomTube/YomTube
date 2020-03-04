@@ -194,7 +194,9 @@
 	export let accent1;
 	export let accent2;
 	export let icon;
-	export let uploadtype;
+	export let uploadType;
+	export let requestType;
+	export let requestURL;
 
 	import { createEventDispatcher } from "svelte";
 	const dispatch = createEventDispatcher();
@@ -249,7 +251,7 @@
 		});
 
 		console.log(document.cookie);
-		xhr.open("POST", "/api/videos/");
+		xhr.open(requestType, requestURL);
 		xhr.setRequestHeader(
 			"Authorization",
 			"Bearer " +
@@ -264,7 +266,7 @@
 		try {
 			if (e.dataTransfer.files[0].name) {
 				console.log("bingbong");
-				data.append("video", e.dataTransfer.files[0]);
+				data.append("file", e.dataTransfer.files[0]);
 				fileName = e.dataTransfer.files[0].name;
 			}
 		} catch {}
@@ -358,9 +360,9 @@
 					class:file_hover_icon="{hasHover}"></div>
 			</div>
 			<label for="file" class="upload_label" bind:this="{fileLabel}">
-				<h1>Upload {uploadtype}</h1>
+				<h1>Upload {uploadType}</h1>
 				<b>Choose</b>
-				or drop a {uploadtype} here
+				or drop a {uploadType} here
 			</label>
 
 			<button class="upload_button">Upload</button>
