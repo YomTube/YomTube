@@ -61,7 +61,7 @@ router.get("/me", auth, async (req, res) => {
 // TODO global put request for change, like /me/:part
 
 // Set profile picture
-router.put('/me/picture', auth, upload.single('profilePicture'), async (req, res) => {
+router.put('/me/picture', auth, upload.single('file'), async (req, res) => {
 	if (req.fileValidationError) return res.end(req.fileValidationError);
 	try {
 		let user = await User.findById(req.user.id);

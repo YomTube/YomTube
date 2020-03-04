@@ -22,6 +22,14 @@ const VideoSchema = new mongoose.Schema({
 		type: Boolean,
 		default: true,
 	},
+	customThumbnail: {
+		type: Boolean,
+		default: false
+	},
+	primaryThumbnail: {
+		type: Number,
+		default: 1
+	},
 	comments: [
 		{
 			comment: { type: mongoose.Schema.Types.ObjectId, ref: 'Comment' }
@@ -51,10 +59,10 @@ VideoSchema.pre('remove', async function (next) {
 		user.videos = user.videos.filter(v => v.video != video._id);
 		await user.save();
 		let videoDir = `${process.cwd()}/videos/${video.id}`;
-		for (let quality of video.available_qualities) {
-			await fs.unlink(`${videoDir}/${quality}.mp4`)
+		let files = await fs.readdir(videoDir);
+		for (let file of files) {
+			await fs.unlink(`${videoDir}/${file}`)
 		}
-		await fs.unlink(`${videoDir}/thumbnail.png`)
 		await fs.rmdir(videoDir);
 	} catch (err) {
 		console.error("Remove Error:", err)

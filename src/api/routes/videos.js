@@ -9,7 +9,7 @@ const router = Router();
 
 const GET_PATH = "/tmp";
 
-const upload = multer({
+const videoUpload = multer({
 	dest: GET_PATH,
 	fileFilter: (req, file, cb) => {
 		if (!['video/x-msvideo',
@@ -32,11 +32,19 @@ const upload = multer({
 			"video/quicktime",
 			"video/x-ms-wmv"].includes(file.mimetype)) {
 			req.fileValidationError = 'Wrong filetype';
-			return cb(null, false, new Error('Wrong filetype'))
+			console.log("Wrong filetype")
+			return cb(null, false)
 		}
+		console.log("Right filetype")
 		cb(null, true);
 	}
 });
+
+const thumbnailUpload = multer({
+	dest: GET_PATH
+})
+
+let getVideoPath = (videoID) => `${process.cwd()}/videos/${videoID}`
 
 // Get all videos
 router.get("/", async (req, res) => {
@@ -64,11 +72,25 @@ router.get("/:id", async (req, res) => {
 	}
 });
 
+// Get primary thumbnail
 router.get("/:id/thumbnail", async (req, res) => {
 	let id = req.params.id;
 	try {
-		const video = await Video.findOne({ _id: id });
-		res.sendFile(`videos/${video.id}/thumbnail.png`, { root: process.cwd() });
+		const video = await Video.findById(id);
+		res.sendFile(`videos/${video.id}/thumbnail-${video.primaryThumbnail}.png`, { root: process.cwd() });
+	} catch (err) {
+		res.status(400).send({ error: err.message });
+	}
+});
+
+// Get thumbnail by index
+router.get("/:id/thumbnail/:index", async (req, res) => {
+	let { id, index } = req.params;
+	try {
+		const video = await Video.findById(id);
+		if ((!video.customThumbnail && index == 0) || (index > 3 || index < 0))
+			return res.status(404).send("Thumbnail doesn't exist.")
+		res.sendFile(`videos/${video.id}/thumbnail-${index}.png`, { root: process.cwd() });
 	} catch (err) {
 		res.status(400).send({ error: err.message });
 	}
@@ -88,6 +110,65 @@ router.get("/:id/:quality", async (req, res) => {
 	}
 });
 
+// Upload video
+router.post("/", auth, videoUpload.single("file"), async (req, res) => {
+	try {
+		if (req.fileValidationError) throw req.fileValidationError
+		if (!req.file) throw new Error("No file was provided");
+		const { title } = req.body;
+		const { filename } = req.file;
+		let video = new Video({
+			title: title,
+			uploaded_by: req.user._id,
+			uploaded_at: new Date()
+		});
+
+		await fs.mkdir(getVideoPath(video.id))
+		await addToTranscoderQueue(`${GET_PATH}/${filename}`, video);
+		await video.save();
+
+		res.status(201).send({ video });
+	} catch (err) {
+		console.error("Got error:", err);
+		res.status(400).send({ error: err.message });
+	}
+});
+
+// Update a video
+router.patch('/:id', auth, thumbnailUpload.single("file"), async (req, res) => {
+	try {
+		let { id } = req.params;
+		let video = await Video.findById(id)
+		if (!video)
+			return res.status(404).send("That video doesn't exist.")
+		let uploaderID = video.uploaded_by.toString();
+		if (uploaderID !== req.user.id)
+			return res.status(403).send("You don't own that video.")
+
+		let { file } = req,
+			{ title, description, primaryThumbnail } = req.body;
+
+		if (file) {
+			let customThumbnailPath = `${getVideoPath(video.id)}/thumbnail-0.png`;
+			try {
+				await fs.access(customThumbnailPath)
+				await fs.unlink(customThumbnailPath)
+			} catch (err) { }
+			await fs.rename(file.path, customThumbnailPath)
+			video.customThumbnail = true;
+		}
+		if ((primaryThumbnail == 0 && video.customThumbnail) || (primaryThumbnail >= 1 && primaryThumbnail <= 3))
+			video.primaryThumbnail = primaryThumbnail
+		else return res.status(404).send("Thumbnail doesn't exist.")
+		if (title) video.title = title;
+		if (description) video.description = description;
+		await video.save();
+		res.send(video)
+	} catch (err) {
+		res.status(400).send({ error: err.message })
+	}
+})
+
 // Delete a video
 router.delete('/:id', auth, async (req, res) => {
 	let id = req.params.id;
@@ -106,30 +187,5 @@ router.delete('/:id', auth, async (req, res) => {
 		res.status(403).send({ error: err.message });
 	}
 })
-
-// Upload video
-router.post("/", auth, upload.single("video"), async (req, res) => {
-	try {
-		if (!req.file) throw new Error("No file was provided");
-		const { title, description } = req.body;
-		const { filename, path } = req.file;
-		let video = new Video({
-			title: title,
-			description: description,
-			uploaded_by: req.user._id,
-			uploaded_at: new Date()
-		});
-
-		let outputPath = `videos/${video._id}`;
-		await fs.mkdir(process.cwd() + outputPath)
-		await addToTranscoderQueue(`${GET_PATH}/${filename}`, video);
-		await video.save();
-
-		res.status(201).send({ video });
-	} catch (err) {
-		console.error(err);
-		res.status(400).send({ error: err.message });
-	}
-});
 
 export default router;
