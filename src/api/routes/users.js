@@ -66,7 +66,7 @@ router.put('/me/picture', auth, upload.single('file'), async (req, res) => {
 	try {
 		let user = await User.findById(req.user.id);
 		user.profilePicture = {
-			data: await fs.readFile(req.file.path),
+			data: Buffer.from(await fs.readFile(req.file.path)).toString('base64'),
 			contentType: req.file.mimetype
 		}
 		await user.save();

@@ -32,10 +32,8 @@ const videoUpload = multer({
 			"video/quicktime",
 			"video/x-ms-wmv"].includes(file.mimetype)) {
 			req.fileValidationError = 'Wrong filetype';
-			console.log("Wrong filetype")
 			return cb(null, false)
 		}
-		console.log("Right filetype")
 		cb(null, true);
 	}
 });
@@ -49,7 +47,9 @@ let getVideoPath = (videoID) => `${process.cwd()}/videos/${videoID}`
 // Get all videos
 router.get("/", async (req, res) => {
 	try {
-		const videos = await Video.find({ waitingOnTranscode: false });
+		const videos = await Video
+			.find({ waitingOnTranscode: false }, 'title uploaded_by uploaded_at')
+			.populate('uploaded_by', 'username profilePicture');
 		res.json(videos);
 	} catch (err) {
 		res.status(400).send({ error: err.message });
@@ -58,13 +58,10 @@ router.get("/", async (req, res) => {
 
 // Get specific video
 router.get("/:id", async (req, res) => {
-	let id = req.params.id;
+	let {id} = req.params;
 	try {
-		const video = await Video.findOne({ _id: id })
-			.populate({
-				path: 'uploaded_by',
-				populate: { path: 'uploaded_by' }
-			})
+		const video = await Video.findById(id)
+			.populate('uploaded_by', 'username profilePicture')
 
 		res.send({ video });
 	} catch (err) {
@@ -76,7 +73,7 @@ router.get("/:id", async (req, res) => {
 router.get("/:id/thumbnail", async (req, res) => {
 	let id = req.params.id;
 	try {
-		const video = await Video.findById(id);
+		const video = await Video.findById(id, 'primaryThumbnail');
 		res.sendFile(`videos/${video.id}/thumbnail-${video.primaryThumbnail}.png`, { root: process.cwd() });
 	} catch (err) {
 		res.status(400).send({ error: err.message });
@@ -87,7 +84,7 @@ router.get("/:id/thumbnail", async (req, res) => {
 router.get("/:id/thumbnail/:index", async (req, res) => {
 	let { id, index } = req.params;
 	try {
-		const video = await Video.findById(id);
+		const video = await Video.findById(id, 'customThumbnail');
 		if ((!video.customThumbnail && index == 0) || (index > 3 || index < 0))
 			return res.status(404).send("Thumbnail doesn't exist.")
 		res.sendFile(`videos/${video.id}/thumbnail-${index}.png`, { root: process.cwd() });
@@ -97,10 +94,9 @@ router.get("/:id/thumbnail/:index", async (req, res) => {
 });
 
 router.get("/:id/:quality", async (req, res) => {
-	let id = req.params.id;
-	let quality = req.params.quality;
+	let {id, quality} = req.params;
 	try {
-		const video = await Video.findOne({ _id: id });
+		const video = await Video.findById(id, 'available_qualities');
 		if (!video.available_qualities.includes(quality))
 			throw new Error("Quality doesn't exist");
 
@@ -138,7 +134,7 @@ router.post("/", auth, videoUpload.single("file"), async (req, res) => {
 router.patch('/:id', auth, thumbnailUpload.single("file"), async (req, res) => {
 	try {
 		let { id } = req.params;
-		let video = await Video.findById(id)
+		let video = await Video.findById(id, 'uploaded_by customThumbnail primaryThumbnail title description')
 		if (!video)
 			return res.status(404).send("That video doesn't exist.")
 		let uploaderID = video.uploaded_by.toString();
@@ -170,9 +166,9 @@ router.patch('/:id', auth, thumbnailUpload.single("file"), async (req, res) => {
 
 // Delete a video
 router.delete('/:id', auth, async (req, res) => {
-	let id = req.params.id;
+	let {id} = req.params;
 	try {
-		const video = await Video.findOne({ _id: id });
+		const video = await Video.findById(id, 'uploaded_by');
 		if (!video)
 			throw new Error("That video doesn't exist.")
 		let uploaderID = video.uploaded_by.toString();
