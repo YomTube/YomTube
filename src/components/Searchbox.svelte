@@ -23,7 +23,7 @@
 		color: white;
 		border: none;
 		border-radius: 0 0.3em 0.3em 0;
-		background-image: url("/search.svg");
+		background-image: url("/icons/search.svg");
 		background-size: 65%;
 		background-repeat: no-repeat;
 		background-position: center;
@@ -37,7 +37,7 @@
 		background-color: var(--accent2);
 		color: white;
 		border: none;
-		background-image: url("/arrow_back.svg");
+		background-image: url("/icons/arrow_back.svg");
 		background-size: 65%;
 		background-repeat: no-repeat;
 		background-position: center;

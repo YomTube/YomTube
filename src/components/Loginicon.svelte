@@ -117,7 +117,6 @@
 			}
 		});
 		let json = await resp.json();
-		console.log(json);
 		mime = json.user.profilePicture.contentType;
 		img = json.user.profilePicture.data;
 	});

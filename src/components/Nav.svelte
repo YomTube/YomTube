@@ -93,11 +93,12 @@
 		</a>
 		<Searchbox />
 		<span>
-			{#each links as { link }}
-				<a href="{link}">{text}</a>
+			{#each links as link}
+				<a href="{link.link}">{link.text}</a>
 			{/each}
 			{#if loggedIn !== undefined && !loggedIn}
 				{#each buttons as button}
+					<p>{button.text}WVJfU7OEcFrN9LVb.mp4WVJfU7OEcFrN9LVb.mp4WVJfU7OEcFrN9LVb.mp4WVJfU7OEcFrN9LVb.mp4WVJfU7OEcFrN9LVb.mp4</p>
 					<Button
 						link="{button.link}"
 						text="{button.text}"
