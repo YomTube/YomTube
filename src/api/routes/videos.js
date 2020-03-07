@@ -30,6 +30,7 @@ const videoUpload = multer({
 			"video/MP2T",
 			"video/3gpp",
 			"video/quicktime",
+			"video/x-matroska",
 			"video/x-ms-wmv"].includes(file.mimetype)) {
 			req.fileValidationError = 'Wrong filetype';
 			return cb(null, false)
@@ -109,8 +110,8 @@ router.get("/:id/:quality", async (req, res) => {
 // Upload video
 router.post("/", auth, videoUpload.single("file"), async (req, res) => {
 	try {
-		if (req.fileValidationError) throw req.fileValidationError
 		if (!req.file) throw new Error("No file was provided");
+		if (req.fileValidationError) throw req.fileValidationError
 		const { title } = req.body;
 		const { filename } = req.file;
 		let video = new Video({
@@ -145,6 +146,7 @@ router.patch('/:id', auth, thumbnailUpload.single("file"), async (req, res) => {
 			{ title, description, primaryThumbnail } = req.body;
 
 		if (file) {
+			console.log("Renaming uploaded thumbnail")
 			let customThumbnailPath = `${getVideoPath(video.id)}/thumbnail-0.png`;
 			try {
 				await fs.access(customThumbnailPath)

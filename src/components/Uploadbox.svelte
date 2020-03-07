@@ -1,6 +1,7 @@
 <style>
 	* {
 		box-sizing: border-box;
+		overflow-x: hidden;
 	}
 
 	#container {
@@ -121,6 +122,7 @@
 		background-color: #eaf6ff;
 		border-radius: 100px;
 		box-shadow: none;
+		border: none;
 	}
 
 	progress::-webkit-progress-bar {
@@ -139,7 +141,7 @@
 		box-shadow: none;
 	}
 
-	progress::-moz .uploaded {
+	.uploaded {
 		background-color: #5cb85c;
 		color: #5cb85c;
 	}
@@ -176,10 +178,11 @@
 
 		.progress_container {
 			width: 100vw !important;
+			overflow-x: hidden;
 		}
 
 		.progress_container > div {
-			width: 90%;
+			width: 90vw;
 			display: flex;
 			align-items: flex-start;
 		}
@@ -197,6 +200,8 @@
 	export let requestURL;
 
 	import { createEventDispatcher } from "svelte";
+	import { slide } from "svelte/transition";
+
 	const dispatch = createEventDispatcher();
 
 	let isAdvancedUpload = true;
@@ -206,6 +211,8 @@
 	let hasHover = false;
 	let fileLabel;
 	let uploading = false;
+
+	let processing = false;
 
 	let hoverEventCounter = 0;
 
@@ -259,8 +266,6 @@
 					.split("=")[1]
 		);
 
-		// console.log(e.dataTransfer.files[0].name);
-
 		try {
 			if (e.dataTransfer.files[0].name) {
 				console.log("bingbong");
@@ -272,7 +277,7 @@
 		try {
 			if (e.srcElement.files[0].name) {
 				console.log("clown");
-				data.append("video", e.srcElement.files[0]);
+				data.append("file", e.srcElement.files[0]);
 				fileName = e.srcElement.files[0].name;
 			}
 		} catch {}
@@ -302,7 +307,11 @@
 		if (e.lengthComputable) {
 			progressbar.max = e.total;
 			progressbar.value = e.loaded;
-			// progressbar.value = (e.loaded / e.total) * 100;
+			if (e.total == e.loaded) {
+				processing = true;
+				uploadText.innerText = "Generating thumbnails";
+				// progressbar.removeAttribute('value');
+			}
 		} else {
 			// Unable to compute progress information since the total size is unknown
 		}
@@ -311,9 +320,6 @@
 	let uploadText;
 
 	function uploaded(ue) {
-		// console.log("uploaded");
-		// console.log(ue);
-		// console.log("videoID: " + JSON.parse(ue.response).video._id);
 		uploadText.innerText = "Uploaded";
 		videoID = JSON.parse(ue.response).video._id;
 		dispatch("fileuploaded", {
@@ -350,6 +356,7 @@
 				type="file"
 				id="file"
 				class="upload_file"
+				accept="video/*"
 				on:change="{fileDrop}" />
 
 			<div class="upload_icon_container">
@@ -373,7 +380,10 @@
 		<div class="upload_error" id="upload_error">error</div>
 	</form>
 
-	<div class="progress_container" class:hidden="{!uploading}">
+	<div
+		class="progress_container"
+		class:hidden="{!uploading}"
+		transition:slide>
 		<div>
 			<h1 bind:this="{uploadText}">Uploading</h1>
 		</div>

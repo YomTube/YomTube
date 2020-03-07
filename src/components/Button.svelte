@@ -46,10 +46,19 @@
 	export let link = "#";
 	export let background = "black";
 	export let foreground = "#ff3e00";
+	export let onclick;
+
+	function redirect(e) {
+		if (link != "#") {
+			window.location.href = `${link}`;
+		}
+		onclick();
+	}
+
 </script>
 
 <button
-	onclick="window.location.href = '{link}';"
+	on:click|preventDefault|stopPropagation="{redirect}"
 	style="--foreground:{foreground}; --background:{background};"
 	class="button">
 	{text}
