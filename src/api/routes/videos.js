@@ -5,7 +5,7 @@ import multer from "multer";
 import auth from "../middleware/auth";
 import { promises as fs } from "fs";
 import addToTranscoderQueue from "../../utils/transcoder";
-import User from "../../models/user";
+import Jimp from 'jimp';
 
 const router = Router();
 
@@ -76,7 +76,7 @@ router.get("/:id", async (req, res) => {
 
 // Get primary thumbnail
 router.get("/:id/thumbnail", async (req, res) => {
-	let id = req.params.id;
+	let { id } = req.params;
 	try {
 		const video = await Video.findById(id, 'primaryThumbnail');
 		res.sendFile(`videos/${video.id}/thumbnail-${video.primaryThumbnail}.png`, { root: process.cwd() });
@@ -150,13 +150,14 @@ router.patch('/:id', auth, thumbnailUpload.single("file"), async (req, res) => {
 			{ title, description, primaryThumbnail } = req.body;
 
 		if (file) {
-			console.log("Renaming uploaded thumbnail")
 			let customThumbnailPath = `${getVideoPath(video.id)}/thumbnail-0.png`;
 			try {
 				await fs.access(customThumbnailPath)
 				await fs.unlink(customThumbnailPath)
 			} catch (err) { }
-			await fs.rename(file.path, customThumbnailPath)
+			let image = await Jimp.read(file.path);
+			let newCroppedImage = await image.contain(1600, 900).resize(1600, 900).background("#000");
+			await newCroppedImage.write(customThumbnailPath)
 			video.customThumbnail = true;
 		}
 		if ((primaryThumbnail == 0 && video.customThumbnail) || (primaryThumbnail >= 1 && primaryThumbnail <= 3))

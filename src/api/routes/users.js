@@ -5,6 +5,7 @@ import auth from "../middleware/auth";
 import User from "../../models/user";
 import multer from "multer";
 import { promises as fs } from 'fs';
+import Jimp from 'jimp';
 
 const GET_PATH = "/tmp";
 
@@ -63,13 +64,18 @@ router.get('/:userID', (req, res) => {
 
 // Set profile picture
 router.put('/me/picture', auth, upload.single('file'), async (req, res) => {
-	if (req.fileValidationError) return res.end(req.fileValidationError);
+	if (req.fileValidationError) return res.send(req.fileValidationError);
 	try {
 		let user = await User.findById(req.user.id);
+		let image = await Jimp.read(req.file.path)
+		let newPicture = await image.cover(1024, 1024).resize(1024, 1024);
+		await newPicture.write(`${req.file.path}0`)
+
 		user.profilePicture = {
-			data: Buffer.from(await fs.readFile(req.file.path)).toString('base64'),
+			data: Buffer.from(await fs.readFile(`${req.file.path}0`)).toString('base64'),
 			contentType: req.file.mimetype
 		}
+
 		await user.save();
 		res.send("Changed profile picture")
 	} catch (err) {
