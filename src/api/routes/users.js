@@ -53,11 +53,16 @@ router.get("/me", auth, async (req, res) => {
 	res.send({ user });
 });
 
+// Get other user
+router.get('/:userID', (req, res) => {
+	let user = req.params.userID;
+	res.send({ user })
+})
+
 // TODO global put request for change, like /me/:part
 
 // Set profile picture
 router.put('/me/picture', auth, upload.single('file'), async (req, res) => {
-	console.log(req.body);
 	if (req.fileValidationError) return res.end(req.fileValidationError);
 	try {
 		let user = await User.findById(req.user.id);
@@ -72,11 +77,6 @@ router.put('/me/picture', auth, upload.single('file'), async (req, res) => {
 	}
 })
 
-// Get other user
-router.get('/:userID', (req, res) => {
-	let user = req.params.userID;
-	res.send({ user })
-})
 
 // Logout of current session
 router.get("/me/logout", auth, async (req, res) => {

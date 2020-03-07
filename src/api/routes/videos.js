@@ -64,8 +64,10 @@ router.get("/:id", async (req, res) => {
 	let { id } = req.params;
 	try {
 		const video = await Video
-			.findById(id, 'title description uploaded_at uploaded_by available_qualities')
+			.findById(id, 'title description uploaded_at uploaded_by available_qualities views')
 			.populate('uploaded_by', 'username profilePicture')
+		video.views = ++video.views
+		await video.save();
 		res.send(video);
 	} catch (err) {
 		res.status(400).send({ error: err.message });

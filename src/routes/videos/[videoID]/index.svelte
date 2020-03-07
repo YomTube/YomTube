@@ -16,18 +16,26 @@
 
 	.videodetails {
 		padding: 1em;
-	}
-
-	.title {
 		color: var(--bg);
 	}
 
-	details {
-		color: var(--bg);
+	.bar {
+		height: 4em;
+		display: flex;
+		justify-content: space-between;
 	}
 
-	.author {
-		color: var(--bg);
+	.uploader {
+		height: 100%;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
+
+	.uploader img {
+		height: 75%;
+		border-radius: 50%;
+		margin-right: 0.75em;
 	}
 
 	.content {
@@ -83,9 +91,12 @@
 
 <script context="module">
 	export async function preload(page) {
-		const videoID = page.params.video;
+		const { videoID } = page.params;
 		const src = `/api/videos/${videoID}`;
 		const videoResp = await this.fetch(src);
+
+		if (!videoResp.ok) return this.error(404, "Not found");
+
 		const videoJSON = await videoResp.json();
 
 		return { videoJSON, src };
@@ -94,9 +105,9 @@
 
 <script>
 	import { onMount } from "svelte";
-	import Videoplayer from "../../components/Videoplayer.svelte";
-	import Videobox from "../../components/Videobox.svelte";
-	import Commentbox from "../../components/Commentbox.svelte";
+	import Videoplayer from "../../../components/Videoplayer.svelte";
+	import Videobox from "../../../components/Videobox.svelte";
+	import Commentbox from "../../../components/Commentbox.svelte";
 	export let videoJSON;
 	export let src;
 	let videos = [];
@@ -120,8 +131,18 @@
 		<Videoplayer {videoJSON} {src} />
 		<div class="videodetails">
 			<h1 class="title">{videoJSON.title}</h1>
-			<p class="author">{videoJSON.uploaded_by.username}</p>
-			<details>{videoJSON.description}</details>
+			<div class="bar">
+				<div class="uploader">
+					<img
+						src="data:{videoJSON.uploaded_by.profilePicture.contentType};base64,{videoJSON.uploaded_by.profilePicture.data}"
+						alt="" />
+					<p class="author">
+						{videoJSON.uploaded_by.username}
+					</p>
+				</div>
+				<p class="views">{videoJSON.views} views</p>
+			</div>
+			<details>{videoJSON.description || ''}</details>
 		</div>
 	</div>
 	<div style="grid-area: comments;">
