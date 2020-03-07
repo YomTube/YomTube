@@ -12,7 +12,6 @@
 		try {
 			const response = await fetch(`/api/videos/`);
 			videos = await response.json();
-			// console.log(videos);
 			if (videos.length == 0) throw new Error("No videos found");
 		} catch (error) {
 			console.error("Found some error");

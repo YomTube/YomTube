@@ -32,7 +32,7 @@
 
 	@media only screen and (max-width: 768px) {
 		.maincontainer {
-			background-color: #ffffff;
+			background-color: var(--fg);
 			justify-content: flex-start;
 		}
 

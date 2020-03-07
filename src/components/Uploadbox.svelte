@@ -131,12 +131,12 @@
 	}
 
 	progress::-webkit-progress-value {
-		background-color: #ffa400;
+		background-color: var(--orange);
 		border-radius: 100px;
 	}
 
 	progress::-moz-progress-bar {
-		background-color: #ffa400;
+		background-color: var(--orange);
 		border-radius: 100px;
 		box-shadow: none;
 	}
