@@ -54,7 +54,7 @@
 		width: 100%;
 		border-radius: 0.5em;
 		border: 1px solid grey;
-		background: #ffffff;
+		background: var(--fg);
 		height: 3em;
 		padding: 0.5em;
 		margin-bottom: 1em;
@@ -192,7 +192,8 @@
 		<div
 			bind:this="{box}"
 			class="loginbox"
-			style="--fg: {fg}; --bg: {bg}; --accent1: {accent1}; --accent2: {accent2};">
+			style="--fg: {fg}; --bg: {bg}; --accent1: {accent1};
+			--accent2: {accent2};">
 			<div class="flexwrapper">
 				<form class="form" action="">
 					<div class="title">
@@ -228,7 +229,9 @@
 							value="Sign in" />
 						<p class="register">
 							Don't have an account?
-							<coloure on:click="{flip}">Sign up</coloure>
+							<coloure on:click="{flip}">
+								Sign up
+							</coloure>
 						</p>
 					</div>
 				</form>

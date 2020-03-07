@@ -53,17 +53,20 @@
 		.searchwrapper {
 			width: 2.5em;
 			margin-right: 0.5em;
+			height: 32px;
 			margin-left: auto;
 			box-shadow: none;
 		}
 
 		.searchbutton {
 			border-radius: 100%;
+			height: 32px;
+			width: 32px;
 		}
 		.fullwidth {
 			width: 100%;
 			position: absolute;
-			height: 4em;
+			height: 3em;
 			z-index: 10;
 			left: 0;
 			top: 0;
@@ -84,6 +87,8 @@
 		}
 		.wide {
 			width: 8em;
+			height: 3.4em;
+			background-size: 40%;
 		}
 	}
 </style>

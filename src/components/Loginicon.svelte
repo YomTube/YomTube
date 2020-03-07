@@ -23,7 +23,7 @@
 		perspective: 1000px;
 		position: absolute;
 		top: 105%;
-		left: -150%;
+		left: -100%;
 		box-shadow: 0 19px 38px rgba(0, 0, 0, 0.3),
 			0 15px 12px rgba(0, 0, 0, 0.22);
 		transition: all 0.3s;
@@ -36,6 +36,8 @@
 		border-bottom: 2px solid var(--accent);
 		background-color: white;
 		color: black;
+		white-space: nowrap;
+		font-size: 90%;
 		transition-duration: 0.5s;
 	}
 
@@ -63,7 +65,7 @@
 	li:hover {
 		cursor: pointer;
 		background-color: var(--accent);
-		color: #ffffff;
+		color: var(--fg);
 	}
 
 	.anim ul li {
@@ -79,30 +81,46 @@
 		box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16),
 			0 3px 6px rgba(0, 0, 0, 0.23);
 	}
+
+	@media only screen and (max-width: 768px) {
+		#img {
+			height: 2em;
+			width: 2em;
+			margin-left: 0.4em;
+		}
+	}
 </style>
 
-<div
-	bind:this="{icon}"
-	on:click="{() => menu()}"
-	style="--img: {img}; --accent: {accent};"
-	id="img">
-	<ul>
-		<li>
-			<a href="/me">My Profile</a>
-		</li>
-		<li>
-			<a on:click="{logout}" href="#">Logout</a>
-		</li>
-	</ul>
-</div>
-
 <script>
-	export let img = "url(/stock.jpg)";
+	import { onMount } from "svelte";
+	export let img;
 	export let accent = "#ffa400";
 	let icon;
+	let mime;
 	const menu = () => {
 		icon.classList.toggle("anim");
 	};
+
+	onMount(async () => {
+		let cookies = document.cookie;
+		let token = cookies
+			.split(";")
+			.filter(c => c.startsWith("token"))[0]
+			.split("=")[1];
+
+		let resp = await fetch("/api/users/me", {
+			method: "GET",
+			headers: {
+				"Content-Type": "application/json",
+				Authorization: "Bearer " + token
+			}
+		});
+		let text = await resp.text();
+		let obj = JSON.parse(text);
+		let me = obj.user;
+		mime = me.profilePicture.type;
+		img = me.profilePicture.data;
+	});
 
 	const logout = () => {
 		let cookies = document.cookie.split(";");
@@ -116,3 +134,18 @@
 		document.location.href = "/";
 	};
 </script>
+
+<div
+	bind:this="{icon}"
+	on:click="{() => menu()}"
+	style="--img: url('data:{mime};base64,{img}'); --accent: {accent};"
+	id="img">
+	<ul>
+		<li>
+			<a href="/me">My Profile</a>
+		</li>
+		<li>
+			<a on:click="{logout}" href="#">Logout</a>
+		</li>
+	</ul>
+</div>

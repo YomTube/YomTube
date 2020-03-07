@@ -9,14 +9,13 @@
 	:root {
 		--video-width: 100vmin;
 		--video-height: calc(var(--video-width) * 9 / 16);
-
 		--bar-height: 3em;
 	}
 
 	#videoPlayer {
 		width: var(--video-width);
 		height: var(--video-height);
-
+		max-width: 1280px;
 		position: relative;
 		overflow: hidden;
 	}
@@ -208,8 +207,12 @@
 						&::-moz-range-thumb {
 							-webkit-appearance: none;
 							appearance: none;
-							height: calc(var(--buttons-height) * 0.15);
-							width: calc(var(--buttons-height) * 0.15);
+							height: calc(
+								var(--buttons-height) * 0.15
+							);
+							width: calc(
+								var(--buttons-height) * 0.15
+							);
 							background: white;
 							cursor: pointer;
 							border-radius: calc(
@@ -293,6 +296,12 @@
 		}
 	}
 
+	@media only screen and (max-width: 768px) {
+		#videoPlayer {
+			width: 100%;
+		}
+	}
+
 	@media only screen and (orientation: landscape) {
 		:root {
 			--bar-height: 4em;
@@ -362,7 +371,8 @@
 	$: if (video) video.volume = volumeValue / 100;
 
 	$: if (buffered.length > 0 && buffered.length > closestBuffer) {
-		bufferWidth = (video.buffered.end(closestBuffer) / videoLength) * 100;
+		bufferWidth =
+			(video.buffered.end(closestBuffer) / videoLength) * 100;
 	}
 
 	$: if (buffered.length > 0) findClosestBuffer();
@@ -427,7 +437,10 @@
 		hovering = true;
 		if (controlHoverTimer) clearTimeout(controlHoverTimer);
 		if (qualitiesHidden)
-			controlHoverTimer = setTimeout(() => (hovering = false), 3000);
+			controlHoverTimer = setTimeout(
+				() => (hovering = false),
+				3000
+			);
 	};
 
 	onMount(async () => {
@@ -485,13 +498,15 @@
 						}}"
 						id="innerBar"
 						style="background: linear-gradient(90deg,
-						#ffa000f0 {volumeValue}%, rgba(255, 255, 255, 0.1)
-						{volumeValue}%)" />
+						#ffa000f0 {volumeValue}%, rgba(255, 255,
+						255, 0.1) {volumeValue}%)" />
 				</div>
 				<div id="duration">
 					{new Date(currentTime * 1000)
 						.toISOString()
-						.substr(14, 5)} / {new Date(videoLength * 1000)
+						.substr(14, 5)} / {new Date(
+						videoLength * 1000
+					)
 						.toISOString()
 						.substr(14, 5)}
 				</div>
@@ -506,7 +521,9 @@
 							if (qualitiesHidden) controlHoverTimer = setTimeout(() => (hovering = false), 3000);
 							else clearTimeout(controlHoverTimer);
 						}}"></div>
-					<div id="qualities" class:hidden="{qualitiesHidden}">
+					<div
+						id="qualities"
+						class:hidden="{qualitiesHidden}">
 						{#each videoJSON.available_qualities as quality}
 							<p
 								class="quality"

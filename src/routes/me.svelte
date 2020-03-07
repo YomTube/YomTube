@@ -29,43 +29,6 @@
 	}
 </style>
 
-<svelte:head>
-	<title>Me</title>
-</svelte:head>
-
-<div class="wrapper">
-	{#if me != undefined}
-		<Userbanner
-			on:upload="{() => {
-				upload = true;
-			}}"
-			username="{me.username}" />
-	{/if}
-	{#if videos[0] != undefined}
-		<Videobox title="My videos" {videos} />
-	{:else}
-		<h1 class="error">You have no videos :(</h1>
-	{/if}
-
-	{#if upload}
-		<div
-			bind:this="{wrapper}"
-			class="uploadwrapper"
-			on:click="{handleClick}">
-			<div class="inner-wrapper" transition:slide>
-				<Uploadbox
-					bg="#ffffff"
-					accent1="#ffa400"
-					accent2="#009ffd"
-					imgtext="Welcome back"
-					icon="/uploadimage_black.svg"
-					uploadtype="photo" />
-			</div>
-
-		</div>
-	{/if}
-</div>
-
 <script>
 	import { onMount } from "svelte";
 	import Videobox from "../components/Videobox.svelte";
@@ -114,3 +77,24 @@
 		}
 	});
 </script>
+
+<svelte:head>
+	<title>Me</title>
+</svelte:head>
+
+<div class="wrapper">
+	{#if me != undefined}
+		<Userbanner
+			on:upload="{() => {
+				upload = true;
+			}}"
+			username="{me.username}"
+			img="{me.profilePicture.data}"
+			mime="{me.profilePicture.type}" />
+	{/if}
+	{#if videos[0] != undefined}
+		<Videobox title="My videos" {videos} />
+	{:else}
+		<h1 class="error">You have no videos :(</h1>
+	{/if}
+</div>
