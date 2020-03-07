@@ -131,73 +131,6 @@
 	}
 </style>
 
-<div
-	id="conatiner"
-	style="--fg: {fg}; --bg: {bg}; --accent1: {accent1}; --accent2: {accent2};
-	--upload-icon: url({icon}); --thumbnail1: url({thumbnail1})">
-
-	<form action="">
-		<h1>{message}</h1>
-		<label for="title">Title</label>
-		<input
-			id="title"
-			type="text"
-			class="textfield"
-			value="{videotitle}" />
-		<label for="description">Description</label>
-		<!-- <input id="description" type="text" class="textfield" /> -->
-		<textarea
-			name="description"
-			id="description"
-			class="textfield"
-			style="height: 9em; max-width: 100%; min-width: 100%;
-			min-height: 3em;"></textarea>
-
-		<b>Thumbnail</b>
-		<div class="thumbnail_container">
-			<!-- <img src="http://yomtube.z:3000/api/videos/{videoID}/thumbnail" alt=""> -->
-			<!-- <div class="upload_thumbnail thumbnail" on:click="{uploadThumb}"></div> -->
-			<input
-				type="file"
-				class="upload_file"
-				id="thumbnailFileElement"
-				on:change="{uploadThumb}" />
-			<label
-				for="thumbnailFileElement"
-				class="upload_thumbnail thumbnail"
-				bind:this="{customThumbnail}"
-				class:thumbSelected="{selectedThumbnail == 0}"
-				class:breathingBorder="{thumbUploading}">
-				<div class="changeThumb upload_thumbnail"></div>
-				<!-- <div class=""></div> -->
-				<!-- <div class="thumbnailProgress"></div> -->
-			</label>
-			<div
-				class="thumbnail_1 thumbnail"
-				class:thumbSelected="{selectedThumbnail == 1}"
-				on:click="{() => (selectedThumbnail = 1)}"></div>
-			<div
-				class="thumbnail_2 thumbnail"
-				class:thumbSelected="{selectedThumbnail == 2}"
-				on:click="{() => (selectedThumbnail = 2)}"></div>
-			<div
-				class="thumbnail_3 thumbnail"
-				class:thumbSelected="{selectedThumbnail == 3}"
-				on:click="{() => (selectedThumbnail = 3)}"></div>
-		</div>
-
-		<div class="buttonContainer">
-			<!-- <button class="button">Save</button> -->
-			<div class="buttonContainerContainer">
-				<Button
-					text="Save"
-					background="white"
-					foreground="#FFA400" />
-			</div>
-		</div>
-	</form>
-
-</div>
 
 <script>
 	export let fg;
@@ -390,8 +323,9 @@
 				class="upload_file"
 				bind:this="{thumbnailFileElement}"
 				id="thumbnailFileElement"
+				accept="image/*"
 				on:change="{uploadThumb}"
-				accept="image/*" />
+				/>
 			<label
 				for="thumbnailFileElement"
 				class="upload_thumbnail thumbnail"
