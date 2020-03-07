@@ -49,8 +49,8 @@
 </style>
 
 <script>
-	import Uploadbox from "../components/Uploadbox.svelte";
-	import Metadataform from "../components/Metadataform.svelte";
+	import Uploadbox from "../../components/Uploadbox.svelte";
+	import Metadataform from "../../components/Metadataform.svelte";
 
 	let title;
 	let uploading = false;
