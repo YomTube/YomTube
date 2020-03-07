@@ -129,19 +129,17 @@
 	}
 
 	progress::-webkit-progress-value {
-		background-color: #ffa400;
+		background-color: var(--orange);
 		border-radius: 100px;
 	}
 
 	progress::-moz-progress-bar {
-		background-color: #ffa400;
+		background-color: var(--orange);
 		border-radius: 100px;
 		box-shadow: none;
 	}
 
-	progress::-moz
-
-	.uploaded{
+	progress::-moz .uploaded {
 		background-color: #5cb85c;
 		color: #5cb85c;
 	}
@@ -359,7 +357,10 @@
 					class="upload_icon"
 					class:file_hover_icon="{hasHover}"></div>
 			</div>
-			<label for="file" class="upload_label" bind:this="{fileLabel}">
+			<label
+				for="file"
+				class="upload_label"
+				bind:this="{fileLabel}">
 				<h1>Upload {uploadType}</h1>
 				<b>Choose</b>
 				or drop a {uploadType} here

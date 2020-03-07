@@ -1,4 +1,7 @@
 <style>
+	* {
+		box-sizing: border-box;
+	}
 	h1 {
 		color: var(--fg);
 		grid-area: title;
@@ -23,25 +26,45 @@
 		justify-content: flex-start;
 		align-items: center;
 		flex-wrap: wrap;
-		width: 85%;
 		min-height: 200px;
 		background-color: var(--bg);
-		border-radius: 1em;
-		margin: 1em;
-		padding: 1em;
+		border-radius: 0.25rem;
+		padding: 0.5em;
 		box-shadow: 0 19px 38px rgba(0, 0, 0, 0.3),
 			0 15px 12px rgba(0, 0, 0, 0.22);
 	}
 
-	@media only screen and (max-width: 1600px) {
-		div {
-			width: calc(100% - 2em);
-		}
+	.horizontal {
+		width: 85%;
+		margin: 1em;
+	}
+
+	.vertical {
+		width: 402px;
+		min-width: 402px;
+		max-width: 402px;
+		margin: 0 1em;
+		flex-direction: column;
+		align-items: center;
+	}
+
+	@media only screen and (max-width: 1920px) {
 	}
 
 	@media only screen and (max-width: 768px) {
-		div {
+		.horizontal {
+			box-shadow: none;
 			width: 100%;
+			margin: 0;
+			padding: 0;
+			border-radius: 0;
+			background-color: rgba(0, 0, 0, 0);
+		}
+		.vertical {
+			box-shadow: none;
+			width: 100%;
+			min-width: none;
+			max-width: none;
 			margin: 0;
 			padding: 0;
 			border-radius: 0;
@@ -58,18 +81,25 @@
 	export let fg = "hsl(216, 7%, 15%)";
 	export let accent = "#ffa400";
 	export let title = "Default";
+	export let orientation = "horizontal";
 	import Thumbnail from "./Thumbnail.svelte";
 	// console.log(videos);
 </script>
 
-<div id="box" style="--bg: {bg}; --fg: {fg}; --accent: {accent};">
-	<h1>{title}</h1>
+<div
+	class="{orientation}"
+	id="box"
+	style="--bg: {bg}; --fg: {fg}; --accent: {accent};">
+	<h1>
+		{@html title}
+	</h1>
 	{#each videos as video}
-			<Thumbnail
-				id="{video._id}"
-				title="{video.title}"
-			/>
-		
+		<Thumbnail
+			{orientation}
+			id="{video._id}"
+			title="{video.title}"
+			author="{video.uploaded_by.username}"
+			date="{video.uploaded_at.substring(0, 10)}" />
 	{:else}
 		<h2>loading......</h2>
 	{/each}

@@ -48,40 +48,15 @@
 			font-size: 1.4em;
 		}
 
+		nav {
+			height: 3em;
+		}
+
 		span {
 			margin: 0;
 		}
 	}
 </style>
-
-<headerbar
-	style="--foreground:{foreground}; --background:{background}; --accent:{accent};
-	--accent2:{accent2};">
-	<nav>
-		<a href="/">
-			<!-- <img src="{icon}" alt="an icon" /> -->
-			<h1>{headerText}</h1>
-		</a>
-		<Searchbox />
-		<span>
-			{#each links as link}
-				<a href="{link.link}">{link.text}</a>
-			{/each}
-			{#if !loggedIn}
-				{#each buttons as button}
-					<Button
-						link="{button.link}"
-						text="{button.text}"
-						{background}
-						foreground="#009ffd" />
-				{/each}
-			{:else}
-				<Loginicon img="url(/stock.jpg)" />
-			{/if}
-
-		</span>
-	</nav>
-</headerbar>
 
 <script>
 	import Button from "./Button.svelte";
@@ -111,3 +86,32 @@
 		}
 	});
 </script>
+
+<headerbar
+	style="--foreground:{foreground}; --background:{background}; --accent:{accent};
+	--accent2:{accent2};">
+	<nav>
+		<a href="/">
+			<!-- <img src="{icon}" alt="an icon" /> -->
+			<h1>{headerText}</h1>
+		</a>
+		<Searchbox />
+		<span>
+			{#each links as link}
+				<a href="{link.link}">{link.text}</a>
+			{/each}
+			{#if !loggedIn}
+				{#each buttons as button}
+					<Button
+						link="{button.link}"
+						text="{button.text}"
+						{background}
+						foreground="#009ffd" />
+				{/each}
+			{:else}
+				<Loginicon img="url(/stock.jpg)" />
+			{/if}
+
+		</span>
+	</nav>
+</headerbar>

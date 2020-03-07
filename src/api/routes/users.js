@@ -62,6 +62,7 @@ router.get("/me", auth, async (req, res) => {
 
 // Set profile picture
 router.put('/me/picture', auth, upload.single('file'), async (req, res) => {
+	console.log(req.body);
 	if (req.fileValidationError) return res.end(req.fileValidationError);
 	try {
 		let user = await User.findById(req.user.id);

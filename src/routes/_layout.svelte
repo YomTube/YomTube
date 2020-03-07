@@ -11,6 +11,8 @@
 	<Nav />
 {/if}
 
+<svelte:body />
+
 <main>
 	<slot />
 </main>

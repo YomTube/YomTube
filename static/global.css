@@ -4,16 +4,30 @@
 	padding: 0px;
 }
 
+:root {
+	
 
+	--border-radius: 0.25rem;
+}
 
 body {
+	--fg: #ffffff;
+	--bg: #232528;
+	--darkblue: #2a2a72;
+	--lightblue: #009ffd;
+	--orange: #ffa400;
 	margin: 0;
 	/*font-family: Roboto, -apple-system, BlinkMacSystemFont, Segoe UI, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;*/
 	font-family: 'Nunito', sans-serif;
 	font-size: 14px;
 	line-height: 1.5;
-	background-color: #141434;
-	color: #ffffff;
+	background-color: var(--darkblue);
+	color: var(--fg);
+}
+
+body.dark {
+	--bg: #ffffff;
+	--fg: #232528;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -37,6 +51,7 @@ code {
 	padding: 0.2em 0.4em;
 	border-radius: 2px;
 }
+
 
 @media (min-width: 400px) {
 	body {
