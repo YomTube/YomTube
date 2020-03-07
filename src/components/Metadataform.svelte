@@ -111,7 +111,6 @@
 			width: 100%;
 			border-radius: 0;
 			margin-top: 0;
-			/* height: 100%; */
 			padding: 0;
 		}
 
@@ -125,24 +124,6 @@
 			width: 450px;
 		}
 	}
-
-	/* @media only screen and (max-width: 1000px) and (min-width: 769px) {
-		form {
-			width: 80%;
-		}
-	}
-	
-	@media only screen and (max-width: 1150px) and (min-width: 1001px) {
-		form {
-			width: 75%;
-		}
-	}
-
-	@media only screen and (max-width: 1300px) and (min-width: 1151px) {
-		form {
-			width: 70%;
-		}
-	} */
 
 	@keyframes breathing {
 		0% {

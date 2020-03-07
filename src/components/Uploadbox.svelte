@@ -7,7 +7,6 @@
 	#container {
 		border-radius: 0.4em;
 		background-color: var(--bg);
-		/* transition: all 1s; */
 		width: 100%;
 		height: 100%;
 	}
