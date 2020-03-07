@@ -90,7 +90,6 @@
 				bg="#ffffff"
 				accent1="#ffa400"
 				accent2="#009ffd"
-				imgtext="Welcome back"
 				icon="/uploadimage.svg"
 				videotitle="{title}"
 				visible="{uploading}"

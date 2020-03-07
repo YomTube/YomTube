@@ -5,7 +5,9 @@
 		width: 100%;
 		display: flex;
 		justify-content: center;
-		margin-top: 3em;
+		/* padding-bottom: 1em; */
+		padding: 3em 0;
+		/* margin-top: 3em; */
 	}
 
 	.textfield {
@@ -32,7 +34,7 @@
 
 	h1 {
 		color: var(--accent1);
-		padding-top: 1em;
+		/* padding-top: 1em; */
 		padding-bottom: 0.3em;
 	}
 
@@ -73,7 +75,7 @@
 	}
 
 	.buttonContainerContainer {
-		margin: 1em 0;
+		margin-top: 1em;
 	}
 
 	.upload_file {
@@ -98,12 +100,12 @@
 		top: calc(100% - 1.6em);
 		left: calc(100% - 1.6em);
 		border-radius: 0.4em;
-		background-color: hotpink;
+		/* background-color: hotpink; */
 		width: 1.5em;
 		height: 1.5em;
 	}
 
-	.hidden{
+	.hidden {
 		display: none;
 	}
 
@@ -113,6 +115,7 @@
 			width: 100%;
 			border-radius: 0;
 			margin-top: 0;
+			height: 100%;
 		}
 
 		form {
@@ -145,30 +148,35 @@
 
 	export let videotitle;
 	export let videoID;
+	export let description;
 
 	let customThumbnail;
-	let selectedThumbnail = 1;
+	export let selectedThumbnail = 1;
 	let previousThumb = 1;
 	let thumbUploading = false;
 	let thumbnailFileElement;
 	let thumbnailWaiting = false;
 	let waitingThumbnailEvent;
 	let metadataWaiting = false;
-	let hasCustomThumbnail = false;
+	export let hasCustomThumbnail = false;
+
+	let buttonColor = "#FFA400";
 
 	let descriptionTextarea;
 	let titleInput;
+
+	let thumbnailFileLabel;
 
 	let thumbnailDiv1;
 	let thumbnailDiv2;
 	let thumbnailDiv3;
 
-	let test = false;
-
 	import Button from "../components/Button.svelte";
 	let thumbnail1;
 	let thumbnail2;
 	let thumbnail3;
+
+	import { onMount } from "svelte";
 
 	$: {
 		thumbnail1 = "/api/videos/" + videoID + "/thumbnail/1";
@@ -181,6 +189,19 @@
 	}
 	$: thumbnail2 = "/api/videos/" + videoID + "/thumbnail/2";
 	$: thumbnail3 = "/api/videos/" + videoID + "/thumbnail/3";
+
+	onMount(() => {
+		if (description) {
+			descriptionTextarea.value = description;
+		}
+
+		if (hasCustomThumbnail) {
+			customThumbnail.style =
+				"background-image: url(/api/videos/" +
+				videoID +
+				"/thumbnail/0";
+		}
+	});
 
 	function uploadThumb(e) {
 		previewThumb();
@@ -230,7 +251,8 @@
 		console.log("thumb uploaded");
 		selectedThumbnail = 0;
 		thumbUploading = false;
-		customThumbnail.style = "background-image: url(/api/videos/" + videoID + "/0"; //TODO: byta till rätt url
+		customThumbnail.style =
+			"background-image: url(/api/videos/" + videoID + "/0";
 	}
 
 	function uploading() {
@@ -247,6 +269,7 @@
 
 	function submitForm() {
 		console.log("submitform");
+		buttonColor = "var(--darkblue)";
 
 		if (videoID) {
 			let data = new FormData();
@@ -267,6 +290,13 @@
 			data.append("description", descriptionTextarea.value);
 			data.append("published", true);
 
+			xhr.addEventListener("load", function() {
+				buttonColor = "green";
+				setTimeout(function() {
+					buttonColor = "var(--orange)";
+				}, 3000);
+			});
+
 			xhr.send(data);
 
 			metadataWaiting = false;
@@ -286,6 +316,14 @@
 			hasCustomThumbnail = true;
 		};
 	}
+
+	function customThumbnailClickHandler() {
+		if (hasCustomThumbnail) {
+			selectedThumbnail = 0;
+		} else {
+			thumbnailFileLabel.click();
+		}
+	}
 </script>
 
 <div
@@ -296,14 +334,18 @@
 
 	<form action="">
 		<h1>{message}</h1>
-		<label for="title">Title</label>
+		<label for="title">
+			<b>Title</b>
+		</label>
 		<input
 			id="title"
 			type="text"
 			class="textfield"
 			bind:this="{titleInput}"
 			value="{videotitle}" />
-		<label for="description">Description</label>
+		<label for="description">
+			<b>Description</b>
+		</label>
 		<textarea
 			name="description"
 			id="description"
@@ -323,15 +365,25 @@
 				on:change="{uploadThumb}" />
 			<label
 				for="thumbnailFileElement"
+				class="upload_file"
+				bind:this="{thumbnailFileLabel}"></label>
+			<div
+				class="upload_thumbnail thumbnail"
+				bind:this="{customThumbnail}"
+				on:click="{customThumbnailClickHandler}"
+				class:thumbSelected="{selectedThumbnail == 0}"
+				class:breathingBorder="{thumbUploading}">
+				<div
+					class="changeThumb upload_thumbnail"
+					on:click="{() => thumbnailFileLabel.click()}"
+					class:hidden="{!hasCustomThumbnail}"></div>
+			</div>
+			<!-- <label
+				for="thumbnailFileElement"
 				class="upload_thumbnail thumbnail"
 				bind:this="{customThumbnail}"
 				class:thumbSelected="{selectedThumbnail == 0}"
-				class:breathingBorder="{thumbUploading}">
-				<div 
-					class="changeThumb upload_thumbnail"
-					class:hidden="{!hasCustomThumbnail}"
-					></div>
-			</label>
+				class:breathingBorder="{thumbUploading}"></label> -->
 			<div
 				class="thumbnail"
 				style="background-image: url({thumbnail1});"
@@ -358,7 +410,7 @@
 					onclick="{submitForm}"
 					text="Save"
 					background="white"
-					foreground="#FFA400" />
+					foreground="{buttonColor}" />
 			</div>
 		</div>
 	</form>
