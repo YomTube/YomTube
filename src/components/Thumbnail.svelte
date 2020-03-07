@@ -32,6 +32,9 @@
 		font-size: 80%;
 		color: var(--fg);
 		background-color: var(--bg);
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
 	}
 
 	span {
@@ -48,17 +51,18 @@
 
 	h1 {
 		width: 100%;
-		font-size: 200%;
+		font-size: 2em;
 	}
 
 	span:hover {
 		box-shadow: 0 19px 38px rgba(0, 0, 0, 0.3),
-			0 15px 12px rgba(0, 0, 0, 0.22);
+			0 15px 12px rgba(80, 67, 67, 0.22);
 	}
 
 	.img-wrapper {
 		position: relative;
 		padding-bottom: 56.2%;
+		border-radius: 0.4em 0.4em 0 0;
 		background-color: transparent;
 	}
 
