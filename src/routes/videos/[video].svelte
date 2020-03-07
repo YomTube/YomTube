@@ -115,7 +115,7 @@
 </script>
 
 <svelte:head>
-	<title>YomTube - {videoJSON.title}</title>
+	<title>YomTube - {videoJSON.description || ""}</title>
 </svelte:head>
 
 <div class="content">

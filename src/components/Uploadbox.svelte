@@ -310,7 +310,6 @@
 			if (e.total == e.loaded) {
 				processing = true;
 				uploadText.innerText = "Generating thumbnails";
-				// progressbar.removeAttribute('value');
 			}
 		} else {
 			// Unable to compute progress information since the total size is unknown

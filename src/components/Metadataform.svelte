@@ -103,6 +103,10 @@
 		height: 1.5em;
 	}
 
+	.hidden{
+		display: none;
+	}
+
 	@media only screen and (max-width: 768px) {
 		#conatiner {
 			overflow: hidden;
@@ -131,7 +135,6 @@
 	}
 </style>
 
-
 <script>
 	export let fg;
 	export let bg;
@@ -151,6 +154,7 @@
 	let thumbnailWaiting = false;
 	let waitingThumbnailEvent;
 	let metadataWaiting = false;
+	let hasCustomThumbnail = false;
 
 	let descriptionTextarea;
 	let titleInput;
@@ -278,6 +282,7 @@
 				"background-image: url(" +
 				reader.result +
 				"); background-color: #000000;";
+			hasCustomThumbnail = true;
 		};
 	}
 </script>
@@ -314,15 +319,17 @@
 				bind:this="{thumbnailFileElement}"
 				id="thumbnailFileElement"
 				accept="image/*"
-				on:change="{uploadThumb}"
-				/>
+				on:change="{uploadThumb}" />
 			<label
 				for="thumbnailFileElement"
 				class="upload_thumbnail thumbnail"
 				bind:this="{customThumbnail}"
 				class:thumbSelected="{selectedThumbnail == 0}"
 				class:breathingBorder="{thumbUploading}">
-				<div class="changeThumb upload_thumbnail"></div>
+				<div 
+					class="changeThumb upload_thumbnail"
+					class:hidden="{!hasCustomThumbnail}"
+					></div>
 			</label>
 			<div
 				class="thumbnail"
@@ -346,11 +353,11 @@
 
 		<div class="buttonContainer">
 			<div class="buttonContainerContainer">
-					<Button
-						onclick="{submitForm}"
-						text="Save"
-						background="white"
-						foreground="#FFA400" />
+				<Button
+					onclick="{submitForm}"
+					text="Save"
+					background="white"
+					foreground="#FFA400" />
 			</div>
 		</div>
 	</form>
