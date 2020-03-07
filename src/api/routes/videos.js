@@ -156,7 +156,7 @@ router.patch('/:id', auth, thumbnailUpload.single("file"), async (req, res) => {
 				await fs.unlink(customThumbnailPath)
 			} catch (err) { }
 			let image = await Jimp.read(file.path);
-			let newCroppedImage = await image.contain(1600, 900).resize(1600, 900).background("#000");
+			let newCroppedImage = await image.contain(1600, 900).resize(1600, 900).background(0x000000);
 			await newCroppedImage.write(customThumbnailPath)
 			video.customThumbnail = true;
 		}

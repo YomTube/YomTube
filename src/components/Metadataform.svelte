@@ -131,7 +131,6 @@
 	}
 </style>
 
-
 <script>
 	export let fg;
 	export let bg;
@@ -163,29 +162,14 @@
 	let test = false;
 
 	import Button from "../components/Button.svelte";
-	let thumbnail1;
-	let thumbnail2;
-	let thumbnail3;
 
 	$: {
-		thumbnail1 = "/api/videos/" + videoID + "/thumbnail/1";
 		if (thumbnailWaiting) {
-			console.log("thumbWaiting");
 			uploadThumb(waitingThumbnailEvent);
-			console.log("thumb uploading bingbong");
 		}
 		if (metadataWaiting) {
 			submitForm();
 		}
-	}
-	$: thumbnail2 = "/api/videos/" + videoID + "/thumbnail/2";
-	$: thumbnail3 = "/api/videos/" + videoID + "/thumbnail/3";
-
-	console.log(videoID);
-	if (videoID) {
-		console.log("video id true");
-	} else {
-		console.log("video id false");
 	}
 
 	function uploadThumb(e) {
@@ -213,30 +197,24 @@
 
 			try {
 				if (e.srcElement.files[0].name) {
-					console.log("clown");
 					data.append("file", e.srcElement.files[0]);
-					// data.append("primaryThumbnail", 0);
-					console.log(e.srcElement.files[0]);
 				}
 			} catch {}
 
-			xhr.upload.addEventListener("load", transferComplete);
 			xhr.upload.addEventListener("error", uploadError);
+			xhr.addEventListener("load", transferComplete);
 			xhr.send(data);
 		} else {
 			thumbnailWaiting = true;
 			waitingThumbnailEvent = e;
-			console.log(waitingThumbnailEvent);
 		}
 	}
 
 	let thumbnailProgressPercentage;
 
 	function transferComplete() {
-		console.log("thumb uploaded");
 		selectedThumbnail = 0;
 		thumbUploading = false;
-		customThumbnail.style = "background-image: url(/api/videos/" + videoID + "/0"; //TODO: byta till rätt url
 	}
 
 	function uploading() {
@@ -246,14 +224,11 @@
 	}
 
 	function uploadError() {
-		console.log("thumbnail upload failed");
 		thumbUploading = false;
 		selectedThumbnail = previousThumb;
 	}
 
 	function submitForm() {
-		console.log("submitform");
-
 		if (videoID) {
 			let data = new FormData();
 			let xhr = new XMLHttpRequest();
@@ -296,10 +271,9 @@
 <div
 	id="conatiner"
 	style="--fg: {fg}; --bg: {bg}; --accent1: {accent1}; --accent2: {accent2};
-	--upload-icon: url({icon}); --thumbnail1: url({thumbnail1}) --thumbnail2:
-	url({thumbnail2}; --thumbnail3: url({thumbnail3}">
+	--upload-icon: url({icon});">
 
-	<form action="">
+	<form>
 		<h1>{message}</h1>
 		<label for="title">Title</label>
 		<input
@@ -325,8 +299,7 @@
 				bind:this="{thumbnailFileElement}"
 				id="thumbnailFileElement"
 				accept="image/*"
-				on:change="{uploadThumb}"
-				/>
+				on:change="{uploadThumb}" />
 			<label
 				for="thumbnailFileElement"
 				class="upload_thumbnail thumbnail"
@@ -337,19 +310,19 @@
 			</label>
 			<div
 				class="thumbnail"
-				style="background-image: url({thumbnail1});"
+				style="background-image: {videoID ? `url(/api/videos/${videoID}/thumbnail/1)` : undefined};"
 				bind:this="{thumbnailDiv1}"
 				class:thumbSelected="{selectedThumbnail == 1}"
 				on:click="{() => (selectedThumbnail = 1)}"></div>
 			<div
 				class="thumbnail"
-				style="background-image: url({thumbnail2});"
+				style="background-image: {videoID ? `url(/api/videos/${videoID}/thumbnail/2)` : undefined};"
 				bind:this="{thumbnailDiv2}"
 				class:thumbSelected="{selectedThumbnail == 2}"
 				on:click="{() => (selectedThumbnail = 2)}"></div>
 			<div
 				class="thumbnail last_thumbnail"
-				style="background-image: url({thumbnail3});"
+				style="background-image: {videoID ? `url(/api/videos/${videoID}/thumbnail/3)` : undefined};"
 				bind:this="{thumbnailDiv3}"
 				class:thumbSelected="{selectedThumbnail == 3}"
 				on:click="{() => (selectedThumbnail = 3)}"></div>
@@ -357,11 +330,11 @@
 
 		<div class="buttonContainer">
 			<div class="buttonContainerContainer">
-					<Button
-						onclick="{submitForm}"
-						text="Save"
-						background="white"
-						foreground="#FFA400" />
+				<Button
+					onclick="{submitForm}"
+					text="Save"
+					background="white"
+					foreground="#FFA400" />
 			</div>
 		</div>
 	</form>
