@@ -1,24 +1,24 @@
 <style>
-  .button {
-    position: relative;
-    border: 2px solid var(--foreground);
-    border-radius: 0.5em;
-    padding: 0.3em 1.5em;
-    display: flex;
-    font-size: 1.2em;
-    align-items: center;
-    align-content: center;
-    z-index: 1;
-    overflow: hidden;
-    background: none;
-    transition: 0.08s ease-in;
-    color: var(--foreground);
-  }
+	.button {
+		position: relative;
+		border: 2px solid var(--foreground);
+		border-radius: 0.5em;
+		padding: 0.3em 1.5em;
+		display: flex;
+		font-size: 1.2em;
+		align-items: center;
+		align-content: center;
+		z-index: 1;
+		overflow: hidden;
+		background: none;
+		transition: 0.08s ease-in;
+		color: var(--foreground);
+	}
 
-  .button:hover {
-    color: var(--background);
-    cursor: pointer;
-  }
+	.button:hover {
+		color: var(--background);
+		cursor: pointer;
+	}
 
 	.button:hover {
 		color: var(--background);

@@ -85,9 +85,8 @@
 	export async function preload(page) {
 		const videoID = page.params.video;
 		const src = `/api/videos/${videoID}`;
-		const resp = await this.fetch(src);
-		const json = await resp.json();
-		const videoJSON = json.video;
+		const videoResp = await this.fetch(src);
+		const videoJSON = await videoResp.json();
 
 		return { videoJSON, src };
 	}
@@ -100,7 +99,6 @@
 	import Commentbox from "../../components/Commentbox.svelte";
 	export let videoJSON;
 	export let src;
-	console.log(videoJSON);
 	let videos = [];
 	onMount(async () => {
 		try {
@@ -108,8 +106,7 @@
 			videos = await response.json();
 			if (videos.length == 0) throw new Error("No videos found");
 		} catch (error) {
-			console.error("Found some error");
-			console.error(error);
+			console.error("Found some error", error);
 		}
 	});
 </script>

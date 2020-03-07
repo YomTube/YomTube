@@ -14,8 +14,7 @@
 			videos = await response.json();
 			if (videos.length == 0) throw new Error("No videos found");
 		} catch (error) {
-			console.error("Found some error");
-			console.error(error);
+			console.error("Found some error", error);
 		}
 	});
 </script>

@@ -1,9 +1,11 @@
 import Router from "express";
 import Video from "../../models/video";
+import Comment from "../../models/comment";
 import multer from "multer";
 import auth from "../middleware/auth";
 import { promises as fs } from "fs";
 import addToTranscoderQueue from "../../utils/transcoder";
+import User from "../../models/user";
 
 const router = Router();
 
@@ -59,12 +61,12 @@ router.get("/", async (req, res) => {
 
 // Get specific video
 router.get("/:id", async (req, res) => {
-	let {id} = req.params;
+	let { id } = req.params;
 	try {
-		const video = await Video.findById(id)
+		const video = await Video
+			.findById(id, 'title description uploaded_at uploaded_by available_qualities')
 			.populate('uploaded_by', 'username profilePicture')
-
-		res.send({ video });
+		res.send(video);
 	} catch (err) {
 		res.status(400).send({ error: err.message });
 	}
@@ -95,7 +97,7 @@ router.get("/:id/thumbnail/:index", async (req, res) => {
 });
 
 router.get("/:id/:quality", async (req, res) => {
-	let {id, quality} = req.params;
+	let { id, quality } = req.params;
 	try {
 		const video = await Video.findById(id, 'available_qualities');
 		if (!video.available_qualities.includes(quality))
@@ -168,7 +170,7 @@ router.patch('/:id', auth, thumbnailUpload.single("file"), async (req, res) => {
 
 // Delete a video
 router.delete('/:id', auth, async (req, res) => {
-	let {id} = req.params;
+	let { id } = req.params;
 	try {
 		const video = await Video.findById(id, 'uploaded_by');
 		if (!video)

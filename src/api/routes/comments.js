@@ -9,9 +9,15 @@ const router = Router();
 router.get('/:videoID', async (req, res) => {
 	let { videoID } = req.params;
 	try {
-		let video = await Video.findById(videoID)
-		let comments = await Comment.find({ _id: { $in: video.comments.map(c => c.comment) } })
-		res.send(comments)
+		let video = await Video.findById(videoID, 'comments')
+			.populate({
+				path: 'comments.comment',
+				populate: {
+					path: 'user',
+					select: 'username profilePicture'
+				}
+			})
+		res.send(video.comments)
 	} catch (err) {
 		res.status(400).send({ error: err.message })
 	}
@@ -22,14 +28,17 @@ router.post('/:videoID', auth, async (req, res) => {
 	let { videoID } = req.params;
 	try {
 		let { text } = req.body;
+		if (!(text && text.length > 0)) throw new Error("Text was undefined")
 		let video = await Video.findById(videoID)
 		let comment = new Comment({
 			text: text,
 			user: req.user,
-			video: video,
 			created_at: Date.now()
 		})
 		video.comments = video.comments.concat({ comment });
+
+		console.log("comments")
+
 		await video.save();
 		await comment.save();
 		res.sendStatus(201);
@@ -38,7 +47,7 @@ router.post('/:videoID', auth, async (req, res) => {
 	}
 })
 
-router.put('/:videoID/:commendID', auth, async (req, res) => {
+router.put('/:videoID/:commentID', auth, async (req, res) => {
 	let { videoID, commentID } = req.params;
 	let { text } = req.body
 	try {
@@ -46,7 +55,8 @@ router.put('/:videoID/:commendID', auth, async (req, res) => {
 		let comment = await Comment.findById(commentID);
 		if (!video || !comment) throw new Error("Resource couldn't be found")
 		if (comment.user != req.user.id) throw new Error("You dont have permission to remove that comment")
-		if (video.id != comment.video) throw new Error("Comment doesn't belong to that video")
+		if (video.comments != comment.video) throw new Error("Comment doesn't belong to that video")
+		// TODO FIX ^
 		if (!text || text.length == 0) throw new Error("Comment can't be empty")
 
 		comment.text = text;

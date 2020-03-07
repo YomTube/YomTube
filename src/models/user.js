@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import validator from "validator";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
+import { promises as fs } from 'fs';
 
 const UserSchema = new mongoose.Schema({
 	username: {
@@ -49,8 +50,16 @@ const UserSchema = new mongoose.Schema({
 
 UserSchema.pre("save", async function (next) {
 	const user = this;
+
 	if (user.isModified("password"))
 		user.password = await bcrypt.hash(user.password, 10);
+
+	if (!user.profilePicture.data) {
+		user.profilePicture = {
+			data: Buffer.from(await fs.readFile(process.cwd() + '/static/stock-profile-pic.png')).toString('base64'),
+			contentType: 'image/png'
+		}
+	}
 
 	next();
 });
@@ -76,4 +85,4 @@ UserSchema.statics.findUser = async (identifier = undefined, password) => {
 };
 
 const User = new mongoose.model("User", UserSchema);
-export default User;
+export { User as default, UserSchema };

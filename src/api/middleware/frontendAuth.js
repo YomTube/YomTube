@@ -8,8 +8,6 @@ const authUrls = [
 
 const frontendAuth = async (req, res, next) => {
 	if (!req.url.startsWith('/client/')) {
-		console.log("Request IP:", req.headers['x-forwarded-for'] || req.connection.remoteAddress)
-		console.log("Got URL:", req.originalUrl)
 		if (authUrls.includes(req.originalUrl)) {
 			try {
 				let cookies = req.header('cookie');
@@ -20,15 +18,12 @@ const frontendAuth = async (req, res, next) => {
 
 				let token = tokenCookie[0].split("=")[1];
 				const data = jwt.verify(token, process.env.JWT_SECRET);
-				console.log(data._id, token)
 				const user = await User.findOne({ _id: data._id, 'tokens.token': token })
 				if (!user) throw new Error("No user");
 			} catch (err) {
 				console.error(err)
 				return res.redirect('/login')
 			}
-		} else {
-			console.log("authUrls doesn't include")
 		}
 	}
 	next();

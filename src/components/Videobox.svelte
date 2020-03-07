@@ -83,7 +83,6 @@
 	export let title = "Default";
 	export let orientation = "horizontal";
 	import Thumbnail from "./Thumbnail.svelte";
-	// console.log(videos);
 </script>
 
 <div
@@ -101,6 +100,6 @@
 			author="{video.uploaded_by.username}"
 			date="{video.uploaded_at.substring(0, 10)}" />
 	{:else}
-		<h2>loading......</h2>
+		<h2>Loading...</h2>
 	{/each}
 </div>
