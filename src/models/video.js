@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import User from "./user";
+import { CommentSchema } from './comment'
 import { promises as fs } from 'fs';
 
 const VideoSchema = new mongoose.Schema({
@@ -32,7 +33,9 @@ const VideoSchema = new mongoose.Schema({
 	},
 	comments: [
 		{
-			comment: { type: mongoose.Schema.Types.ObjectId, ref: 'Comment' }
+			comment: {
+				type: mongoose.Schema.Types.ObjectId, ref: 'Comment'
+			}
 		}
 	]
 });
@@ -71,4 +74,5 @@ VideoSchema.pre('remove', async function (next) {
 })
 
 const Video = mongoose.model("Video", VideoSchema);
-export default Video;
+export { Video as default, VideoSchema };
+

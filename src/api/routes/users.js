@@ -25,12 +25,7 @@ const router = express.Router();
 router.post("/register", async (req, res) => {
 	try {
 		let user = new User(req.body);
-		if (!user.profilePicture) {
-			user.profilePicture = {
-				data: await fs.readFile(process.cwd() + '/static/stock-profile-pic.png'),
-				contentType: 'image/png'
-			}
-		}
+		console.log("Created user")
 		await user.save();
 		const token = await user.genJWTToken();
 		res.status(201).send({ token });

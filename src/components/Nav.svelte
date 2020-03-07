@@ -14,7 +14,7 @@
 	img {
 		padding-left: 5em;
 		display: block;
-		width: 3.5%;
+		width: auto;
 		margin: 8px;
 		height: auto;
 	}
@@ -27,10 +27,23 @@
 
 	a {
 		color: var(--foreground);
-		margin: 1em;
 		font-size: 1.2em;
+		margin: 0em;
 		text-decoration: none;
 		transition: 0.08s ease-in;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
+
+	.pagetitle {
+		margin: 1em;
+	}
+
+	.icon {
+		margin: 0.5em;
+		font-size: 2em;
+		color: var(--orange);
 	}
 
 	a:hover {
@@ -43,13 +56,27 @@
 		align-items: center;
 	}
 
+	.mobile {
+		display: none;
+	}
+
 	@media only screen and (max-width: 768px) {
 		h1 {
 			font-size: 1.4em;
 		}
 
-		nav {
-			height: 3em;
+		.desktop {
+			display: none;
+		}
+
+		.icon {
+			margin: 0em;
+		}
+
+		.mobile {
+			display: flex;
+			justify-content: center;
+			align-items: center;
 		}
 
 		span {
@@ -91,22 +118,31 @@
 	style="--foreground:{foreground}; --background:{background}; --accent:{accent};
 	--accent2:{accent2};">
 	<nav>
-		<a href="/">
+		<a class="pagetitle" href="/">
 			<!-- <img src="{icon}" alt="an icon" /> -->
 			<h1>{headerText}</h1>
 		</a>
 		<Searchbox />
 		<span>
-			{#each links as link}
-				<a href="{link.link}">{link.text}</a>
-			{/each}
+			<a class="link" href="/upload">
+				<i class="material-icons icon">video_call</i>
+			</a>
 			{#if !loggedIn}
 				{#each buttons as button}
-					<Button
-						link="{button.link}"
-						text="{button.text}"
-						{background}
-						foreground="#009ffd" />
+					<div class="desktop">
+						<Button
+							link="{button.link}"
+							text="{button.text}"
+							{background}
+							foreground="#009ffd" />
+					</div>
+					<div class="mobile">
+						<a href="{button.link}">
+							<i class="material-icons icon">
+								account_circle
+							</i>
+						</a>
+					</div>
 				{/each}
 			{:else}
 				<Loginicon img="url(/stock.jpg)" />

@@ -1,5 +1,5 @@
 <style>
-	*{
+	* {
 		/* overflow-x: hidden; */
 	}
 
@@ -63,7 +63,6 @@
 
 	function uploaded(e) {
 		videoID = e.detail.videoID;
-		console.log(videoID);
 	}
 </script>
 

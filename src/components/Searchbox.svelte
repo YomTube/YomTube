@@ -23,7 +23,6 @@
 		color: white;
 		border: none;
 		border-radius: 0 0.3em 0.3em 0;
-		background-image: url("/search.svg");
 		background-size: 65%;
 		background-repeat: no-repeat;
 		background-position: center;
@@ -34,13 +33,9 @@
 		display: none;
 		height: 100%;
 		width: 4em;
-		background-color: var(--accent2);
-		color: white;
+		color: var(--lightblue);
+		background-color: white;
 		border: none;
-		background-image: url("/arrow_back.svg");
-		background-size: 65%;
-		background-repeat: no-repeat;
-		background-position: center;
 		cursor: pointer;
 	}
 
@@ -52,21 +47,24 @@
 
 		.searchwrapper {
 			width: 2.5em;
-			margin-right: 0.5em;
 			height: 32px;
+			margin-right: 0em;
 			margin-left: auto;
 			box-shadow: none;
 		}
 
 		.searchbutton {
 			border-radius: 100%;
-			height: 32px;
-			width: 32px;
+			height: 38.4px;
+			width: 38.4px;
+			color: var(--orange);
+			font-size: 1.5em;
+			background-color: transparent;
 		}
 		.fullwidth {
 			width: 100%;
 			position: absolute;
-			height: 3em;
+			height: 4em;
 			z-index: 10;
 			left: 0;
 			top: 0;
@@ -86,9 +84,12 @@
 			display: block;
 		}
 		.wide {
-			width: 8em;
-			height: 3.4em;
-			background-size: 40%;
+			width: 2em;
+			height: 100%;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			border: none;
 		}
 	}
 </style>
@@ -105,7 +106,9 @@
 	<button
 		class="backbutton"
 		class:mobilebutton="{wide}"
-		on:click="{toggle}"></button>
+		on:click="{toggle}">
+		<i class="material-icons">arrow_back</i>
+	</button>
 	<input
 		class:widesearch="{wide}"
 		placeholder="Search"
@@ -115,5 +118,7 @@
 		class="searchbutton"
 		class:mobilebutton="{wide}"
 		class:wide
-		on:click="{toggle}"></button>
+		on:click="{toggle}">
+		<i class="material-icons">search</i>
+	</button>
 </div>

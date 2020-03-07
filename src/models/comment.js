@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-import Video from "./video";
 
 const CommentSchema = new mongoose.Schema({
 	text: {
@@ -9,8 +8,7 @@ const CommentSchema = new mongoose.Schema({
 	created_at: { type: Date, required: true },
 	edited_at: { type: Date, default: null },
 	score: { type: Number, default: 0 },
-	user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
-	video: { type: mongoose.Schema.Types.ObjectId, ref: "Video", required: true }
+	user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true }
 });
 
 CommentSchema.pre('remove', async function (next) {
@@ -28,4 +26,4 @@ CommentSchema.pre('remove', async function (next) {
 })
 
 const Comment = new mongoose.model("Comment", CommentSchema);
-export default Comment;
+export { Comment as default, CommentSchema };

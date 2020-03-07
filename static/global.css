@@ -10,6 +10,38 @@
 	--border-radius: 0.25rem;
 }
 
+/* Stuff for material icons font */
+@font-face {
+  font-family: 'Material Icons';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Material Icons'),
+    local('MaterialIcons-Regular'),
+    url(/fonts/MaterialIcons-Regular.woff2) format('woff2'),
+    url(/fonts/MaterialIcons-Regular.woff) format('woff'),
+    url(/fonts/MaterialIcons-Regular.ttf) format('truetype');
+}
+
+.material-icons {
+  font-family: 'Material Icons';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;  /* Preferred icon size */
+  display: inline-block;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+  direction: ltr;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  -moz-osx-font-smoothing: grayscale;
+  font-feature-settings: 'liga';
+}
+
+/* end material icons font */
+
 body {
 	--fg: #ffffff;
 	--bg: #232528;
@@ -52,6 +84,13 @@ code {
 	border-radius: 2px;
 }
 
+
+@media (max-width: 768px) {
+	body {
+		/* background-color: #F1F3F4; */
+		background-color: #6C6D9D;
+	} 
+}
 
 @media (min-width: 400px) {
 	body {

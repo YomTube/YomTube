@@ -230,6 +230,7 @@
 		console.log("thumb uploaded");
 		selectedThumbnail = 0;
 		thumbUploading = false;
+		customThumbnail.style = "background-image: url(/api/videos/" + videoID + "/0"; //TODO: byta till rätt url
 	}
 
 	function uploading() {

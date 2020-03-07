@@ -30,6 +30,10 @@
 		color: var(--bg);
 	}
 
+	.date {
+		color: #606060;
+	}
+
 	.content {
 		padding: 1em 0;
 		margin: 0 auto;
@@ -70,14 +74,6 @@
 			margin: 0;
 			padding: 0;
 		}
-
-		.playerbox:after {
-			content: "";
-			position: absolute;
-			left: 2%;
-			width: 96%;
-			border-bottom: 2px solid var(--orange);
-		}
 	}
 </style>
 
@@ -85,9 +81,8 @@
 	export async function preload(page) {
 		const videoID = page.params.video;
 		const src = `/api/videos/${videoID}`;
-		const resp = await this.fetch(src);
-		const json = await resp.json();
-		const videoJSON = json.video;
+		const videoResp = await this.fetch(src);
+		const videoJSON = await videoResp.json();
 
 		return { videoJSON, src };
 	}
@@ -100,7 +95,6 @@
 	import Commentbox from "../../components/Commentbox.svelte";
 	export let videoJSON;
 	export let src;
-	console.log(videoJSON);
 	let videos = [];
 	onMount(async () => {
 		try {
@@ -108,8 +102,7 @@
 			videos = await response.json();
 			if (videos.length == 0) throw new Error("No videos found");
 		} catch (error) {
-			console.error("Found some error");
-			console.error(error);
+			console.error("Found some error", error);
 		}
 	});
 </script>
@@ -123,6 +116,7 @@
 		<Videoplayer {videoJSON} {src} />
 		<div class="videodetails">
 			<h1 class="title">{videoJSON.title}</h1>
+			<p class="date">{videoJSON.uploaded_at.substring(0, 10)}</p>
 			<p class="author">{videoJSON.uploaded_by.username}</p>
 			<details>{videoJSON.description}</details>
 		</div>

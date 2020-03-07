@@ -8,7 +8,7 @@
 </script>
 
 {#if segment != 'login'}
-	<Nav />
+	<Nav headertext="" />
 {/if}
 
 <svelte:body />
