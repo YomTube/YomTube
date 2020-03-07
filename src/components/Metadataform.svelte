@@ -201,7 +201,7 @@
 			customThumbnail.style =
 				"background-image: url(/api/videos/" +
 				videoID +
-				"/thumbnail/0";
+				"/thumbnail/0); background-color: #000000;";
 		}
 	});
 
