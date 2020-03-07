@@ -1,8 +1,4 @@
 <style>
-	* {
-		/* overflow-x: hidden; */
-	}
-
 	.maincontainer {
 		display: flex;
 		flex-direction: column;
@@ -15,7 +11,6 @@
 		width: 70%;
 		height: 70vh;
 		display: flex;
-		/* align-items: center; */
 		justify-content: center;
 	}
 
@@ -28,6 +23,7 @@
 	.metadatacontainer {
 		padding-bottom: 2em;
 		width: 70%;
+		padding-top: 3em;
 	}
 
 	@media only screen and (max-width: 768px) {
@@ -38,12 +34,12 @@
 
 		.metadatacontainer {
 			width: 100%;
-			height: calc(100vh - 4em);
+			padding: 0;
+			/* height: calc(100vh - 4em); */
 		}
 
 		.uploadcontainer {
 			width: 100%;
-			/* height: calc(100vh - 4em); */
 		}
 	}
 </style>

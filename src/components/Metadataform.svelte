@@ -5,9 +5,7 @@
 		width: 100%;
 		display: flex;
 		justify-content: center;
-		/* padding-bottom: 1em; */
 		padding: 3em 0;
-		/* margin-top: 3em; */
 	}
 
 	.textfield {
@@ -34,7 +32,6 @@
 
 	h1 {
 		color: var(--accent1);
-		/* padding-top: 1em; */
 		padding-bottom: 0.3em;
 	}
 
@@ -100,7 +97,6 @@
 		top: calc(100% - 1.6em);
 		left: calc(100% - 1.6em);
 		border-radius: 0.4em;
-		/* background-color: hotpink; */
 		width: 1.5em;
 		height: 1.5em;
 	}
@@ -115,13 +111,38 @@
 			width: 100%;
 			border-radius: 0;
 			margin-top: 0;
-			height: 100%;
+			/* height: 100%; */
+			padding: 0;
 		}
 
 		form {
 			width: 90%;
 		}
 	}
+
+	@media only screen and (max-width: 1300px) and (min-width: 769px) {
+		form {
+			width: 450px;
+		}
+	}
+
+	/* @media only screen and (max-width: 1000px) and (min-width: 769px) {
+		form {
+			width: 80%;
+		}
+	}
+	
+	@media only screen and (max-width: 1150px) and (min-width: 1001px) {
+		form {
+			width: 75%;
+		}
+	}
+
+	@media only screen and (max-width: 1300px) and (min-width: 1151px) {
+		form {
+			width: 70%;
+		}
+	} */
 
 	@keyframes breathing {
 		0% {
@@ -228,10 +249,7 @@
 
 			try {
 				if (e.srcElement.files[0].name) {
-					console.log("clown");
 					data.append("file", e.srcElement.files[0]);
-					// data.append("primaryThumbnail", 0);
-					console.log(e.srcElement.files[0]);
 				}
 			} catch {}
 
@@ -241,18 +259,14 @@
 		} else {
 			thumbnailWaiting = true;
 			waitingThumbnailEvent = e;
-			console.log(waitingThumbnailEvent);
 		}
 	}
 
 	let thumbnailProgressPercentage;
 
 	function transferComplete() {
-		console.log("thumb uploaded");
 		selectedThumbnail = 0;
 		thumbUploading = false;
-		customThumbnail.style =
-			"background-image: url(/api/videos/" + videoID + "/0";
 	}
 
 	function uploading() {
@@ -262,13 +276,11 @@
 	}
 
 	function uploadError() {
-		console.log("thumbnail upload failed");
 		thumbUploading = false;
 		selectedThumbnail = previousThumb;
 	}
 
 	function submitForm() {
-		console.log("submitform");
 		buttonColor = "var(--darkblue)";
 
 		if (videoID) {
@@ -378,12 +390,7 @@
 					on:click="{() => thumbnailFileLabel.click()}"
 					class:hidden="{!hasCustomThumbnail}"></div>
 			</div>
-			<!-- <label
-				for="thumbnailFileElement"
-				class="upload_thumbnail thumbnail"
-				bind:this="{customThumbnail}"
-				class:thumbSelected="{selectedThumbnail == 0}"
-				class:breathingBorder="{thumbUploading}"></label> -->
+
 			<div
 				class="thumbnail"
 				style="background-image: url({thumbnail1});"
