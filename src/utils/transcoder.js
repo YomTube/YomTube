@@ -72,6 +72,8 @@ let transcodeToRes = (path, shortSide, bitrate, videoID, portrait) => {
 			.save(localSavePath)
 			.on("error", err => {
 				console.log("GPU Transcoding failed. Using CPU with GPU scaling!");
+				console.error(err)
+
 				ffmpeg()
 					.input(path)
 					.videoCodec("h264_nvenc")
@@ -83,6 +85,7 @@ let transcodeToRes = (path, shortSide, bitrate, videoID, portrait) => {
 					.save(localSavePath)
 					.on("error", err => {
 						console.log("GPU Scaling failed. Using only CPU!")
+						console.error(err)
 						ffmpeg()
 							.input(path)
 							.audioCodec('aac')

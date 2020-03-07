@@ -1,4 +1,8 @@
 <style>
+	*{
+		/* overflow-x: hidden; */
+	}
+
 	.maincontainer {
 		display: flex;
 		flex-direction: column;
@@ -8,7 +12,7 @@
 	}
 
 	.uploadcontainer {
-		width: 70vw;
+		width: 70%;
 		height: 70vh;
 		display: flex;
 		/* align-items: center; */
@@ -21,8 +25,9 @@
 		padding-top: 2em;
 	}
 
-	.metadatacontainer{
+	.metadatacontainer {
 		padding-bottom: 2em;
+		width: 70%;
 	}
 
 	@media only screen and (max-width: 768px) {
@@ -30,8 +35,37 @@
 			background-color: #ffffff;
 			justify-content: flex-start;
 		}
+
+		.metadatacontainer {
+			width: 100%;
+			height: calc(100vh - 4em);
+		}
+
+		.uploadcontainer {
+			width: 100%;
+			/* height: calc(100vh - 4em); */
+		}
 	}
 </style>
+
+<script>
+	import Uploadbox from "../components/Uploadbox.svelte";
+	import Metadataform from "../components/Metadataform.svelte";
+
+	let title;
+	let uploading = false;
+	let videoID;
+
+	function drop(e) {
+		title = e.detail.title;
+		uploading = true;
+	}
+
+	function uploaded(e) {
+		videoID = e.detail.videoID;
+		console.log(videoID);
+	}
+</script>
 
 <svelte:head>
 	<title>Upload</title>
@@ -66,22 +100,3 @@
 		</div>
 	{/if}
 </div>
-
-<script>
-	import Uploadbox from "../components/Uploadbox.svelte";
-	import Metadataform from "../components/Metadataform.svelte";
-
-	let title;
-	let uploading = false;
-	let videoID;
-
-	function drop(e) {
-		title = e.detail.title;
-		uploading = true;
-	}
-
-	function uploaded(e) {
-		videoID = e.detail.videoID;
-		console.log(videoID);
-	}
-</script>

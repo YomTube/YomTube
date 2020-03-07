@@ -2,7 +2,7 @@
 	#conatiner {
 		background-color: var(--bg);
 		border-radius: 0.4em;
-		width: 70vw;
+		width: 100%;
 		display: flex;
 		justify-content: center;
 		margin-top: 3em;
@@ -39,7 +39,11 @@
 	.thumbnail_container {
 		display: flex;
 		flex-direction: row;
-		/* justify-content: center; */
+	}
+
+	.thumbnail_container > label {
+		background-size: contain !important;
+		background-repeat: no-repeat;
 	}
 
 	.thumbnail {
@@ -49,24 +53,23 @@
 		margin-right: 0.3em;
 		border-radius: 0.2em;
 		background-size: cover;
+		background-position: center;
+	}
+
+	.last_thumbnail {
+		margin-right: 0;
 	}
 
 	.thumbnail:hover {
 		cursor: pointer;
 	}
 
-	.thumbnail_1 {
-		background-image: var(--thumbnail1);
-	}
-
 	.upload_thumbnail {
-		background-color: orange !important;
-		/* background-color: #00000000 !important; */
+		background-color: orange;
 		background-image: var(--upload-icon);
 		background-size: contain;
 		background-repeat: no-repeat;
 		background-position: center;
-		/* background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(9,9,121,1) 35%, rgba(0,212,255,1) 100%) !important; */
 	}
 
 	.buttonContainerContainer {
@@ -82,19 +85,7 @@
 		z-index: -1;
 	}
 
-	/* .thumbnailProgress {
-		background-color: aqua;
-		width: 100%;
-		height: 100%; */
-	/* z-index: -1000; */
-	/* border-radius: 0.2em;
-		top: 0;
-		left: 0;
-		position: relative;
-	} */
-
 	.thumbSelected {
-		/* outline: 0.2em solid lime; */
 		box-shadow: 0 0 0 0.15em var(--accent2);
 	}
 
@@ -115,7 +106,7 @@
 	@media only screen and (max-width: 768px) {
 		#conatiner {
 			overflow: hidden;
-			width: 100vw;
+			width: 100%;
 			border-radius: 0;
 			margin-top: 0;
 		}
@@ -140,74 +131,6 @@
 	}
 </style>
 
-<div
-	id="conatiner"
-	style="--fg: {fg}; --bg: {bg}; --accent1: {accent1}; --accent2: {accent2};
-	--upload-icon: url({icon}); --thumbnail1: url({thumbnail1})">
-
-	<form action="">
-		<h1>{message}</h1>
-		<label for="title">Title</label>
-		<input
-			id="title"
-			type="text"
-			class="textfield"
-			value="{videotitle}" />
-		<label for="description">Description</label>
-		<!-- <input id="description" type="text" class="textfield" /> -->
-		<textarea
-			name="description"
-			id="description"
-			class="textfield"
-			style="height: 9em; max-width: 100%; min-width: 100%;
-			min-height: 3em;"></textarea>
-
-		<b>Thumbnail</b>
-		<div class="thumbnail_container">
-			<!-- <img src="http://yomtube.z:3000/api/videos/{videoID}/thumbnail" alt=""> -->
-			<!-- <div class="upload_thumbnail thumbnail" on:click="{uploadThumb}"></div> -->
-			<input
-				type="file"
-				class="upload_file"
-				id="thumbnailFileElement"
-				on:change="{uploadThumb}" />
-			<label
-				for="thumbnailFileElement"
-				class="upload_thumbnail thumbnail"
-				bind:this="{customThumbnail}"
-				class:thumbSelected="{selectedThumbnail == 0}"
-				class:breathingBorder="{thumbUploading}">
-				<div class="changeThumb upload_thumbnail"></div>
-				<!-- <div class=""></div> -->
-				<!-- <div class="thumbnailProgress"></div> -->
-			</label>
-			<div
-				class="thumbnail_1 thumbnail"
-				class:thumbSelected="{selectedThumbnail == 1}"
-				on:click="{() => (selectedThumbnail = 1)}"></div>
-			<div
-				class="thumbnail_2 thumbnail"
-				class:thumbSelected="{selectedThumbnail == 2}"
-				on:click="{() => (selectedThumbnail = 2)}"></div>
-			<div
-				class="thumbnail_3 thumbnail"
-				class:thumbSelected="{selectedThumbnail == 3}"
-				on:click="{() => (selectedThumbnail = 3)}"></div>
-		</div>
-
-		<div class="buttonContainer">
-			<!-- <button class="button">Save</button> -->
-			<div class="buttonContainerContainer">
-				<Button
-					text="Save"
-					background="white"
-					foreground="#FFA400" />
-			</div>
-		</div>
-	</form>
-
-</div>
-
 <script>
 	export let fg;
 	export let bg;
@@ -217,95 +140,101 @@
 	export let message;
 
 	export let videotitle;
-	// export let visible;
 	export let videoID;
 
 	let customThumbnail;
 	let selectedThumbnail = 1;
 	let previousThumb = 1;
 	let thumbUploading = false;
+	let thumbnailFileElement;
+	let thumbnailWaiting = false;
+	let waitingThumbnailEvent;
+	let metadataWaiting = false;
 
-	// let thumbnail1 = "/api/videos/" + videoID + "/thumbnail";
+	// let videoDescription = "";
+	let descriptionTextarea;
+	let titleInput;
+
+	let thumbnailDiv1;
+	let thumbnailDiv2;
+	let thumbnailDiv3;
+
+	let test = false;
 
 	import Button from "../components/Button.svelte";
-	// const dispatch = createEventDispatcher();
 	let thumbnail1;
+	let thumbnail2;
+	let thumbnail3;
 
-	$: thumbnail1 = "/api/videos/" + videoID + "/thumbnail";
+	$: {
+		thumbnail1 = "/api/videos/" + videoID + "/thumbnail/1";
+		if (thumbnailWaiting) {
+			console.log("thumbWaiting");
+			uploadThumb(waitingThumbnailEvent);
+			console.log("thumb uploading bingbong");
+		}
+		if (metadataWaiting) {
+			submitForm();
+		}
+	}
+	$: thumbnail2 = "/api/videos/" + videoID + "/thumbnail/2";
+	$: thumbnail3 = "/api/videos/" + videoID + "/thumbnail/3";
 
-	// TODO: se till att denhär gör rätt
+	console.log(videoID);
+	if (videoID) {
+		console.log("video id true");
+	} else {
+		console.log("video id false");
+	}
+
 	function uploadThumb(e) {
-		console.log(e);
+		previewThumb();
+		thumbUploading = true;
+		previousThumb = selectedThumbnail;
+		selectedThumbnail = 0;
 
-		let data = new FormData();
-		let xhr = new XMLHttpRequest();
-		xhr.withCredentials = true;
+		if (videoID) {
+			thumbnailWaiting = false;
 
-		// xhr.open("POST", "/api/videos/{videoID}/customThumbnail");
-		xhr.open("POST", "/api/videos/");
-		xhr.setRequestHeader(
-			"Authorization",
-			"Bearer " +
-				document.cookie
-					.split(";")
-					.filter(c => c.startsWith("token"))[0]
-					.split("=")[1]
-		);
+			let data = new FormData();
+			let xhr = new XMLHttpRequest();
+			xhr.withCredentials = true;
 
-		try {
-			if (e.dataTransfer.files[0].name) {
-				console.log("bingbong");
-				// data.append("thumbnail", e.dataTransfer.files[0]);
-				data.append("video", e.dataTransfer.files[0]);
-			}
-		} catch {}
+			xhr.open("PATCH", `/api/videos/${videoID}`);
+			xhr.setRequestHeader(
+				"Authorization",
+				"Bearer " +
+					document.cookie
+						.split(";")
+						.filter(c => c.startsWith("token"))[0]
+						.split("=")[1]
+			);
 
-		try {
-			if (e.srcElement.files[0].name) {
-				console.log("clown");
-				// data.append("thumbnail", e.srcElement.files[0]);
-				data.append("video", e.srcElement.files[0]);
-				data.append("title", "yeet");
-			}
-		} catch {}
+			try {
+				if (e.srcElement.files[0].name) {
+					console.log("clown");
+					data.append("file", e.srcElement.files[0]);
+					// data.append("primaryThumbnail", 0);
+					console.log(e.srcElement.files[0]);
+				}
+			} catch {}
 
-		xhr.upload.addEventListener("progress", updateProgress);
-		xhr.upload.addEventListener("load", transferComplete);
-		xhr.upload.addEventListener("loadstart", uploading);
-		xhr.upload.addEventListener("error", uploadError);
-		xhr.send(data);
+			xhr.upload.addEventListener("load", transferComplete);
+			xhr.upload.addEventListener("error", uploadError);
+			xhr.send(data);
+		} else {
+			thumbnailWaiting = true;
+			waitingThumbnailEvent = e;
+			console.log(waitingThumbnailEvent);
+		}
 	}
 
 	let thumbnailProgressPercentage;
 
-	function updateProgress(e) {
-		// console.log(e.loaded);
-		if (e.lengthComputable) {
-			thumbnailProgressPercentage = (e.loaded / e.total) * 100;
-			console.log(thumbnailProgressPercentage);
-			customThumbnail.style =
-				"background: linear-gradient(90deg, rgba(255,164,0,1) 0%, rgba(255,164,0,1) " +
-				thumbnailProgressPercentage +
-				"%, rgba(0,159,253,1) " +
-				thumbnailProgressPercentage +
-				"%, rgba(0,159,253,1) 100%) !important;";
-			// progressbar.max = e.total;
-			// progressbar.value = e.loaded;
-			// progressbar.value = (e.loaded / e.total) * 100;
-			console.log(customThumbnail.style.background);
-		} else {
-			// Unable to compute progress information since the total size is unknown
-		}
-	}
-
 	function transferComplete() {
-		customThumbnail.removeAttribute("style");
+		console.log("thumb uploaded");
 		selectedThumbnail = 0;
 		thumbUploading = false;
-		customThumbnail.style =
-			"background-image: url(/api/videos/" +
-			videoID +
-			"/customThumbnail"; //TODO: byta till rätt url
 	}
 
 	function uploading() {
@@ -315,13 +244,123 @@
 	}
 
 	function uploadError() {
+		console.log("thumbnail upload failed");
 		thumbUploading = false;
 		selectedThumbnail = previousThumb;
 	}
 
-	function submitForm() {}
+	function submitForm() {
+		console.log("submitform");
 
-	function test() {
-		alert(1);
+		if (videoID) {
+			let data = new FormData();
+			let xhr = new XMLHttpRequest();
+			xhr.withCredentials = true;
+			xhr.open("PATCH", `/api/videos/${videoID}`);
+			xhr.setRequestHeader(
+				"Authorization",
+				"Bearer " +
+					document.cookie
+						.split(";")
+						.filter(c => c.startsWith("token"))[0]
+						.split("=")[1]
+			);
+
+			data.append("primaryThumbnail", selectedThumbnail);
+			data.append("title", titleInput.value);
+			data.append("description", descriptionTextarea.value);
+			data.append("published", true);
+
+			xhr.send(data);
+
+			metadataWaiting = false;
+		} else {
+			metadataWaiting = true;
+		}
+	}
+
+	function previewThumb() {
+		const reader = new FileReader();
+		reader.readAsDataURL(thumbnailFileElement.files[0]);
+		reader.onload = e => {
+			customThumbnail.style =
+				"background-image: url(" +
+				reader.result +
+				"); background-color: #000000;";
+		};
 	}
 </script>
+
+<div
+	id="conatiner"
+	style="--fg: {fg}; --bg: {bg}; --accent1: {accent1}; --accent2: {accent2};
+	--upload-icon: url({icon}); --thumbnail1: url({thumbnail1}) --thumbnail2:
+	url({thumbnail2}; --thumbnail3: url({thumbnail3}">
+
+	<form action="">
+		<h1>{message}</h1>
+		<label for="title">Title</label>
+		<input
+			id="title"
+			type="text"
+			class="textfield"
+			bind:this="{titleInput}"
+			value="{videotitle}" />
+		<label for="description">Description</label>
+		<textarea
+			name="description"
+			id="description"
+			class="textfield"
+			bind:this="{descriptionTextarea}"
+			style="height: 9em; max-width: 100%; min-width: 100%;
+			min-height: 3em;"></textarea>
+
+		<b>Thumbnail</b>
+		<div class="thumbnail_container">
+			<input
+				type="file"
+				class="upload_file"
+				bind:this="{thumbnailFileElement}"
+				id="thumbnailFileElement"
+				on:change="{uploadThumb}"
+				accept="image/*" />
+			<label
+				for="thumbnailFileElement"
+				class="upload_thumbnail thumbnail"
+				bind:this="{customThumbnail}"
+				class:thumbSelected="{selectedThumbnail == 0}"
+				class:breathingBorder="{thumbUploading}">
+				<div class="changeThumb upload_thumbnail"></div>
+			</label>
+			<div
+				class="thumbnail"
+				style="background-image: url({thumbnail1});"
+				bind:this="{thumbnailDiv1}"
+				class:thumbSelected="{selectedThumbnail == 1}"
+				on:click="{() => (selectedThumbnail = 1)}"></div>
+			<div
+				class="thumbnail"
+				style="background-image: url({thumbnail2});"
+				bind:this="{thumbnailDiv2}"
+				class:thumbSelected="{selectedThumbnail == 2}"
+				on:click="{() => (selectedThumbnail = 2)}"></div>
+			<div
+				class="thumbnail last_thumbnail"
+				style="background-image: url({thumbnail3});"
+				bind:this="{thumbnailDiv3}"
+				class:thumbSelected="{selectedThumbnail == 3}"
+				on:click="{() => (selectedThumbnail = 3)}"></div>
+		</div>
+
+		<div class="buttonContainer">
+			<div class="buttonContainerContainer">
+					<Button
+						onclick="{submitForm}"
+						text="Save"
+						background="white"
+						foreground="#FFA400" />
+			</div>
+		</div>
+	</form>
+
+</div>
