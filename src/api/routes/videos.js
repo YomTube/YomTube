@@ -64,7 +64,7 @@ router.get("/:id", async (req, res) => {
 	let { id } = req.params;
 	try {
 		const video = await Video
-			.findById(id, 'title description uploaded_at uploaded_by available_qualities')
+			.findById(id, 'title description uploaded_at uploaded_by available_qualities customThumbnail primaryThumbnail')
 			.populate('uploaded_by', 'username profilePicture')
 		res.send(video);
 	} catch (err) {

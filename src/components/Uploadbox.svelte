@@ -7,18 +7,14 @@
 	#container {
 		border-radius: 0.4em;
 		background-color: var(--bg);
-		transition: all 1s;
 		width: 100%;
 		height: 100%;
 	}
 
 	.upload_form {
-		/* width: 70vw; */
-		/* height: 45vh; */
 		width: 100%;
 		height: 100%;
 		padding: 100px;
-		/* min-height: 30em; */
 		display: flex;
 		align-items: center;
 		justify-content: center;
@@ -139,11 +135,6 @@
 		background-color: var(--orange);
 		border-radius: 100px;
 		box-shadow: none;
-	}
-
-	.uploaded {
-		background-color: #5cb85c;
-		color: #5cb85c;
 	}
 
 	@keyframes breathing {
@@ -282,17 +273,11 @@
 			}
 		} catch {}
 
-		// data.append("video", e.dataTransfer.files[0]);
 		data.append("title", fileName);
 
-		// xhr.upload.addEventListener("load", uploaded);
 		xhr.upload.addEventListener("progress", updateProgress);
-		// xhr.addEventListener("error", transferFailed);
-		// xhr.addEventListener("abort", transferCanceled);
 
 		xhr.send(data);
-
-		//TODO: fixa så den klagar om man lägger upp flera filer samtidigt
 
 		uploading = true;
 
