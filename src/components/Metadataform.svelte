@@ -152,7 +152,6 @@
 	let waitingThumbnailEvent;
 	let metadataWaiting = false;
 
-	// let videoDescription = "";
 	let descriptionTextarea;
 	let titleInput;
 
@@ -170,9 +169,7 @@
 	$: {
 		thumbnail1 = "/api/videos/" + videoID + "/thumbnail/1";
 		if (thumbnailWaiting) {
-			console.log("thumbWaiting");
 			uploadThumb(waitingThumbnailEvent);
-			console.log("thumb uploading bingbong");
 		}
 		if (metadataWaiting) {
 			submitForm();
@@ -180,13 +177,6 @@
 	}
 	$: thumbnail2 = "/api/videos/" + videoID + "/thumbnail/2";
 	$: thumbnail3 = "/api/videos/" + videoID + "/thumbnail/3";
-
-	console.log(videoID);
-	if (videoID) {
-		console.log("video id true");
-	} else {
-		console.log("video id false");
-	}
 
 	function uploadThumb(e) {
 		previewThumb();
