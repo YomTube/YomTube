@@ -58,7 +58,7 @@
 			margin: 0;
 			padding: 0;
 			border-radius: 0;
-			background-color: rgba(0, 0, 0, 0);
+			background-color: transparent;
 		}
 		.vertical {
 			box-shadow: none;
@@ -68,6 +68,7 @@
 			margin: 0;
 			padding: 0;
 			border-radius: 0;
+			background-color: transparent;
 		}
 		h1 {
 			display: none;

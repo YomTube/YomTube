@@ -30,6 +30,10 @@
 		color: var(--bg);
 	}
 
+	.date {
+		color: #606060;
+	}
+
 	.content {
 		padding: 1em 0;
 		margin: 0 auto;
@@ -69,14 +73,6 @@
 			box-shadow: none;
 			margin: 0;
 			padding: 0;
-		}
-
-		.playerbox:after {
-			content: "";
-			position: absolute;
-			left: 2%;
-			width: 96%;
-			border-bottom: 2px solid var(--orange);
 		}
 	}
 </style>
@@ -120,6 +116,7 @@
 		<Videoplayer {videoJSON} {src} />
 		<div class="videodetails">
 			<h1 class="title">{videoJSON.title}</h1>
+			<p class="date">{videoJSON.uploaded_at.substring(0, 10)}</p>
 			<p class="author">{videoJSON.uploaded_by.username}</p>
 			<details>{videoJSON.description}</details>
 		</div>
