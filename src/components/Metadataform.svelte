@@ -177,7 +177,7 @@
 
 	import { onMount } from "svelte";
 
-	$: {
+	$: if (videoID) {
 		if (thumbnailWaiting) {
 			uploadThumb(waitingThumbnailEvent);
 		}
@@ -185,7 +185,7 @@
 			submitForm();
 		}
 	}
-	
+
 	onMount(() => {
 		if (description) {
 			descriptionTextarea.value = description;
