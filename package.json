@@ -6,6 +6,7 @@
 		"dev": "TYPE=local env-cmd -f ./.env sapper dev",
 		"dev:public": "TYPE=public env-cmd -f ./.env sapper dev",
 		"setup": "npm install && mongorestore DBExport/ && node -e 'console.log(\"All done!\")'",
+		"clean-database": "mongo yomtube --eval 'db.dropDatabase()' && mongorestore DBExport/",
 		"build": "sapper build --legacy",
 		"export": "sapper export --legacy",
 		"start": "node __sapper__/build",
