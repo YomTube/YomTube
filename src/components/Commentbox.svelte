@@ -1,4 +1,7 @@
 <style>
+	* {
+		box-sizing: border-box;
+	}
 	.commentbox {
 		background-color: var(--fg);
 		margin-top: 1em;
@@ -12,29 +15,45 @@
 		border-bottom: 1px solid var(--orange);
 		width: 100%;
 	}
+
+	@media only screen and (max-width: 768px) {
+		.commentbox {
+			background-color: transparent;
+			margin-top: 0;
+			padding-top: 0;
+		}
+
+		.title {
+			color: var(--fg);
+		}
+	}
 </style>
 
-<!-- <script context="module">
-	export async function preload(page) {
-		const videoID = page.params.video;
+<script>
+	import Comment from "./Comment.svelte";
+	import Commentsubmit from "./Commentsubmit.svelte";
+	export let id;
+	import { onMount } from "svelte";
+	let comments = [];
+	onMount(async () => {
+		const commentsResp = await fetch(`/api/comments/${id}`);
+		comments = comments.concat(await commentsResp.json());
+		console.log(comments);
+	});
 
-		const commentsResp = await fetch(`/api/comments/${videoID}`);
-		const comments = await commentsResp.json();
-
-		console.log(comments, videoID);
-
-		return { comments, videoID };
-	}
-</script> -->
+	let textarea;
+</script>
 
 <div class="commentbox">
 	<h1 class="title">Comments</h1>
 	<div class="comment-form">
-		<!-- <textarea bind:this="{textarea}" name="" id=""></textarea> -->
+		<Commentsubmit {id} />
 	</div>
 	<div class="comments">
-		<!-- {#each comments as { comment }}
-			<div class="comment">{comment.text}</div>
-		{/each} -->
+		{#if comments != undefined}
+			{#each comments as { comment }}
+				<Comment {comment} />
+			{/each}
+		{/if}
 	</div>
 </div>

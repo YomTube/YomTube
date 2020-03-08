@@ -51,6 +51,10 @@
 			"comments recommended";
 	}
 
+	.views {
+		color: #606060;
+	}
+
 	@media only screen and (max-width: 1920px) {
 		.content {
 			margin: none;
@@ -77,14 +81,6 @@
 			box-shadow: none;
 			margin: 0;
 			padding: 0;
-		}
-
-		.playerbox:after {
-			content: "";
-			position: absolute;
-			left: 2%;
-			width: 96%;
-			border-bottom: 2px solid var(--orange);
 		}
 	}
 </style>
@@ -140,13 +136,15 @@
 						{videoJSON.uploaded_by.username}
 					</p>
 				</div>
-				<p class="views">{videoJSON.views} views</p>
+				<p class="views">
+					{videoJSON.views} views • {videoJSON.uploaded_at.substring(0, 10)}
+				</p>
 			</div>
 			<details>{videoJSON.description || ''}</details>
 		</div>
 	</div>
 	<div style="grid-area: comments;">
-		<Commentbox />
+		<Commentbox id="{videoJSON._id}" />
 	</div>
 	<div style="grid-area: recommended;">
 		<Videobox
