@@ -174,14 +174,10 @@
 	let thumbnailDiv3;
 
 	import Button from "../components/Button.svelte";
-	let thumbnail1;
-	let thumbnail2;
-	let thumbnail3;
 
 	import { onMount } from "svelte";
 
 	$: {
-		thumbnail1 = "/api/videos/" + videoID + "/thumbnail/1";
 		if (thumbnailWaiting) {
 			uploadThumb(waitingThumbnailEvent);
 		}
@@ -189,9 +185,7 @@
 			submitForm();
 		}
 	}
-	$: thumbnail2 = "/api/videos/" + videoID + "/thumbnail/2";
-	$: thumbnail3 = "/api/videos/" + videoID + "/thumbnail/3";
-
+	
 	onMount(() => {
 		if (description) {
 			descriptionTextarea.value = description;
@@ -234,8 +228,8 @@
 				}
 			} catch {}
 
-			xhr.upload.addEventListener("load", transferComplete);
 			xhr.upload.addEventListener("error", uploadError);
+			xhr.addEventListener("load", transferComplete);
 			xhr.send(data);
 		} else {
 			thumbnailWaiting = true;
@@ -322,10 +316,9 @@
 <div
 	id="conatiner"
 	style="--fg: {fg}; --bg: {bg}; --accent1: {accent1}; --accent2: {accent2};
-	--upload-icon: url({icon}); --thumbnail1: url({thumbnail1}) --thumbnail2:
-	url({thumbnail2}; --thumbnail3: url({thumbnail3}">
+	--upload-icon: url({icon});">
 
-	<form action="">
+	<form>
 		<h1>{message}</h1>
 		<label for="title">
 			<b>Title</b>
@@ -374,19 +367,19 @@
 
 			<div
 				class="thumbnail"
-				style="background-image: url({thumbnail1});"
+				style="background-image: {videoID ? `url(/api/videos/${videoID}/thumbnail/1)` : undefined};"
 				bind:this="{thumbnailDiv1}"
 				class:thumbSelected="{selectedThumbnail == 1}"
 				on:click="{() => (selectedThumbnail = 1)}"></div>
 			<div
 				class="thumbnail"
-				style="background-image: url({thumbnail2});"
+				style="background-image: {videoID ? `url(/api/videos/${videoID}/thumbnail/2)` : undefined};"
 				bind:this="{thumbnailDiv2}"
 				class:thumbSelected="{selectedThumbnail == 2}"
 				on:click="{() => (selectedThumbnail = 2)}"></div>
 			<div
 				class="thumbnail last_thumbnail"
-				style="background-image: url({thumbnail3});"
+				style="background-image: {videoID ? `url(/api/videos/${videoID}/thumbnail/3)` : undefined};"
 				bind:this="{thumbnailDiv3}"
 				class:thumbSelected="{selectedThumbnail == 3}"
 				on:click="{() => (selectedThumbnail = 3)}"></div>
@@ -398,7 +391,11 @@
 					onclick="{submitForm}"
 					text="Save"
 					background="white"
+<<<<<<< HEAD
 					foreground="{buttonColor}" />
+=======
+					foreground="#FFA400" />
+>>>>>>> clean-up
 			</div>
 		</div>
 	</form>

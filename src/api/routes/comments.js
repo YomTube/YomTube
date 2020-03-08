@@ -36,9 +36,6 @@ router.post('/:videoID', auth, async (req, res) => {
 			created_at: Date.now()
 		})
 		video.comments = video.comments.concat({ comment });
-
-		console.log("comments")
-
 		await video.save();
 		await comment.save();
 		res.sendStatus(201);

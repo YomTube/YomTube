@@ -53,7 +53,7 @@
 		#spin {
 			width: calc(var(--bar-height) * 2);
 			height: calc(var(--bar-height) * 2);
-			background-image: url("/loading.svg");
+			background-image: url("/icons/loading.svg");
 			background-size: cover;
 			animation: spin 2s infinite;
 			animation-timing-function: ease-in-out;
@@ -171,7 +171,7 @@
 
 				#play {
 					display: none;
-					background-image: url("/play_arrow.svg");
+					background-image: url("/icons/play_arrow.svg");
 				}
 				#volume {
 					position: relative;
@@ -233,7 +233,7 @@
 					line-height: var(--buttons-height);
 				}
 				#fullscreen {
-					background-image: url("/fullscreen.svg");
+					background-image: url("/icons/fullscreen.svg");
 				}
 
 				#qualityChooser {
@@ -242,7 +242,7 @@
 						position: absolute;
 						top: 0;
 						left: 0;
-						background-image: url("/settings.svg");
+						background-image: url("/icons/settings.svg");
 						width: 100%;
 						height: 100%;
 					}
@@ -482,13 +482,13 @@
 					id="play"
 					class="hasBackground"
 					on:click="{togglePlaying}"
-					style="background-image: url('/{paused ? 'play' : 'pause'}.svg')"></div>
+					style="background-image: url('/icons/{paused ? 'play' : 'pause'}.svg')"></div>
 				<div id="volume">
 					<div
 						id="icon"
 						class="hasBackground"
 						on:click="{muteVolume}"
-						style="background-image: url('/{!muted ? 'volume_up' : 'volume_off'}.svg')"></div>
+						style="background-image: url('/icons/{!muted ? 'volume_up' : 'volume_off'}.svg')"></div>
 					<input
 						type="range"
 						bind:value="{volumeValue}"
@@ -538,7 +538,7 @@
 					id="fullscreen"
 					on:click="{toggleFullscreen}"
 					class="hasBackground"
-					style="background-image: url('/{fullscreenEnabled ? 'fullscreen_exit' : 'fullscreen'}.svg');"></div>
+					style="background-image: url('/icons/{fullscreenEnabled ? 'fullscreen_exit' : 'fullscreen'}.svg');"></div>
 			</div>
 		</div>
 	</div>

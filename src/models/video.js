@@ -37,7 +37,11 @@ const VideoSchema = new mongoose.Schema({
 				type: mongoose.Schema.Types.ObjectId, ref: 'Comment'
 			}
 		}
-	]
+	],
+	views: {
+		type: Number,
+		default: 0
+	}
 });
 
 VideoSchema.pre("save", async function (next) {

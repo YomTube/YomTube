@@ -1,1 +1,1 @@
-{"options":{},"indexes":[{"v":2,"key":{"_id":1},"name":"_id_","ns":"yomtube.users"},{"v":2,"unique":true,"key":{"email":1},"name":"email_1","ns":"yomtube.users","background":true}],"uuid":"927964fa1a0e4181b570a3167c8faf84"}
+{"options":{},"indexes":[{"v":2,"key":{"_id":1},"name":"_id_","ns":"yomtube.users"},{"v":2,"unique":true,"key":{"email":1},"name":"email_1","ns":"yomtube.users","background":true}],"uuid":"1a84eff323d34c9f87f62199a9a0b197"}

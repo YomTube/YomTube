@@ -141,7 +141,7 @@
 	export let bg;
 	export let accent1;
 	export let accent2;
-	export let img = "/lowpolyblue.png";
+	export let img = "/images/lowpolyblue.png";
 	let identifier = "";
 	let password;
 	let flipped = false;
@@ -246,6 +246,6 @@
 			bg="#ffffff"
 			accent1="#009ffd"
 			accent2="#ffa400"
-			img="/lowpolyorange.png" />
+			img="/images/lowpolyorange.png" />
 	</div>
 </div>
