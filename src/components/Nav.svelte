@@ -4,6 +4,8 @@
 		height: 4em;
 		width: 100%;
 		padding-right: 2%;
+		position: sticky;
+		top: 0;
 		display: flex;
 		z-index: 2;
 		align-items: center;

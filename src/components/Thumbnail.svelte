@@ -118,7 +118,7 @@
 			src="data:{video.uploaded_by.profilePicture.type};base64, {video.uploaded_by.profilePicture.data}"
 			alt="" />
 		<p>
-			{video.uploaded_by.username} - {video.uploaded_at.substring(0, 10)}
+			{video.uploaded_by.username} • {video.uploaded_at.substring(0, 10)}
 		</p>
 	</div>
 </span>

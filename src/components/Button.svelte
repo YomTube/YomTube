@@ -54,7 +54,6 @@
 		}
 		onclick();
 	}
-
 </script>
 
 <button
