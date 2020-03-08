@@ -1,5 +1,6 @@
 import ffmpeg from "fluent-ffmpeg";
 import { promises as fs } from "fs";
+import { exec } from 'child_process'
 
 const SAVE_PATH = process.cwd() + "/videos";
 
@@ -72,8 +73,6 @@ let transcodeToRes = (path, shortSide, bitrate, videoID, portrait) => {
 			.save(localSavePath)
 			.on("error", err => {
 				console.log("GPU Transcoding failed. Using CPU with GPU scaling!");
-				console.error(err)
-
 				ffmpeg()
 					.input(path)
 					.videoCodec("h264_nvenc")
@@ -85,7 +84,6 @@ let transcodeToRes = (path, shortSide, bitrate, videoID, portrait) => {
 					.save(localSavePath)
 					.on("error", err => {
 						console.log("GPU Scaling failed. Using only CPU!")
-						console.error(err)
 						ffmpeg()
 							.input(path)
 							.audioCodec('aac')
@@ -105,20 +103,40 @@ let transcodeToRes = (path, shortSide, bitrate, videoID, portrait) => {
 	});
 }
 
+let msToHMS = (ms) => {
+	var seconds = ms / 1000;
+	var hours = parseInt(seconds / 3600);
+	seconds = seconds % 3600;
+	var minutes = parseInt(seconds / 60);
+	seconds = seconds % 60;
+	return (hours + ":" + minutes + ":" + seconds);
+}
+
 let generateThumbnail = (path, videoID) => {
 	return new Promise((res, rej) => {
 		console.log("Generating thumbnails...")
 		let folder = SAVE_PATH + "/" + videoID;
 		ffmpeg()
 			.input(path)
-			.screenshots({
-				count: 3,
-				filename: 'thumbnail-%i.png',
-				folder,
-				size: "1600x900"
+			.ffprobe((err, data) => {
+				if (err) rej(err)
+				try {
+					let { duration } = data.format;
+					let durationInMs = duration * 1000;
+					let durationAt25 = Math.floor(0.25 * durationInMs)
+					exec(`ffmpeg \
+-ss ${msToHMS(durationAt25)} -i ${path} \
+-ss ${msToHMS(2 * durationAt25)} -i ${path} \
+-ss ${msToHMS(3 * durationAt25)} -i ${path} \
+-map 0:v -vframes 1 ${folder}/thumbnail-1.png \
+-map 1:v -vframes 1 ${folder}/thumbnail-2.png \
+-map 2:v -vframes 1 ${folder}/thumbnail-3.png`)
+						.on('exit', res)
+						.on('error', rej)
+				} catch (err) {
+					rej(err)
+				}
 			})
-			.on("error", err => rej(err))
-			.on("end", res);
 	});
 };
 

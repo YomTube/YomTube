@@ -1,6 +1,6 @@
 <style>
 	nav {
-		background-color: var(--background);
+		background-color: var(--fg);
 		height: 4em;
 		width: 100%;
 		padding-right: 2%;
@@ -22,11 +22,12 @@
 	h1 {
 		font-size: 2.5em;
 		font-weight: lighter;
-		color: var(--foreground);
+		color: var(--bg);
 	}
 
 	a {
-		color: var(--foreground);
+		color: var(--bg);
+		margin: 1em;
 		font-size: 1.2em;
 		margin: 0em;
 		text-decoration: none;
@@ -47,7 +48,7 @@
 	}
 
 	a:hover {
-		color: var(--accent);
+		color: var(--orange);
 	}
 
 	span {
@@ -89,7 +90,6 @@
 	import Button from "./Button.svelte";
 	import Loginicon from "./Loginicon.svelte";
 	import Searchbox from "./Searchbox.svelte";
-	export let icon = "";
 	export let background = "#ffffff";
 	export let foreground = "hsl(216, 7%, 15%)";
 	export let accent = "#ffa400";
@@ -103,20 +103,18 @@
 		}
 	];
 	export let links = [];
-	let loggedIn = false;
+	let loggedIn;
 
 	import { onMount } from "svelte";
 
 	onMount(async () => {
 		if (document.cookie.includes("token")) {
 			loggedIn = true;
-		}
+		} else loggedIn = false;
 	});
 </script>
 
-<headerbar
-	style="--foreground:{foreground}; --background:{background}; --accent:{accent};
-	--accent2:{accent2};">
+<headerbar>
 	<nav>
 		<a class="pagetitle" href="/">
 			<!-- <img src="{icon}" alt="an icon" /> -->
@@ -124,30 +122,20 @@
 		</a>
 		<Searchbox />
 		<span>
-			<a class="link" href="/upload">
-				<i class="material-icons icon">video_call</i>
-			</a>
-			{#if !loggedIn}
+			{#each links as link}
+				<a href="{link.link}">{link.text}</a>
+			{/each}
+			{#if loggedIn !== undefined && !loggedIn}
 				{#each buttons as button}
-					<div class="desktop">
-						<Button
-							link="{button.link}"
-							text="{button.text}"
-							{background}
-							foreground="#009ffd" />
-					</div>
-					<div class="mobile">
-						<a href="{button.link}">
-							<i class="material-icons icon">
-								account_circle
-							</i>
-						</a>
-					</div>
+					<Button
+						link="{button.link}"
+						text="{button.text}"
+						{background}
+						foreground="#009ffd" />
 				{/each}
 			{:else}
-				<Loginicon img="url(/stock.jpg)" />
+				<Loginicon />
 			{/if}
-
 		</span>
 	</nav>
 </headerbar>
