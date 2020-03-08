@@ -19,7 +19,7 @@
 	.searchbutton {
 		height: 100%;
 		width: 4em;
-		background-color: var(--accent);
+		background-color: var(--orange);
 		color: white;
 		border: none;
 		border-radius: 0 0.3em 0.3em 0;

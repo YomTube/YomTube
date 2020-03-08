@@ -134,6 +134,9 @@
 						foreground="#009ffd" />
 				{/each}
 			{:else}
+				<a href="/videos/upload">
+					<i class="material-icons icon">video_call</i>
+				</a>
 				<Loginicon />
 			{/if}
 		</span>
