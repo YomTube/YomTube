@@ -93,10 +93,11 @@
 
 <script>
 	import { onMount } from "svelte";
-	export let img;
 	export let accent = "#ffa400";
+	let img;
 	let icon;
 	let mime;
+
 	const menu = () => {
 		icon.classList.toggle("anim");
 	};
@@ -115,11 +116,9 @@
 				Authorization: "Bearer " + token
 			}
 		});
-		let text = await resp.text();
-		let obj = JSON.parse(text);
-		let me = obj.user;
-		mime = me.profilePicture.type;
-		img = me.profilePicture.data;
+		let json = await resp.json();
+		mime = json.user.profilePicture.contentType;
+		img = json.user.profilePicture.data;
 	});
 
 	const logout = () => {
@@ -138,7 +137,8 @@
 <div
 	bind:this="{icon}"
 	on:click="{() => menu()}"
-	style="--img: url('data:{mime};base64,{img}'); --accent: {accent};"
+	style="--img: {mime && img ? `url('data:${mime};base64,${img}')` : undefined};
+	--accent: {accent};"
 	id="img">
 	<ul>
 		<li>

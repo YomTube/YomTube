@@ -93,14 +93,18 @@
 	<h1>
 		{@html title}
 	</h1>
-	{#each videos as video}
-		<Thumbnail
-			{orientation}
-			id="{video._id}"
-			title="{video.title}"
-			author="{video.uploaded_by.username}"
-			date="{video.uploaded_at.substring(0, 10)}" />
+	{#if videos}
+		{#each videos as video}
+			<Thumbnail
+				{orientation}
+				id="{video._id}"
+				title="{video.title}"
+				author="{video.uploaded_by.username}"
+				date="{video.uploaded_at.substring(0, 10)}" />
+		{:else}
+			<h2>No videos...</h2>
+		{/each}
 	{:else}
 		<h2>Loading...</h2>
-	{/each}
+	{/if}
 </div>

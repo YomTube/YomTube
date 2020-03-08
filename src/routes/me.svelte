@@ -68,12 +68,15 @@
 		let obj = JSON.parse(text);
 		me = obj.user;
 		for await (let vid of me.videos) {
-			let resp = await fetch(`/api/videos/` + vid.video, {
-				method: "GET"
-			});
-			let { video } = await resp.json();
-			videos.push(video);
-			videos = videos;
+			try {
+				let resp = await fetch(`/api/videos/` + vid.video, {
+					method: "GET"
+				});
+				videos = videos.concat(await resp.json());
+				console.log(videos);
+			} catch (err) {
+				console.error("error", err);
+			}
 		}
 	});
 </script>
@@ -92,7 +95,7 @@
 			img="{me.profilePicture.data}"
 			mime="{me.profilePicture.type}" />
 	{/if}
-	{#if videos[0] != undefined}
+	{#if videos.length > 0}
 		<Videobox title="My videos" {videos} />
 	{:else}
 		<h1 class="error">You have no videos :(</h1>

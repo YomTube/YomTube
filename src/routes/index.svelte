@@ -6,7 +6,7 @@
 	import { onMount } from "svelte";
 	import Videobox from "../components/Videobox.svelte";
 
-	let videos = [];
+	let videos;
 
 	onMount(async () => {
 		try {
@@ -14,7 +14,7 @@
 			videos = await response.json();
 			if (videos.length == 0) throw new Error("No videos found");
 		} catch (error) {
-			console.error("Found some error", error);
+			console.error(error);
 		}
 	});
 </script>

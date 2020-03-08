@@ -11,10 +11,10 @@
 		border-radius: 0.4em 0.4em 0 0;
 		display: flex;
 		align-items: flex-end;
-		background-image: var(--thumbnail);
+		background: var(--thumbnail) black;
 		background-size: 100% calc(100%);
 		background-repeat: no-repeat;
-		background-position: initial;
+		background-position: center;
 		text-decoration: none;
 	}
 
