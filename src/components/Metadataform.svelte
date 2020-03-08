@@ -391,11 +391,7 @@
 					onclick="{submitForm}"
 					text="Save"
 					background="white"
-<<<<<<< HEAD
 					foreground="{buttonColor}" />
-=======
-					foreground="#FFA400" />
->>>>>>> clean-up
 			</div>
 		</div>
 	</form>

@@ -47,6 +47,7 @@
 		transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
 		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12),
 			0 1px 2px rgba(0, 0, 0, 0.24);
+		cursor: pointer;
 	}
 
 	h1 {
@@ -100,9 +101,9 @@
 	export let date;
 </script>
 
-<span class="{orientation}">
+<span onclick="document.location.href='/videos/{id}'" class="{orientation}">
 	<div class="img-wrapper">
-		<a style="--thumbnail: {thumbnail};" href="/videos/{id}"></a>
+		<a style="--thumbnail: {thumbnail};"></a>
 	</div>
 	<div>
 		<h1>{title}</h1>

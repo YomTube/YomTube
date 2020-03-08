@@ -42,10 +42,13 @@ let getRes = (path) => {
 	return new Promise((res, rej) => {
 		ffmpeg.ffprobe(path, (err, metadata) => {
 			if (err) rej(err);
-			res({
-				width: metadata.streams[0].width,
-				height: metadata.streams[0].height
-			});
+			for (let stream of metadata.streams) {
+				let { width, height } = stream;
+				if (width && height) {
+					res({ width, height })
+					break;
+				}
+			}
 		})
 	});
 }
@@ -153,7 +156,6 @@ let processVideo = async (videoElement) => {
 		transcodingQueue.push(videoElement);
 		return processVideo(transcodingQueue.shift())
 	}
-	console.group("Transcoding for", video.title)
 	console.time("Transcoder Timer")
 
 	let portrait = obj.width <= obj.height;
@@ -176,7 +178,6 @@ let processVideo = async (videoElement) => {
 			console.error(err);
 		}
 	}
-	console.groupEnd("Transcoding for ", video.title)
 	console.timeEnd("Transcoder Timer")
 	video.waitingOnTranscode = false;
 	await video.save();
