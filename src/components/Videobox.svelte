@@ -84,6 +84,7 @@
 	export let title = "Default";
 	export let orientation = "horizontal";
 	import Thumbnail from "./Thumbnail.svelte";
+	import Loading from "./Loading.svelte";
 </script>
 
 <div
@@ -97,9 +98,9 @@
 		{#each videos as video}
 			<Thumbnail {orientation} {video} />
 		{:else}
-			<h2>No videos...</h2>
+			<Loading />
 		{/each}
 	{:else}
-		<h2>Loading...</h2>
+		<Loading />
 	{/if}
 </div>

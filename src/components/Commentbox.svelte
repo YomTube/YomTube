@@ -31,14 +31,19 @@
 
 <script>
 	import Comment from "./Comment.svelte";
+	import Loading from "./Loading.svelte";
 	import Commentsubmit from "./Commentsubmit.svelte";
 	export let id;
 	import { onMount } from "svelte";
 	let comments = [];
+	let token;
 	onMount(async () => {
 		const commentsResp = await fetch(`/api/comments/${id}`);
 		comments = comments.concat(await commentsResp.json());
-		console.log(comments);
+		token = document.cookie
+			.split(";")
+			.filter(c => c.startsWith("token"))[0]
+			.split("=")[1];
 	});
 
 	let textarea;
@@ -46,13 +51,17 @@
 
 <div class="commentbox">
 	<h1 class="title">Comments</h1>
-	<div class="comment-form">
-		<Commentsubmit {id} />
-	</div>
+	{#if token != undefined}
+		<div class="comment-form">
+			<Commentsubmit {id} />
+		</div>
+	{/if}
 	<div class="comments">
 		{#if comments != undefined}
 			{#each comments as { comment }}
 				<Comment {comment} />
+			{:else}
+				<Loading />
 			{/each}
 		{/if}
 	</div>
