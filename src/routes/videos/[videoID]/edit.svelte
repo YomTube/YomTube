@@ -45,7 +45,7 @@
 			accent1="#ffa400"
 			accent2="#009ffd"
 			message="Edit video"
-			icon="/uploadimage.svg"
+			icon="../../../icons/uploadimage.svg"
 			videotitle="{videoJSON.title}"
 			description="{videoJSON.description}"
             selectedThumbnail="{videoJSON.primaryThumbnail}"
