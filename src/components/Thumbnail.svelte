@@ -72,6 +72,13 @@
 		margin: 1em 0;
 	}
 
+	.profilepicture {
+		border-radius: 100%;
+		height: 3em;
+		width: 3em;
+		margin: 0.2em;
+	}
+
 	@media only screen and (max-width: 1920px) {
 		span {
 			width: calc(25% - 2em);
@@ -93,20 +100,25 @@
 </style>
 
 <script>
-	export let id;
-	export let thumbnail = `url(/api/videos/${id}/thumbnail)`;
-	export let title;
+	export let video;
+	export let thumbnail = `url(/api/videos/${video._id}/thumbnail)`;
 	export let orientation;
-	export let author;
-	export let date;
 </script>
 
-<span onclick="document.location.href='/videos/{id}'" class="{orientation}">
+<span
+	onclick="document.location.href='/videos/{video._id}'"
+	class="{orientation}">
 	<div class="img-wrapper">
 		<a style="--thumbnail: {thumbnail};"></a>
 	</div>
 	<div>
-		<h1>{title}</h1>
-		<p>{author} - {date}</p>
+		<h1>{video.title}</h1>
+		<img
+			class="profilepicture"
+			src="data:{video.uploaded_by.profilePicture.type};base64, {video.uploaded_by.profilePicture.data}"
+			alt="" />
+		<p>
+			{video.uploaded_by.username} - {video.uploaded_at.substring(0, 10)}
+		</p>
 	</div>
 </span>
