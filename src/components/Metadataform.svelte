@@ -73,6 +73,8 @@
 
 	.buttonContainerContainer {
 		margin-top: 1em;
+		display: flex;
+		justify-content: space-between;
 	}
 
 	.upload_file {
@@ -163,6 +165,7 @@
 	export let hasCustomThumbnail = false;
 
 	let buttonColor = "#FFA400";
+	let deleteButtonColor = "red";
 
 	let descriptionTextarea;
 	let titleInput;
@@ -311,6 +314,33 @@
 			thumbnailFileLabel.click();
 		}
 	}
+
+	function deleteVideo() {
+		let xhr = new XMLHttpRequest();
+		// let data = new FormData();
+
+		xhr.withCredentials = true;
+		xhr.open("DELETE", `/api/videos/${videoID}`);
+		
+		xhr.setRequestHeader(
+				"Authorization",
+				"Bearer " +
+					document.cookie
+						.split(";")
+						.filter(c => c.startsWith("token"))[0]
+						.split("=")[1]
+			);
+
+		xhr.addEventListener("load", function () {
+			deleteButtonColor = "green";
+			setTimeout(function () {
+				window.location.replace("/");
+			}, 1000);
+		});
+
+		xhr.send();
+
+	}
 </script>
 
 <div
@@ -392,6 +422,12 @@
 					text="Save"
 					background="white"
 					foreground="{buttonColor}" />
+				
+				<Button
+					onclick="{deleteVideo}"
+					text="Delete"
+					background="white"
+					foreground="{deleteButtonColor}" />
 			</div>
 		</div>
 	</form>
