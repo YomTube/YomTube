@@ -56,7 +56,7 @@ UserSchema.pre("save", async function (next) {
 
 	if (!user.profilePicture.data) {
 		user.profilePicture = {
-			data: Buffer.from(await fs.readFile(process.cwd() + '/static/stock-profile-pic.png')).toString('base64'),
+			data: Buffer.from(await fs.readFile(process.cwd() + '/static/images/stock-profile-pic.png')).toString('base64'),
 			contentType: 'image/png'
 		}
 	}
