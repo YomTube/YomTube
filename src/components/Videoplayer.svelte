@@ -289,6 +289,15 @@
 	let setup = () => {
 		paused = video.paused;
 		videoLength = video.duration;
+		video.play()
+			.then(() => {
+				shown = false;
+				canClick = false;
+			})
+			.catch(err => {
+				shown = true;
+				canClick = true;
+			});
 	};
 
 	let toggleFullscreen = async () => {
