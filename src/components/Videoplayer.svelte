@@ -5,21 +5,19 @@
 		box-sizing: border-box;
 		user-select: none;
 	}
-
 	:root {
 		--video-width: 100vmin;
 		--video-height: calc(var(--video-width) * 9 / 16);
 		--bar-height: 3em;
 	}
-
 	#videoPlayer {
-		width: var(--video-width);
-		height: var(--video-height);
-		max-width: 1280px;
+		width: 100vw;
+		height: 100vh;
+		max-width: calc(var(--video-width));
+		max-height: var(--video-height);
 		position: relative;
 		overflow: hidden;
 	}
-
 	video {
 		height: 100%;
 		width: 100%;
@@ -29,307 +27,208 @@
 		left: 0;
 		z-index: 1;
 	}
-
 	.hasBackground {
-		background-position: center;
-		background-size: 70%;
-		background-repeat: no-repeat;
-	}
-
-	#spinner {
-		width: 100%;
-		height: 100%;
-		z-index: 2;
-		position: absolute;
-		top: 0;
-		left: 0;
-		background-color: rgba(0, 0, 0, 0.8);
 		display: flex;
 		justify-content: center;
 		align-items: center;
-		&.hidden {
-			display: none;
+		/*
+		background-position: center;
+		background-size: 70%;
+		background-repeat: no-repeat;
+		*/
+	}
+	#spin {
+		background-image: url("/icons/loading.svg");
+		background-size: cover;
+		animation: spin 2s infinite;
+		animation-timing-function: ease-in-out;
+	}
+	@keyframes spin {
+		0% {
+			transform: rotate(0deg);
 		}
-		#spin {
-			width: calc(var(--bar-height) * 2);
-			height: calc(var(--bar-height) * 2);
-			background-image: url("/icons/loading.svg");
-			background-size: cover;
-			animation: spin 2s infinite;
-			animation-timing-function: ease-in-out;
+		25% {
+			transform: rotate(90deg);
 		}
-		@keyframes spin {
-			0% {
-				transform: rotate(0deg);
-			}
-			25% {
-				transform: rotate(90deg);
-			}
-			50% {
-				transform: rotate(180deg);
-			}
-			75% {
-				transform: rotate(270deg);
-			}
-			100% {
-				transform: rotate(360deg);
-			}
+		50% {
+			transform: rotate(180deg);
+		}
+		75% {
+			transform: rotate(270deg);
+		}
+		100% {
+			transform: rotate(360deg);
 		}
 	}
 
 	#controls {
+		height: 100%;
 		width: 100%;
-		height: var(--bar-height);
 
-		position: absolute;
-		bottom: calc(-1 * var(--bar-height));
-		left: 0;
 		z-index: 3;
 
-		transition: all 0.5s;
+		background-color: #000000aa;
 
-		&.hovering {
-			bottom: 0;
-		}
+		opacity: 0;
 
-		#bar {
-			width: 100%;
-			height: 12.5%;
-			margin: 0;
-			padding: 0;
-			grid-area: bar;
-			background-color: rgba(0, 0, 0, 0.8);
-			position: absolute;
-			bottom: 87.5%;
-			transition: all 0.5s;
+		position: absolute;
+		bottom: 0;
 
-			&:hover {
-				height: 25%;
-			}
+		transition: 0.25s opacity;
+	}
+	#controls.shown {
+		transition: 0.25s opacity;
+		opacity: 1;
+	}
+	#bar {
+		--bar-height: 0.5em;
+		--margin: 1em;
+		height: var(--bar-height);
+		width: calc(100% - 2 * var(--margin));
 
-			#progress {
-				width: 100%;
-				height: 100%;
-				position: absolute;
-				top: 0;
-				left: 0;
-				z-index: 3;
-				left: 0;
-				-webkit-appearance: none;
-				appearance: none;
-				outline: none;
-				&::-webkit-slider-thumb {
-					-webkit-appearance: none;
-					appearance: none;
-					height: 8px;
-					width: 8px;
-					background: white;
-					cursor: drag;
-				}
+		position: absolute;
+		bottom: 3em;
+		left: var(--margin);
 
-				&::-moz-range-thumb {
-					margin-left: 0px;
-					background: white;
-					height: 8px;
-					width: 8px;
-					cursor: drag;
-				}
-			}
+		transition: all 0.25s ease 0s;
+	}
+	#controls.shown #bar:hover {
+		--bar-height: 1em;
+	}
+	#progress {
+		height: 100%;
+		width: 100%;
 
-			#buffered {
-				width: 100%;
-				height: 100%;
-				position: absolute;
-				top: 0;
-				left: 0;
-				z-index: 2;
-				background-color: rgba(255, 255, 255, 0.3);
-			}
-		}
+		-webkit-appearance: none;
 
-		#buttons {
-			--buttons-height: calc(var(--bar-height) * 7 / 8);
-			width: 100%;
-			height: var(--buttons-height);
-			position: absolute;
-			top: 12.5%;
-			grid-area: buttons;
-			display: flex;
-			justify-content: space-between;
+		position: absolute;
+		top: 0;
 
-			background-color: rgba(0, 0, 0, 0.8);
-			align-items: center;
-			> div {
-				height: 100%;
-				display: flex;
-				justify-content: start;
-				align-items: center;
-				> div {
-					height: 100%;
-					width: var(--buttons-height);
-				}
+		z-index: 2;
+	}
+	input[type="range"]::-ms-thumb,
+	input[type="range"]::-moz-range-thumb,
+	input[type="range"]::-webkit-slider-thumb,
+	input[type="range"]::-webkit-slider-thumb {
+		display: none;
+	}
+	#buffered {
+		z-index: 0;
+		width: 0%;
+		height: 100%;
 
-				#play {
-					display: none;
-					background-image: url("/icons/play_arrow.svg");
-				}
-				#volume {
-					position: relative;
-					transition: all 0.45s ease-in-out;
-					overflow: hidden;
-					white-space: nowrap;
+		background-color: gray;
 
-					#icon {
-						// position: absolute;
-						// top: 0;
-						// left: 0;
-						width: var(--buttons-height);
-						height: 100%;
-						display: inline-block;
-						vertical-align: middle;
-						overflow: hidden;
-					}
+		position: absolute;
+		top: 0;
+	}
+	#buttons {
+		width: 100%;
+		height: 3em;
 
-					#innerBar {
-						// position: absolute;
-						// top: 42.5%;
-						// left: var(--buttons-height);
-						width: calc(2 * var(--buttons-height));
-						align-self: center;
-						display: inline-block;
-						vertical-align: middle;
-						height: 15%;
-						border-radius: var(--buttons-height);
-						outline: none;
-						-webkit-appearance: none;
+		position: absolute;
+		bottom: 0;
 
-						&::-webkit-slider-thumb,
-						&::-moz-range-thumb {
-							-webkit-appearance: none;
-							appearance: none;
-							height: calc(
-								var(--buttons-height) * 0.15
-							);
-							width: calc(
-								var(--buttons-height) * 0.15
-							);
-							background: white;
-							cursor: pointer;
-							border-radius: calc(
-								var(--buttons-height) * 0.15
-							);
-						}
-					}
+		display: flex;
+		justify-content: start;
+		align-items: center;
+	}
+	.button {
+		height: 3rem;
+		width: 3rem;
+	}
+	#spin,
+	#play {
+		left: calc(50% - 0.5em);
+	}
+	#skipForward,
+	#skipBackward,
+	#spin,
+	#play {
+		--font-size: 4em;
 
-					&:hover {
-						width: calc(3 * var(--buttons-height));
-					}
-				}
+		font-size: var(--font-size);
 
-				#duration {
-					width: unset;
-					text-align: center;
-					padding: 0 1vw;
-					line-height: var(--buttons-height);
-				}
-				#fullscreen {
-					background-image: url("/icons/fullscreen.svg");
-				}
+		width: 1em;
+		height: 1em;
+		position: absolute;
+		top: calc(50% - 0.5em);
+	}
+	#skipForward,
+	#skipBackward {
+		opacity: 0;
 
-				#qualityChooser {
-					position: relative;
-					#icon {
-						position: absolute;
-						top: 0;
-						left: 0;
-						background-image: url("/icons/settings.svg");
-						width: 100%;
-						height: 100%;
-					}
-
-					#qualities {
-						display: flex;
-						justify-content: center;
-						align-items: center;
-						flex-direction: row;
-						position: absolute;
-						bottom: 150%;
-						right: 0;
-						border-radius: 0.25em;
-						background-color: rgba(0, 0, 0, 0.8);
-						.quality {
-							height: 100%;
-							width: 100%;
-							display: flex;
-							justify-content: center;
-							align-items: center;
-							padding: 0.5vh 1vw;
-
-							&:first-child {
-								border-radius: 0.25em 0 0 0.25em;
-							}
-							&:last-child {
-								border-radius: 0 0.25em 0.25em 0;
-							}
-							&.chosen {
-								background-color: #ffa000f0;
-								color: black;
-							}
-
-							&:hover {
-								background-color: rgba(
-									255,
-									255,
-									255,
-									0.8
-								);
-								color: black;
-							}
-						}
-
-						&.hidden {
-							display: none;
-						}
-					}
-				}
-			}
-		}
+		transition: opacity 300ms;
 	}
 
-	@media only screen and (max-width: 768px) {
-		#videoPlayer {
-			width: 100%;
+	#skipForward.shown,
+	#skipBackward.shown {
+		opacity: 1;
+
+		transition: opacity 1.5s;
+	}
+	#skipForward {
+		right: calc(25% - 0.5em);
+	}
+	#skipBackward {
+		left: calc(25% - 0.5em);
+	}
+	#duration {
+		margin: 0 1em;
+	}
+	#fullscreen {
+		margin-left: auto;
+	}
+	#qualityChooser {
+		position: absolute;
+		top: 0;
+		right: 0;
+	}
+	#qualities {
+		z-index: 0;
+		display: none;
+		width: 4rem;
+
+		position: absolute;
+		top: 0.5em;
+		right: calc(var(--bar-height) + 0.5em);
+
+		flex-direction: column;
+		justify-content: start;
+		align-items: stretch;
+	}
+	#qualities.shown {
+		display: flex;
+	}
+	.quality {
+		color: white;
+		display: inline-block;
+		background-color: #000000aa;
+
+		padding: 0.1em 0.25em;
+		text-align: center;
+	}
+	.quality.chosen {
+		background-color: var(--orange);
+		color: black;
+	}
+	.quality:first-child {
+		border-radius: var(--border-radius) var(--border-radius) 0 0;
+	}
+	.quality:last-child {
+		border-radius: 0 0 var(--border-radius) var(--border-radius);
+	}
+	@media only screen and (min-width: 768px) {
+		#volume {
+			display: block;
 		}
 	}
-
 	@media only screen and (orientation: landscape) {
 		:root {
 			--bar-height: 4em;
 		}
-
-		#controls {
-			#buttons > div {
-				#play {
-					display: block;
-				}
-				#qualityChooser {
-					#qualities {
-						flex-direction: column;
-						right: 0;
-						left: unset;
-						width: unset;
-						.quality {
-							width: 100%;
-							&:first-child {
-								border-radius: 0.25em 0.25em 0 0;
-							}
-							&:last-child {
-								border-radius: 0 0 0.25em 0.25em;
-							}
-						}
-					}
-				}
-			}
+		#play {
+			display: block;
 		}
 	}
 </style>
@@ -358,21 +257,31 @@
 	let muted = false;
 	let volumeValue = 100;
 	let currentTime = 0;
-	let qualitiesHidden = true;
+	let qualitiesShown = false;
 	let timeBeforeChange = undefined;
 	let pausedBeforeChange = undefined;
 	let bufferWidth = 0;
 	let controlHoverTimer = undefined;
-	let hovering = false;
+	let shown = true;
 	let loading = false;
+	let isMobile = false;
+	let canClick = true;
+	let innerWidth, threshold, skippedForward, skippedBackward, skipTimeout;
+	let playPromise;
+
+	$: {
+		isMobile = innerWidth < 768;
+		threshold = innerWidth / 8;
+	}
 
 	$: if (video) video.muted = muted;
 
 	$: if (video) video.volume = volumeValue / 100;
 
 	$: if (buffered.length > 0 && buffered.length > closestBuffer) {
-		bufferWidth =
-			(video.buffered.end(closestBuffer) / videoLength) * 100;
+		if (video.buffered.length > 0)
+			bufferWidth =
+				(video.buffered.end(closestBuffer) / videoLength) * 100;
 	}
 
 	$: if (buffered.length > 0) findClosestBuffer();
@@ -380,16 +289,9 @@
 	let setup = () => {
 		paused = video.paused;
 		videoLength = video.duration;
-		if (
-			/Chrome/.test(navigator.userAgent) &&
-			/Google Inc/.test(navigator.vendor)
-		)
-			paused = false;
 	};
 
 	let toggleFullscreen = async () => {
-		// så dehär borde inte funka
-		// but it do
 		timeBeforeChange = currentTime;
 		fullscreenEnabled =
 			document.fullscreenEnabled && document.fullscreenElement;
@@ -401,18 +303,35 @@
 			document.fullscreenEnabled && document.fullscreenElement;
 	};
 
-	let togglePlaying = () => {
-		paused ? video.play() : video.pause();
+	let togglePlaying = async () => {
+		if (canClick && shown) {
+			try {
+				if (paused && video.paused) playPromise = video.play();
+				else {
+					if (playPromise !== undefined) {
+						await playPromise;
+						video.pause();
+					}
+				}
+			} catch (err) {
+				console.error("Play error:", err);
+			}
+		}
 	};
 
 	let muteVolume = () => (muted = !muted);
 
-	let chooseQuality = quality => {
+	let chooseQuality = async quality => {
 		closestBuffer = 0;
+		if (playPromise !== undefined && playPromise instanceof Promise) {
+			await playPromise;
+		}
 		pausedBeforeChange = paused;
 		timeBeforeChange = currentTime;
+
 		chosenQuality = quality;
-		qualitiesHidden = !qualitiesHidden;
+		qualitiesShown = false;
+		shown = false;
 	};
 
 	let findClosestBuffer = ct => {
@@ -433,14 +352,42 @@
 		);
 	};
 
-	let hoveringControls = () => {
-		hovering = true;
+	let showControls = e => {
+		if (e.detail > 1 || qualitiesShown) return;
+		if (isMobile && shown) return (shown = false);
+		shown = true;
+		setTimeout(() => (canClick = true), 250);
 		if (controlHoverTimer) clearTimeout(controlHoverTimer);
-		if (qualitiesHidden)
+		if (!qualitiesShown)
 			controlHoverTimer = setTimeout(
-				() => (hovering = false),
-				3000
+				() => ((shown = false), (canClick = false)),
+				2000
 			);
+	};
+
+	let skipInVideo = event => {
+		let point = event.x - innerWidth / 2;
+		let abs = Math.abs(point);
+		if (abs > threshold) {
+			if (controlHoverTimer) clearTimeout(controlHoverTimer);
+			shown = true;
+			controlHoverTimer = setTimeout(
+				() => ((shown = false), (canClick = false)),
+				1500
+			);
+			currentTime += (10 * point) / abs;
+			if (skipTimeout) clearTimeout(skipTimeout);
+			point > 0
+				? (skippedForward = true)
+				: (skippedBackward = true);
+			skipTimeout = setTimeout(
+				() =>
+					point > 0
+						? (skippedForward = false)
+						: (skippedBackward = false),
+				500
+			);
+		}
 	};
 
 	onMount(async () => {
@@ -452,102 +399,124 @@
 	});
 </script>
 
-<div id="videoPlayer" bind:this="{player}">
-	<div id="controls" on:mousemove="{hoveringControls}" class:hovering>
+<svelte:window bind:innerWidth />
 
+<div id="videoPlayer" bind:this="{player}">
+	<div
+		id="controls"
+		on:click="{e => isMobile && showControls(e)}"
+		on:mousemove="{e => !isMobile && showControls(e)}"
+		on:dblclick="{e => (isMobile ? skipInVideo(e) : toggleFullscreen(e))}"
+		class:shown>
 		<div id="bar">
 			<input
+				disabled="{!canClick}"
 				id="progress"
 				type="range"
 				max="{videoLength}"
 				bind:value="{currentTime}"
 				on:change="{e => {
-					paused = false;
 					buffered.length > 0 ? findClosestBuffer(currentTime) : undefined;
 				}}"
-				on:input="{e => {
-					paused = true;
+				on:input="{async e => {
+					if (controlHoverTimer) clearTimeout(controlHoverTimer);
+					controlHoverTimer = setTimeout(() => ((shown = false), (canClick = false)), 1500);
+					try {
+						if (playPromise !== undefined && playPromise instanceof Promise) {
+							await playPromise;
+						}
+						video.pause();
+					} catch (videoError) {
+						console.error('VideoError', videoError);
+					}
 					buffered.length > 0 ? findClosestBuffer(currentTime) : undefined;
 				}}"
-				on:click="{() => (buffered.length > 0 ? findClosestBuffer(currentTime) : undefined)}"
+				on:click="{() => (buffered.length > 0 && shown ? findClosestBuffer(currentTime) : undefined)}"
 				style="background: linear-gradient(90deg, #ffa000f0 {(currentTime / videoLength) * 100}%,
 				rgba(255, 255, 255, 0.1) {(currentTime / videoLength) * 100}%)"
-				step="{(1 / (videoLength * 10000)).toFixed(5)}" />
+				step="{videoLength / Math.pow(10, 6)}" />
 			<div id="buffered" style="width: {bufferWidth}%"></div>
 		</div>
+		{#if loading}
+			<div id="spin"></div>
+		{:else}
+			<i
+				class:shown="{skippedBackward}"
+				class="material-icons"
+				id="skipBackward">
+				skip_previous
+			</i>
+			<i
+				id="play"
+				class="button hasBackground material-icons"
+				on:click="{togglePlaying}">
+				{paused ? 'play_arrow' : 'pause'}
+			</i>
+			<i
+				class:shown="{skippedForward}"
+				class="material-icons"
+				id="skipForward">
+				skip_next
+			</i>
+		{/if}
 
-		<div id="buttons">
-			<div id="left">
-				<div
-					id="play"
-					class="hasBackground"
-					on:click="{togglePlaying}"
-					style="background-image: url('/icons/{paused ? 'play' : 'pause'}.svg')"></div>
-				<div id="volume">
-					<div
-						id="icon"
-						class="hasBackground"
-						on:click="{muteVolume}"
-						style="background-image: url('/icons/{!muted ? 'volume_up' : 'volume_off'}.svg')"></div>
-					<input
-						type="range"
-						bind:value="{volumeValue}"
-						on:input="{() => {
-							muted ? (muted = !muted) : undefined;
-							if (volumeValue === 0) muted = true;
-						}}"
-						id="innerBar"
-						style="background: linear-gradient(90deg,
-						#ffa000f0 {volumeValue}%, rgba(255, 255,
-						255, 0.1) {volumeValue}%)" />
-				</div>
-				<div id="duration">
-					{new Date(currentTime * 1000)
-						.toISOString()
-						.substr(14, 5)} / {new Date(
-						videoLength * 1000
-					)
-						.toISOString()
-						.substr(14, 5)}
-				</div>
-			</div>
-			<div id="right">
-				<div id="qualityChooser">
-					<div
-						id="icon"
-						class="hasBackground"
-						on:click="{() => {
-							qualitiesHidden = !qualitiesHidden;
-							if (qualitiesHidden) controlHoverTimer = setTimeout(() => (hovering = false), 3000);
-							else clearTimeout(controlHoverTimer);
-						}}"></div>
-					<div
-						id="qualities"
-						class:hidden="{qualitiesHidden}">
-						{#each videoJSON.available_qualities as quality}
-							<p
-								class="quality"
-								class:chosen="{chosenQuality == quality}"
-								on:click="{() => chooseQuality(quality)}">
-								{quality}
-							</p>
-						{/each}
-					</div>
-				</div>
-				<div
-					id="fullscreen"
-					on:click="{toggleFullscreen}"
-					class="hasBackground"
-					style="background-image: url('/icons/{fullscreenEnabled ? 'fullscreen_exit' : 'fullscreen'}.svg');"></div>
+		<div id="qualityChooser">
+			<i
+				class="button hasBackground material-icons"
+				on:click="{e => {
+					if (!shown) return;
+					qualitiesShown = !qualitiesShown;
+					if (controlHoverTimer) clearTimeout(controlHoverTimer);
+					else if (!qualitiesShown) controlHoverTimer = setTimeout(() => ((shown = false), (canClick = false)), 1500);
+				}}">
+				settings
+			</i>
+			<div id="qualities" class:shown="{qualitiesShown}">
+				{#each videoJSON.available_qualities as quality}
+					<p
+						class="quality"
+						class:chosen="{chosenQuality == quality}"
+						on:click="{() => chooseQuality(quality)}">
+						{quality}
+					</p>
+				{/each}
 			</div>
 		</div>
+		<div id="buttons">
+			<!-- <div class="button" id="volume">
+				<div
+					id="icon"
+					class="hasBackground"
+					on:click="{muteVolume}"
+					style="background-image: url('/icons/{!muted ? 'volume_up' : 'volume_off'}.svg')"></div>
+				<input
+					type="range"
+					bind:value="{volumeValue}"
+					on:input="{() => {
+						muted ? (muted = !muted) : undefined;
+						if (volumeValue === 0) muted = true;
+					}}"
+					id="innerBar"
+					style="background: linear-gradient(90deg,
+					#ffa000f0 {volumeValue}%, rgba(255, 255, 255, 0.1)
+					{volumeValue}%)" />
+			</div> -->
+			<p id="duration">
+				{new Date(currentTime * 1000)
+					.toISOString()
+					.substr(14, 5)} / {new Date(videoLength * 1000)
+					.toISOString()
+					.substr(14, 5)}
+			</p>
+			<i
+				id="fullscreen"
+				on:click="{toggleFullscreen}"
+				class="button hasBackground material-icons">
+				{fullscreenEnabled ? 'fullscreen_exit' : 'fullscreen'}
+			</i>
+		</div>
 	</div>
-	<div
-		id="spinner"
-		class:hidden="{!loading}"
-		on:mousemove="{hoveringControls}">
-		<div id="spin"></div>
-	</div>
+
 	<video
 		bind:paused
 		bind:buffered
@@ -555,17 +524,41 @@
 		bind:currentTime
 		preload="metadata"
 		on:click="{togglePlaying}"
-		on:playing="{() => {
-			loading = false;
+		on:dblclick="{e => (isMobile ? skipInVideo(e) : toggleFullscreen(e))}"
+		on:waiting="{async () => {
+			try {
+				loading = true;
+				if (controlHoverTimer) clearTimeout(controlHoverTimer);
+			} catch (videoError) {
+				console.log('VideoError', videoError);
+			}
 		}}"
-		on:waiting="{() => {
-			loading = true;
+		on:loadeddata="{async () => {
+			if (video.buffered.length > 0) findClosestBuffer();
+			timeBeforeChange ? (currentTime = timeBeforeChange) : null;
+			if (pausedBeforeChange && !video.paused) {
+				try {
+					if (playPromise !== undefined) {
+						await playPromise;
+					}
+					video.pause();
+				} catch (err) {
+					console.error('VideoError', err);
+				}
+			} else if (!pausedBeforeChange && video.paused) {
+				playPromise = video.play();
+			}
 		}}"
 		on:emptied="{() => {
 			if (video.buffered.length > 0) findClosestBuffer();
 			timeBeforeChange ? (currentTime = timeBeforeChange) : null;
 		}}"
-		on:mousemove="{hoveringControls}"
+		on:seeked="{() => {
+			if (loading) {
+				if (paused) playPromise = video.play();
+				loading = false;
+			}
+		}}"
 		src="{src}/{chosenQuality}"
 		type="video/mp4"></video>
 </div>
