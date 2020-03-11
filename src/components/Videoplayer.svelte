@@ -4,22 +4,27 @@
 		margin: 0;
 		box-sizing: border-box;
 		user-select: none;
+		-ms-user-select: none;
+		-moz-user-select: none;
+		-webkit-user-select: none;
 	}
-
 	:root {
 		--video-width: 100vmin;
 		--video-height: calc(var(--video-width) * 9 / 16);
-		--bar-height: 3em;
-	}
 
+		--bar-size: 3rem;
+		--bar-height: 0.75rem;
+		--margin: 1rem;
+	}
 	#videoPlayer {
-		width: var(--video-width);
-		height: var(--video-height);
-		max-width: 1280px;
+		width: 100vw;
+		height: 100vh;
+		max-width: calc(var(--video-width));
+		min-width: 98vw;
+		max-height: var(--video-height);
 		position: relative;
 		overflow: hidden;
 	}
-
 	video {
 		height: 100%;
 		width: 100%;
@@ -29,307 +34,313 @@
 		left: 0;
 		z-index: 1;
 	}
-
 	.hasBackground {
-		background-position: center;
-		background-size: 70%;
-		background-repeat: no-repeat;
-	}
-
-	#spinner {
-		width: 100%;
-		height: 100%;
-		z-index: 2;
-		position: absolute;
-		top: 0;
-		left: 0;
-		background-color: rgba(0, 0, 0, 0.8);
 		display: flex;
 		justify-content: center;
 		align-items: center;
-		&.hidden {
-			display: none;
+	}
+	#spin-container {
+		width: 100%;
+		height: 100%;
+
+		position: absolute;
+		top: 0;
+		left: 0;
+
+		z-index: 16;
+
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
+	#spin {
+		font-size: 2em;
+		width: 2em;
+		height: 2em;
+
+		background-image: url("/icons/loading.svg");
+		background-size: cover;
+		animation: spin 2s infinite;
+		animation-timing-function: ease-in-out;
+	}
+	@keyframes spin {
+		0% {
+			transform: rotate(0deg);
 		}
-		#spin {
-			width: calc(var(--bar-height) * 2);
-			height: calc(var(--bar-height) * 2);
-			background-image: url("/icons/loading.svg");
-			background-size: cover;
-			animation: spin 2s infinite;
-			animation-timing-function: ease-in-out;
+		25% {
+			transform: rotate(90deg);
 		}
-		@keyframes spin {
-			0% {
-				transform: rotate(0deg);
-			}
-			25% {
-				transform: rotate(90deg);
-			}
-			50% {
-				transform: rotate(180deg);
-			}
-			75% {
-				transform: rotate(270deg);
-			}
-			100% {
-				transform: rotate(360deg);
-			}
+		50% {
+			transform: rotate(180deg);
+		}
+		75% {
+			transform: rotate(270deg);
+		}
+		100% {
+			transform: rotate(360deg);
 		}
 	}
 
 	#controls {
+		height: 100%;
 		width: 100%;
-		height: var(--bar-height);
 
-		position: absolute;
-		bottom: calc(-1 * var(--bar-height));
-		left: 0;
 		z-index: 3;
 
-		transition: all 0.5s;
+		background-color: #000000aa;
 
-		&.hovering {
+		opacity: 0;
+
+		position: relative;
+		bottom: 0;
+		padding: 0.5rem;
+
+		transition: 0.25s opacity;
+	}
+	#controls.shown {
+		transition: 0.25s opacity;
+		opacity: 1;
+	}
+	#bar {
+		height: var(--bar-height);
+		width: calc(100% - 2 * var(--margin));
+		margin: 0.25em 0;
+
+		position: absolute;
+		bottom: var(--bar-size);
+		left: var(--margin);
+
+		transition: all 0.25s ease 0s;
+	}
+	#controls.shown #bar:hover {
+		height: calc(2 * var(--bar-height));
+	}
+	#progress {
+		height: 100%;
+		width: 100%;
+
+		appearance: none;
+		-webkit-appearance: none;
+
+		position: absolute;
+		top: 0;
+
+		z-index: 2;
+	}
+
+	// #progress::-moz-range-thumb,
+	// #progress::-webkit-slider-thumb {
+	// 	appearance: none;
+	// 	-webkit-appearance: none;
+	// 	background-color: var(--orange);
+	// 	border-radius: 100%;
+	// 	height: var(--bar-height);
+	// 	width: var(--bar-height);
+	// }
+	input[type="range"]::-webkit-slider-thumb {
+		-webkit-appearance: none;
+		height: var(--bar-height);
+		width: var(--bar-height);
+		background: transparent;
+		cursor: pointer;
+	}
+
+	input[type="range"]::-moz-range-thumb {
+		-moz-appearance: none;
+		height: var(--bar-height);
+		width: var(--bar-height);
+		background: transparent;
+		cursor: pointer;
+	}
+
+	input[type="range"]::-ms-thumb {
+		height: var(--bar-height);
+		width: var(--bar-height);
+		background: transparent;
+		cursor: pointer;
+	}
+	#buffered {
+		z-index: 0;
+		width: 0%;
+		height: 100%;
+
+		background-color: gray;
+
+		position: absolute;
+		top: 0;
+	}
+	#play {
+		left: calc(50% - 0.5em);
+	}
+	#skipForward,
+	#skipBackward,
+	#play {
+		font-size: 4em;
+
+		position: absolute;
+		top: calc(50% - 0.5em);
+	}
+	#skipForward,
+	#skipBackward {
+		opacity: 0;
+
+		transition: opacity 300ms;
+	}
+
+	#skipForward.shown,
+	#skipBackward.shown {
+		opacity: 1;
+	}
+	#skipForward {
+		right: calc(25% - 0.5em);
+	}
+	#skipBackward {
+		left: calc(25% - 0.5em);
+	}
+	.atBottom {
+		position: absolute;
+		bottom: 0 !important;
+		top: unset !important;
+
+		height: var(--bar-size);
+	}
+	.button i,
+	.button {
+		width: var(--bar-size);
+		height: var(--bar-size);
+	}
+	#duration {
+		height: var(--bar-size);
+		left: 1rem;
+		line-height: var(--bar-size);
+	}
+	#fullscreen {
+		right: 0;
+	}
+	#qualityChooser {
+		position: absolute;
+		top: 0;
+		right: 0;
+	}
+	#qualities {
+		z-index: 0;
+		display: none;
+		width: 4rem;
+
+		position: absolute;
+		top: 0.5em;
+		right: var(--bar-size);
+
+		flex-direction: column;
+		justify-content: start;
+		align-items: stretch;
+	}
+	#qualities.shown {
+		display: flex;
+	}
+	.quality {
+		color: white;
+		display: inline-block;
+		background-color: #000000aa;
+
+		padding: 0.1em 0.25em;
+		text-align: center;
+	}
+	.quality.chosen {
+		font-size: unset;
+		background-color: var(--orange);
+		color: black;
+	}
+	.quality:first-child {
+		border-radius: var(--border-radius) var(--border-radius) 0 0;
+	}
+	.quality:last-child {
+		border-radius: 0 0 var(--border-radius) var(--border-radius);
+	}
+	@media only screen and (min-width: 768px) {
+		:root {
+			--video-width: 60vw;
+		}
+		#videoPlayer {
+			min-width: 768px;
+			min-height: 432px;
+		}
+		#controls {
+			--control-height: calc(
+				var(--bar-size) + 2 * var(--bar-height)
+			);
+			height: var(--control-height);
+
+			display: block;
+
+			opacity: 1;
+
+			position: absolute;
+			bottom: calc(-1 * var(--control-height));
+			transition: bottom 0.25s ease !important;
+		}
+		#controls.shown {
 			bottom: 0;
 		}
-
-		#bar {
-			width: 100%;
-			height: 12.5%;
-			margin: 0;
-			padding: 0;
-			grid-area: bar;
-			background-color: rgba(0, 0, 0, 0.8);
-			position: absolute;
-			bottom: 87.5%;
-			transition: all 0.5s;
-
-			&:hover {
-				height: 25%;
-			}
-
-			#progress {
-				width: 100%;
-				height: 100%;
-				position: absolute;
-				top: 0;
-				left: 0;
-				z-index: 3;
-				left: 0;
-				-webkit-appearance: none;
-				appearance: none;
-				outline: none;
-				&::-webkit-slider-thumb {
-					-webkit-appearance: none;
-					appearance: none;
-					height: 8px;
-					width: 8px;
-					background: white;
-					cursor: drag;
-				}
-
-				&::-moz-range-thumb {
-					margin-left: 0px;
-					background: white;
-					height: 8px;
-					width: 8px;
-					cursor: drag;
-				}
-			}
-
-			#buffered {
-				width: 100%;
-				height: 100%;
-				position: absolute;
-				top: 0;
-				left: 0;
-				z-index: 2;
-				background-color: rgba(255, 255, 255, 0.3);
-			}
+		#controls.shown #bar:hover {
+			// height: calc(2 * var(--bar-height)) !important;
+			height: var(--bar-height);
 		}
-
-		#buttons {
-			--buttons-height: calc(var(--bar-height) * 7 / 8);
-			width: 100%;
-			height: var(--buttons-height);
-			position: absolute;
-			top: 12.5%;
-			grid-area: buttons;
+		// #controls.shown #bar:hover {
+		// 	--bar-height: 1em;
+		// 	height: var(--bar-height) !important;
+		// }
+		#volume {
 			display: flex;
-			justify-content: space-between;
-
-			background-color: rgba(0, 0, 0, 0.8);
+			justify-content: start;
 			align-items: center;
-			> div {
-				height: 100%;
-				display: flex;
-				justify-content: start;
-				align-items: center;
-				> div {
-					height: 100%;
-					width: var(--buttons-height);
-				}
 
-				#play {
-					display: none;
-					background-image: url("/icons/play_arrow.svg");
-				}
-				#volume {
-					position: relative;
-					transition: all 0.45s ease-in-out;
-					overflow: hidden;
-					white-space: nowrap;
+			overflow: hidden;
 
-					#icon {
-						// position: absolute;
-						// top: 0;
-						// left: 0;
-						width: var(--buttons-height);
-						height: 100%;
-						display: inline-block;
-						vertical-align: middle;
-						overflow: hidden;
-					}
+			width: var(--bar-size);
+			height: var(--bar-size);
 
-					#innerBar {
-						// position: absolute;
-						// top: 42.5%;
-						// left: var(--buttons-height);
-						width: calc(2 * var(--buttons-height));
-						align-self: center;
-						display: inline-block;
-						vertical-align: middle;
-						height: 15%;
-						border-radius: var(--buttons-height);
-						outline: none;
-						-webkit-appearance: none;
-
-						&::-webkit-slider-thumb,
-						&::-moz-range-thumb {
-							-webkit-appearance: none;
-							appearance: none;
-							height: calc(
-								var(--buttons-height) * 0.15
-							);
-							width: calc(
-								var(--buttons-height) * 0.15
-							);
-							background: white;
-							cursor: pointer;
-							border-radius: calc(
-								var(--buttons-height) * 0.15
-							);
-						}
-					}
-
-					&:hover {
-						width: calc(3 * var(--buttons-height));
-					}
-				}
-
-				#duration {
-					width: unset;
-					text-align: center;
-					padding: 0 1vw;
-					line-height: var(--buttons-height);
-				}
-				#fullscreen {
-					background-image: url("/icons/fullscreen.svg");
-				}
-
-				#qualityChooser {
-					position: relative;
-					#icon {
-						position: absolute;
-						top: 0;
-						left: 0;
-						background-image: url("/icons/settings.svg");
-						width: 100%;
-						height: 100%;
-					}
-
-					#qualities {
-						display: flex;
-						justify-content: center;
-						align-items: center;
-						flex-direction: row;
-						position: absolute;
-						bottom: 150%;
-						right: 0;
-						border-radius: 0.25em;
-						background-color: rgba(0, 0, 0, 0.8);
-						.quality {
-							height: 100%;
-							width: 100%;
-							display: flex;
-							justify-content: center;
-							align-items: center;
-							padding: 0.5vh 1vw;
-
-							&:first-child {
-								border-radius: 0.25em 0 0 0.25em;
-							}
-							&:last-child {
-								border-radius: 0 0.25em 0.25em 0;
-							}
-							&.chosen {
-								background-color: #ffa000f0;
-								color: black;
-							}
-
-							&:hover {
-								background-color: rgba(
-									255,
-									255,
-									255,
-									0.8
-								);
-								color: black;
-							}
-						}
-
-						&.hidden {
-							display: none;
-						}
-					}
-				}
-			}
+			left: var(--bar-size);
+			transition: width 0.25s ease;
 		}
-	}
-
-	@media only screen and (max-width: 768px) {
-		#videoPlayer {
+		#volume i {
 			width: 100%;
+			min-width: var(--bar-size);
+			max-width: var(--bar-size);
+			height: var(--bar-size);
 		}
-	}
-
-	@media only screen and (orientation: landscape) {
-		:root {
-			--bar-height: 4em;
+		#volume input {
+			width: calc(1.8 * var(--bar-size));
 		}
+		#volume:hover {
+			width: calc(3 * var(--bar-size));
+		}
+		#volume:hover ~ #duration {
+			left: calc(4 * var(--bar-size));
+		}
+		i {
+			font-size: 2em !important;
+		}
+		#qualityChooser {
+			right: var(--bar-size);
+		}
+		#play {
+			left: 0;
+		}
+		#duration {
+			transition: left 0.25s ease;
+			left: calc(2 * var(--bar-size));
+		}
+		#qualities {
+			top: unset;
+			bottom: calc(3 * var(--bar-height) + var(--bar-size));
+			right: 0;
+			// TODO Centrera ^
+		}
+		#spin-container {
+			background-color: #000000aa;
 
-		#controls {
-			#buttons > div {
-				#play {
-					display: block;
-				}
-				#qualityChooser {
-					#qualities {
-						flex-direction: column;
-						right: 0;
-						left: unset;
-						width: unset;
-						.quality {
-							width: 100%;
-							&:first-child {
-								border-radius: 0.25em 0.25em 0 0;
-							}
-							&:last-child {
-								border-radius: 0 0 0.25em 0.25em;
-							}
-						}
-					}
-				}
-			}
+			z-index: 2;
 		}
 	}
 </style>
@@ -341,10 +352,8 @@
 	import { onMount } from "svelte";
 	import { fade } from "svelte/transition";
 
-	let chosenQuality =
-		videoJSON.available_qualities[
-			videoJSON.available_qualities.length - 1
-		];
+	let { available_qualities } = videoJSON;
+	// videoJSON.available_qualities.length - 1
 
 	let video = undefined;
 	let player = undefined;
@@ -358,38 +367,69 @@
 	let muted = false;
 	let volumeValue = 100;
 	let currentTime = 0;
-	let qualitiesHidden = true;
+	let qualitiesShown = false;
 	let timeBeforeChange = undefined;
 	let pausedBeforeChange = undefined;
 	let bufferWidth = 0;
 	let controlHoverTimer = undefined;
-	let hovering = false;
+	let shown;
 	let loading = false;
+	let isMobile = false;
+	let canClick;
+	let innerWidth,
+		innerHeight,
+		threshold,
+		skippedForward,
+		skippedBackward,
+		skipTimeout;
+	let playPromise;
+	let hasRunSetup = false;
+
+	let chosenQuality = available_qualities[available_qualities.length - 1];
+
+	// TODO Global shown handler
+	// doesnt start timer when changing qualities sometimes
+	// Rarely on actual mobile
+	// rework
+
+	// TODO qualities should hide if clicking outsite the box
+
+	// TODO on mobile you can click on the range without it showing
+
+	$: if (!fullscreenEnabled) {
+		isMobile = innerWidth < 768;
+		threshold = innerWidth / 8;
+	}
 
 	$: if (video) video.muted = muted;
 
 	$: if (video) video.volume = volumeValue / 100;
 
 	$: if (buffered.length > 0 && buffered.length > closestBuffer) {
-		bufferWidth =
-			(video.buffered.end(closestBuffer) / videoLength) * 100;
+		if (video.buffered.length > 0)
+			bufferWidth =
+				(video.buffered.end(closestBuffer) / videoLength) * 100;
 	}
 
 	$: if (buffered.length > 0) findClosestBuffer();
 
-	let setup = () => {
+	let setup = async () => {
 		paused = video.paused;
 		videoLength = video.duration;
-		if (
-			/Chrome/.test(navigator.userAgent) &&
-			/Google Inc/.test(navigator.vendor)
-		)
-			paused = false;
+		try {
+			playPromise = video.play();
+			await playPromise;
+			console.log("Could autoplay!");
+			shown = false;
+			canClick = false;
+		} catch (err) {
+			console.log("Couldn't autoplay!");
+			shown = true;
+			canClick = true;
+		}
 	};
 
 	let toggleFullscreen = async () => {
-		// så dehär borde inte funka
-		// but it do
 		timeBeforeChange = currentTime;
 		fullscreenEnabled =
 			document.fullscreenEnabled && document.fullscreenElement;
@@ -401,18 +441,51 @@
 			document.fullscreenEnabled && document.fullscreenElement;
 	};
 
-	let togglePlaying = () => {
-		paused ? video.play() : video.pause();
+	let togglePlaying = async () => {
+		if (isMobile) {
+			if (canClick && shown) {
+				try {
+					if (paused && video.paused)
+						playPromise = video.play();
+					else {
+						if (playPromise !== undefined) {
+							await playPromise;
+							video.pause();
+						}
+					}
+				} catch (err) {
+					console.error("Play error:", err);
+				}
+			}
+		} else {
+			try {
+				if (paused && video.paused) playPromise = video.play();
+				else {
+					if (playPromise !== undefined) {
+						await playPromise;
+						video.pause();
+					}
+				}
+				resetShowTimer();
+			} catch (err) {
+				console.error("Play error:", err);
+			}
+		}
 	};
 
 	let muteVolume = () => (muted = !muted);
 
-	let chooseQuality = quality => {
+	let chooseQuality = async quality => {
 		closestBuffer = 0;
+		if (playPromise !== undefined && playPromise instanceof Promise) {
+			await playPromise;
+		}
 		pausedBeforeChange = paused;
 		timeBeforeChange = currentTime;
+
 		chosenQuality = quality;
-		qualitiesHidden = !qualitiesHidden;
+		qualitiesShown = false;
+		resetShowTimer();
 	};
 
 	let findClosestBuffer = ct => {
@@ -433,17 +506,72 @@
 		);
 	};
 
-	let hoveringControls = () => {
-		hovering = true;
+	let showControls = e => {
+		if (e.detail > 1 || qualitiesShown) return;
+		console.log("Hovering");
+		if (isMobile && shown) {
+			shown = false;
+			canClick = false;
+		} else {
+			resetShowTimer();
+		}
+	};
+
+	let skipInVideo = event => {
+		let point = event.x - innerWidth / 2;
+		let abs = Math.abs(point);
+		if (abs > threshold) {
+			resetShowTimer();
+			currentTime += (10 * point) / abs;
+			if (skipTimeout) clearTimeout(skipTimeout);
+			point > 0
+				? ((skippedForward = true), (skippedBackward = false))
+				: ((skippedBackward = true), (skippedForward = false));
+			skipTimeout = setTimeout(
+				() =>
+					point > 0
+						? (skippedForward = false)
+						: (skippedBackward = false),
+				1000
+			);
+		}
+	};
+
+	let clearShowTimer = () => {
 		if (controlHoverTimer) clearTimeout(controlHoverTimer);
-		if (qualitiesHidden)
+	};
+
+	let show = () => {
+		shown = true;
+		setTimeout(() => (canClick = true), 250);
+	};
+
+	let setShowTimer = () => {
+		if (!qualitiesShown)
 			controlHoverTimer = setTimeout(
-				() => (hovering = false),
-				3000
+				() => ((shown = false), (canClick = false)),
+				1500
 			);
 	};
 
+	let resetShowTimer = () => {
+		clearShowTimer();
+		show();
+		setShowTimer();
+	};
+
 	onMount(async () => {
+		chosenQuality =
+			available_qualities[
+				available_qualities.indexOf(
+					available_qualities.reduce((previous, current) =>
+						Math.abs(current - innerHeight) <
+						Math.abs(previous - innerHeight)
+							? current
+							: previous
+					)
+				)
+			];
 		if (!video.duration) {
 			video.addEventListener("loadedmetadata", setup, {
 				once: true
@@ -452,120 +580,181 @@
 	});
 </script>
 
-<div id="videoPlayer" bind:this="{player}">
-	<div id="controls" on:mousemove="{hoveringControls}" class:hovering>
+<svelte:window bind:innerWidth bind:innerHeight />
 
+<div id="videoPlayer" bind:this="{player}">
+	{#if loading}
+		<div id="spin-container">
+			<div id="spin"></div>
+		</div>
+	{/if}
+	<div
+		id="controls"
+		on:click="{e => isMobile && showControls(e)}"
+		on:mousemove="{e => !isMobile && showControls(e)}"
+		on:dblclick="{e => (isMobile ? skipInVideo(e) : toggleFullscreen(e))}"
+		class:shown="{(isMobile && (loading || shown)) || (!isMobile && shown)}">
 		<div id="bar">
 			<input
+				disabled="{!canClick}"
 				id="progress"
 				type="range"
 				max="{videoLength}"
 				bind:value="{currentTime}"
 				on:change="{e => {
-					paused = false;
 					buffered.length > 0 ? findClosestBuffer(currentTime) : undefined;
 				}}"
-				on:input="{e => {
-					paused = true;
+				on:input="{async e => {
+					resetShowTimer();
+					try {
+						if (playPromise !== undefined && playPromise instanceof Promise) {
+							await playPromise;
+						}
+						video.pause();
+					} catch (videoError) {
+						console.error('VideoError', videoError);
+					}
 					buffered.length > 0 ? findClosestBuffer(currentTime) : undefined;
 				}}"
-				on:click="{() => (buffered.length > 0 ? findClosestBuffer(currentTime) : undefined)}"
+				on:click="{() => (buffered.length > 0 && shown ? findClosestBuffer(currentTime) : undefined)}"
 				style="background: linear-gradient(90deg, #ffa000f0 {(currentTime / videoLength) * 100}%,
 				rgba(255, 255, 255, 0.1) {(currentTime / videoLength) * 100}%)"
-				step="{(1 / (videoLength * 10000)).toFixed(5)}" />
+				step="{videoLength / Math.pow(10, 6)}" />
 			<div id="buffered" style="width: {bufferWidth}%"></div>
 		</div>
+		<i
+			class:shown="{skippedBackward}"
+			class="material-icons"
+			id="skipBackward">
+			skip_previous
+		</i>
+		{#if (isMobile && !loading) || !isMobile}
+			<i
+				id="play"
+				class="button hasBackground material-icons"
+				class:atBottom="{!isMobile}"
+				on:click="{togglePlaying}">
+				{paused ? 'play_arrow' : 'pause'}
+			</i>
+		{/if}
+		<i
+			class:shown="{skippedForward}"
+			class="material-icons"
+			id="skipForward">
+			skip_next
+		</i>
 
-		<div id="buttons">
-			<div id="left">
-				<div
-					id="play"
-					class="hasBackground"
-					on:click="{togglePlaying}"
-					style="background-image: url('/icons/{paused ? 'play' : 'pause'}.svg')"></div>
-				<div id="volume">
-					<div
-						id="icon"
-						class="hasBackground"
-						on:click="{muteVolume}"
-						style="background-image: url('/icons/{!muted ? 'volume_up' : 'volume_off'}.svg')"></div>
-					<input
-						type="range"
-						bind:value="{volumeValue}"
-						on:input="{() => {
-							muted ? (muted = !muted) : undefined;
-							if (volumeValue === 0) muted = true;
-						}}"
-						id="innerBar"
-						style="background: linear-gradient(90deg,
-						#ffa000f0 {volumeValue}%, rgba(255, 255,
-						255, 0.1) {volumeValue}%)" />
-				</div>
-				<div id="duration">
-					{new Date(currentTime * 1000)
-						.toISOString()
-						.substr(14, 5)} / {new Date(
-						videoLength * 1000
-					)
-						.toISOString()
-						.substr(14, 5)}
-				</div>
-			</div>
-			<div id="right">
-				<div id="qualityChooser">
-					<div
-						id="icon"
-						class="hasBackground"
-						on:click="{() => {
-							qualitiesHidden = !qualitiesHidden;
-							if (qualitiesHidden) controlHoverTimer = setTimeout(() => (hovering = false), 3000);
-							else clearTimeout(controlHoverTimer);
-						}}"></div>
-					<div
-						id="qualities"
-						class:hidden="{qualitiesHidden}">
-						{#each videoJSON.available_qualities as quality}
-							<p
-								class="quality"
-								class:chosen="{chosenQuality == quality}"
-								on:click="{() => chooseQuality(quality)}">
-								{quality}
-							</p>
-						{/each}
-					</div>
-				</div>
-				<div
-					id="fullscreen"
-					on:click="{toggleFullscreen}"
-					class="hasBackground"
-					style="background-image: url('/icons/{fullscreenEnabled ? 'fullscreen_exit' : 'fullscreen'}.svg');"></div>
+		<div
+			id="qualityChooser"
+			class="button"
+			class:atBottom="{!isMobile}">
+			<i
+				class="hasBackground material-icons"
+				on:click="{e => {
+					if (!shown) return;
+					qualitiesShown = !qualitiesShown;
+					resetShowTimer();
+				}}">
+				settings
+			</i>
+			<div id="qualities" class:shown="{qualitiesShown}">
+				{#each videoJSON.available_qualities as quality}
+					<p
+						class="quality"
+						class:chosen="{chosenQuality == quality}"
+						on:click="{() => chooseQuality(quality)}">
+						{quality}
+					</p>
+				{/each}
 			</div>
 		</div>
+		{#if !isMobile}
+			<div class="button atBottom" id="volume">
+				<i
+					id="icon"
+					class="hasBackground material-icons"
+					on:click="{muteVolume}">
+					{!muted ? 'volume_up' : 'volume_off'}
+				</i>
+				<input
+					type="range"
+					bind:value="{volumeValue}"
+					on:mouse
+					on:input="{() => {
+						resetShowTimer();
+						muted ? (muted = !muted) : undefined;
+						if (volumeValue === 0) muted = true;
+					}}"
+					id="innerBar"
+					style="background: linear-gradient(90deg,
+					#ffa000f0 {volumeValue}%, rgba(255, 255, 255, 0.1)
+					{volumeValue}%)" />
+			</div>
+		{/if}
+		<p id="duration" class="atBottom">
+			{new Date(currentTime * 1000).toISOString().substr(14, 5)} / {new Date(
+				videoLength * 1000
+			)
+				.toISOString()
+				.substr(14, 5)}
+		</p>
+		<i
+			id="fullscreen"
+			on:click="{toggleFullscreen}"
+			class="button hasBackground material-icons atBottom">
+			{fullscreenEnabled ? 'fullscreen_exit' : 'fullscreen'}
+		</i>
 	</div>
-	<div
-		id="spinner"
-		class:hidden="{!loading}"
-		on:mousemove="{hoveringControls}">
-		<div id="spin"></div>
-	</div>
+
 	<video
 		bind:paused
 		bind:buffered
 		bind:this="{video}"
 		bind:currentTime
+		controls="{false}"
 		preload="metadata"
+		on:mousemove="{e => !isMobile && showControls(e)}"
 		on:click="{togglePlaying}"
+		on:dblclick="{e => (isMobile ? skipInVideo(e) : toggleFullscreen(e))}"
 		on:playing="{() => {
 			loading = false;
+			setShowTimer();
 		}}"
-		on:waiting="{() => {
-			loading = true;
+		on:waiting="{async () => {
+			try {
+				loading = true;
+				clearShowTimer();
+				show();
+			} catch (videoError) {
+				console.log('VideoError', videoError);
+			}
+		}}"
+		on:loadeddata="{async () => {
+			if (video.buffered.length > 0) findClosestBuffer();
+			timeBeforeChange ? (currentTime = timeBeforeChange) : null;
+			if (pausedBeforeChange == true && !video.paused) {
+				try {
+					if (playPromise !== undefined) {
+						await playPromise;
+					}
+					video.pause();
+				} catch (err) {
+					console.error('VideoError', err);
+				}
+			} else if (pausedBeforeChange == false && video.paused) {
+				playPromise = video.play();
+			}
 		}}"
 		on:emptied="{() => {
 			if (video.buffered.length > 0) findClosestBuffer();
 			timeBeforeChange ? (currentTime = timeBeforeChange) : null;
 		}}"
-		on:mousemove="{hoveringControls}"
+		on:seeked="{() => {
+			if (loading) {
+				if (paused) playPromise = video.play();
+				loading = false;
+			}
+		}}"
 		src="{src}/{chosenQuality}"
 		type="video/mp4"></video>
 </div>
