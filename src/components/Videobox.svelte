@@ -63,7 +63,7 @@
 		.vertical {
 			box-shadow: none;
 			width: 100%;
-			min-width: none;
+			min-width: 0;
 			max-width: none;
 			margin: 0;
 			padding: 0;
@@ -94,7 +94,7 @@
 	<h1>
 		{@html title}
 	</h1>
-	{#if videos}
+	{#if videos.length > 0}
 		{#each videos as video}
 			<Thumbnail {orientation} {video} />
 		{:else}

@@ -51,7 +51,7 @@ router.put('/:videoID/:commentID', auth, async (req, res) => {
 		let video = await Video.findById(videoID)
 		let comment = await Comment.findById(commentID);
 		if (!video || !comment) throw new Error("Resource couldn't be found")
-		if (comment.user != req.user.id) throw new Error("You dont have permission to remove that comment")
+		if (comment.user != req.user.id) throw new Error("You dont have permission to edit that comment")
 		if (video.comments != comment.video) throw new Error("Comment doesn't belong to that video")
 		// TODO FIX ^
 		if (!text || text.length == 0) throw new Error("Comment can't be empty")

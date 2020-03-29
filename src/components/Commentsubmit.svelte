@@ -67,6 +67,7 @@
 	let textbox;
 	let mime;
 	export let id;
+	export let getComments;
 	let img;
 	let focus = false;
 
@@ -92,7 +93,7 @@
 				text: textbox.value
 			})
 		});
-		console.log(await resp.text());
+		getComments();
 	};
 
 	onMount(async () => {

@@ -6,6 +6,7 @@
 		background-color: var(--fg);
 		margin-top: 1em;
 		padding: 1em;
+		width: 100%;
 		border-radius: var(--border-radius);
 		color: var(--bg);
 	}
@@ -37,9 +38,14 @@
 	import { onMount } from "svelte";
 	let comments = [];
 	let token;
-	onMount(async () => {
+
+	const getComments = async () => {
+		comments = [];
 		const commentsResp = await fetch(`/api/comments/${id}`);
 		comments = comments.concat(await commentsResp.json());
+	};
+	onMount(async () => {
+		getComments();
 		token = document.cookie
 			.split(";")
 			.filter(c => c.startsWith("token"))[0]
@@ -53,11 +59,11 @@
 	<h1 class="title">Comments</h1>
 	{#if token != undefined}
 		<div class="comment-form">
-			<Commentsubmit {id} />
+			<Commentsubmit {getComments} {id} />
 		</div>
 	{/if}
 	<div class="comments">
-		{#if comments != undefined}
+		{#if comments.length > 0}
 			{#each comments as { comment }}
 				<Comment {comment} />
 			{:else}
