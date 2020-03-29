@@ -127,7 +127,7 @@
 			{#each links as link}
 				<a href="{link.link}">{link.text}</a>
 			{/each}
-			{#if loggedIn !== undefined && !loggedIn}
+			{#if !loggedIn}
 				{#each buttons as button}
 					<Button
 						link="{button.link}"

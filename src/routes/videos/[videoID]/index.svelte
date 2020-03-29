@@ -8,10 +8,11 @@
 		border-radius: var(--border-radius);
 		padding: 0;
 		grid-area: player;
+		align-self: start;
 		max-width: 1280px;
 		box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19),
 			0 6px 6px rgba(0, 0, 0, 0.23);
-		width: 100vmin;
+		width: 60vw;
 	}
 
 	.videodetails {
@@ -45,7 +46,7 @@
 		margin: 0 auto;
 		justify-content: center;
 		grid-template-columns: auto 402px;
-		grid-template-rows: auto auto;
+		grid-template-rows: var(--height) auto;
 		grid-template-areas:
 			"player recommended"
 			"comments recommended";
@@ -69,7 +70,7 @@
 			padding: 0;
 			width: 100%;
 			grid-template-columns: 1fr;
-			grid-template-rows: repeat(auto, 3);
+			grid-template-rows: auto auto auto;
 			grid-template-areas:
 				"player"
 				"recommended"
@@ -107,6 +108,9 @@
 	export let videoJSON;
 	export let src;
 	let videos = [];
+
+	let height = 240;
+
 	onMount(async () => {
 		try {
 			const response = await fetch(`/api/videos/`);
@@ -122,8 +126,8 @@
 	<title>YomTube - {videoJSON.title}</title>
 </svelte:head>
 
-<div class="content">
-	<div class="playerbox">
+<div style="--height: {height}px;" class="content">
+	<div bind:clientHeight="{height}" class="playerbox">
 		<Videoplayer {videoJSON} {src} />
 		<div class="videodetails">
 			<h1 class="title">{videoJSON.title}</h1>

@@ -17,7 +17,6 @@
 		--margin: 1rem;
 	}
 	#videoPlayer {
-		width: 100vw;
 		height: 100vh;
 		max-width: calc(var(--video-width));
 		min-width: 98vw;

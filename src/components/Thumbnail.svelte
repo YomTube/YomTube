@@ -12,14 +12,13 @@
 		display: flex;
 		align-items: flex-end;
 		background: var(--thumbnail) black;
-		background-size: 100% calc(100%);
+		background-size: cover;
 		background-repeat: no-repeat;
 		background-position: center;
 		text-decoration: none;
 	}
 
 	div {
-		/* height: 2em; */
 		display: flex;
 		flex-wrap: wrap;
 		border-bottom-left-radius: 0.4em;
@@ -32,9 +31,6 @@
 		font-size: 80%;
 		color: var(--fg);
 		background-color: var(--bg);
-		white-space: nowrap;
-		overflow: hidden;
-		text-overflow: ellipsis;
 	}
 
 	span {
@@ -42,17 +38,20 @@
 		margin: 1em;
 		border-radius: 0.4em;
 		display: flex;
-		flex-direction: column;
+		flex-direction: row;
 		flex-wrap: wrap;
 		transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
 		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12),
 			0 1px 2px rgba(0, 0, 0, 0.24);
 		cursor: pointer;
+		overflow: hidden;
+		white-space: nowrap;
+		text-overflow: ellipsis;
 	}
 
 	h1 {
 		width: 100%;
-		font-size: 2em;
+		font-size: 1.3em;
 	}
 
 	span:hover {
@@ -69,14 +68,43 @@
 
 	.vertical {
 		width: 95%;
-		margin: 1em 0;
+		margin: 0.5em 0;
+		height: 115px;
+		white-space: normal;
+		overflow: visible;
+	}
+
+	.vertical .img-wrapper {
+		width: 45%;
+	}
+
+	.vertical div {
+		width: 55%;
+		padding: 1em;
+		font-size: 0.8;
+		border-radius: 0 0.4em 0.4em 0;
+		align-content: flex-start;
+	}
+
+	.vertical .img-wrapper a {
+		border-radius: 0.4em 0 0 0.4em;
+	}
+
+	.vertical div h1 {
+		font-size: 1.2em;
+	}
+
+	.vertical .profilepicture {
+		display: none;
+		margin: 0;
+		margin-right: 0.5em;
 	}
 
 	.profilepicture {
 		border-radius: 100%;
 		height: 3em;
 		width: 3em;
-		margin: 0.2em;
+		margin: 0.5em;
 	}
 
 	@media only screen and (max-width: 1920px) {
@@ -93,7 +121,7 @@
 
 	@media only screen and (max-width: 768px) {
 		span {
-			width: 100%;
+			width: 95%;
 			margin: 0.5em 1em;
 		}
 	}
