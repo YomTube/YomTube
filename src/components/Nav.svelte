@@ -14,11 +14,10 @@
 	}
 
 	img {
-		padding-left: 5em;
 		display: block;
 		width: auto;
-		margin: 8px;
-		height: auto;
+		height: 2.5em;
+		margin: auto;
 	}
 
 	h1 {
@@ -41,6 +40,7 @@
 
 	.pagetitle {
 		margin: 1em;
+		margin-right: 5em;
 	}
 
 	.icon {
@@ -97,6 +97,7 @@
 	export let accent = "#ffa400";
 	export let accent2 = "#009ffd";
 	export let headerText = "YOMTUBE";
+	export let icon = "/images/logo.png";
 
 	export let buttons = [
 		{
@@ -119,8 +120,7 @@
 <headerbar>
 	<nav>
 		<a class="pagetitle" href="/">
-			<!-- <img src="{icon}" alt="an icon" /> -->
-			<h1>{headerText}</h1>
+			<img src="{icon}" alt="an icon" />
 		</a>
 		<Searchbox />
 		<span>
