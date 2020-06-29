@@ -127,15 +127,17 @@
 		z-index: 2;
 	}
 
-	// #progress::-moz-range-thumb,
-	// #progress::-webkit-slider-thumb {
-	// 	appearance: none;
-	// 	-webkit-appearance: none;
-	// 	background-color: var(--orange);
-	// 	border-radius: 100%;
-	// 	height: var(--bar-height);
-	// 	width: var(--bar-height);
-	// }
+	/*
+	#progress::-moz-range-thumb,
+	#progress::-webkit-slider-thumb {
+		appearance: none;
+		-webkit-appearance: none;
+		background-color: var(--orange);
+		border-radius: 100%;
+		height: var(--bar-height);
+		width: var(--bar-height);
+	}
+	*/
 	input[type="range"]::-webkit-slider-thumb {
 		-webkit-appearance: none;
 		height: var(--bar-height);
@@ -282,13 +284,15 @@
 			bottom: 0;
 		}
 		#controls.shown #bar:hover {
-			// height: calc(2 * var(--bar-height)) !important;
+			/* height: calc(2 * var(--bar-height)) !important;*/
 			height: var(--bar-height);
 		}
-		// #controls.shown #bar:hover {
-		// 	--bar-height: 1em;
-		// 	height: var(--bar-height) !important;
-		// }
+		/*
+		 #controls.shown #bar:hover {
+		 	--bar-height: 1em;
+		 	height: var(--bar-height) !important;
+		 }
+		 */
 		#volume {
 			display: flex;
 			justify-content: start;
@@ -334,7 +338,7 @@
 			top: unset;
 			bottom: calc(3 * var(--bar-height) + var(--bar-size));
 			right: 0;
-			// TODO Centrera ^
+			/* TODO Centrera ^ */
 		}
 		#spin-container {
 			background-color: #000000aa;
