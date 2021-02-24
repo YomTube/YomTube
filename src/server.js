@@ -14,6 +14,7 @@ const app = Express();
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+
 app.use("/api", backend);
 app.use("/test", Express.static("test"));
 

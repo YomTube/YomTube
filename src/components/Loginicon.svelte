@@ -68,18 +68,17 @@
 		color: var(--fg);
 	}
 
-	.anim ul li {
-		@for $i from 1 through 2 {
-			&:nth-child(#{$i}) {
-				display: block;
-				animation: 300ms * $i menu ease-in-out forwards;
-			}
-		}
+	.anim ul li:nth-child(1) {
+		display: block;
+		animation: 300ms menu ease-in-out forwards;
+	}
+	.anim ul li:nth-child(2) {
+		display: block;
+		animation: 600ms menu ease-in-out forwards;
 	}
 
 	.anim ul {
-		box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16),
-			0 3px 6px rgba(0, 0, 0, 0.23);
+		box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
 	}
 
 	@media only screen and (max-width: 768px) {
@@ -106,15 +105,15 @@
 		let cookies = document.cookie;
 		let token = cookies
 			.split(";")
-			.filter(c => c.startsWith("token"))[0]
+			.filter((c) => c.startsWith("token"))[0]
 			.split("=")[1];
 
 		let resp = await fetch("/api/users/me", {
 			method: "GET",
 			headers: {
 				"Content-Type": "application/json",
-				Authorization: "Bearer " + token
-			}
+				Authorization: "Bearer " + token,
+			},
 		});
 		let json = await resp.json();
 		mime = json.user.profilePicture.contentType;
@@ -127,8 +126,7 @@
 			let cookie = cookies[i];
 			let eqPos = cookie.indexOf("=");
 			let name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
-			document.cookie =
-				name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
+			document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
 		}
 		document.location.href = "/";
 	};
@@ -137,7 +135,9 @@
 <div
 	bind:this="{icon}"
 	on:click="{() => menu()}"
-	style="--img: {mime && img ? `url('data:${mime};base64,${img}')` : undefined};
+	style="--img: {mime && img
+		? `url('data:${mime};base64,${img}')`
+		: undefined};
 	--accent: {accent};"
 	id="img">
 	<ul>
