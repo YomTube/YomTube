@@ -3,16 +3,30 @@
 		box-sizing: border-box;
 	}
 
-	.playerbox {
+	.content {
+		max-width: 420mm;
+		width: 100%;
+
+		display: grid;
+		grid-template-areas: "player related" "comments related";
+		grid-template-columns: auto 24rem;
+		gap: 1rem;
+
+		margin: 1rem auto 0;
+		padding: 0 1rem;
+	}
+
+	.player {
+		grid-area: player;
+
+		width: 100%;
 		background-color: var(--fg);
+
 		border-radius: var(--border-radius);
 		padding: 0;
-		grid-area: player;
-		align-self: start;
-		max-width: 1280px;
+
 		box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19),
 			0 6px 6px rgba(0, 0, 0, 0.23);
-		width: 60vw;
 	}
 
 	.videodetails {
@@ -24,6 +38,7 @@
 		height: 4em;
 		display: flex;
 		justify-content: space-between;
+		align-items: center;
 	}
 
 	.uploader {
@@ -39,49 +54,21 @@
 		margin-right: 0.75em;
 	}
 
-	.content {
-		padding: 1em 0;
-		margin: 0 auto;
-		display: grid;
-		margin: 0 auto;
-		justify-content: center;
-		grid-template-columns: auto 402px;
-		grid-template-rows: var(--height) auto;
-		grid-template-areas:
-			"player recommended"
-			"comments recommended";
-	}
-
 	.views {
 		color: #606060;
 	}
 
-	@media only screen and (max-width: 1920px) {
+	@media only screen and (max-width: 1200px) {
 		.content {
-			margin: none;
+			grid-template-areas: "player player" "comments related";
+			grid-template-columns: repeat(2, 1fr);
 		}
 	}
 
 	@media only screen and (max-width: 768px) {
 		.content {
-			flex-direction: column;
-			flex-wrap: wrap;
-			margin: 0;
-			padding: 0;
-			width: 100%;
+			grid-template-areas: "player" "comments" "related";
 			grid-template-columns: 1fr;
-			grid-template-rows: auto auto auto;
-			grid-template-areas:
-				"player"
-				"recommended"
-				"comments";
-		}
-		.playerbox {
-			width: 100%;
-			border-radius: 0em;
-			box-shadow: none;
-			margin: 0;
-			padding: 0;
 		}
 	}
 </style>
@@ -126,34 +113,39 @@
 	<title>YomTube - {videoJSON.title}</title>
 </svelte:head>
 
-<div style="--height: {height}px;" class="content">
-	<div bind:clientHeight="{height}" class="playerbox">
-		<Videoplayer {videoJSON} {src} />
+<div class="content">
+	<div class="player">
+		<Videoplayer videoJSON="{videoJSON}" src="{src}" />
 		<div class="videodetails">
 			<h1 class="title">{videoJSON.title}</h1>
 			<div class="bar">
 				<div class="uploader">
 					<img
-						src="data:{videoJSON.uploaded_by.profilePicture.contentType};base64,{videoJSON.uploaded_by.profilePicture.data}"
+						src="data:{videoJSON.uploaded_by.profilePicture
+							.contentType};base64,{videoJSON.uploaded_by
+							.profilePicture.data}"
 						alt="" />
 					<p class="author">
 						{videoJSON.uploaded_by.username}
 					</p>
 				</div>
 				<p class="views">
-					{videoJSON.views} views • {videoJSON.uploaded_at.substring(0, 10)}
+					{videoJSON.views} views • {videoJSON.uploaded_at.substring(
+						0,
+						10
+					)}
 				</p>
 			</div>
-			<details>{videoJSON.description || ''}</details>
+			<details>{videoJSON.description || ""}</details>
 		</div>
 	</div>
 	<div style="grid-area: comments;">
 		<Commentbox id="{videoJSON._id}" />
 	</div>
-	<div style="grid-area: recommended;">
+	<div style="grid-area: related;">
 		<Videobox
 			title="<s>Related</s> videos"
-			{videos}
+			videos="{videos}"
 			orientation="vertical" />
 	</div>
 </div>

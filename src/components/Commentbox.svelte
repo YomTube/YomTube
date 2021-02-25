@@ -4,7 +4,6 @@
 	}
 	.commentbox {
 		background-color: var(--fg);
-		margin-top: 1em;
 		padding: 1em;
 		width: 100%;
 		border-radius: var(--border-radius);
@@ -48,7 +47,7 @@
 		getComments();
 		token = document.cookie
 			.split(";")
-			.filter(c => c.startsWith("token"))[0]
+			.filter((c) => c.startsWith("token"))[0]
 			.split("=")[1];
 	});
 
@@ -59,13 +58,13 @@
 	<h1 class="title">Comments</h1>
 	{#if token != undefined}
 		<div class="comment-form">
-			<Commentsubmit {getComments} {id} />
+			<Commentsubmit getComments="{getComments}" id="{id}" />
 		</div>
 	{/if}
 	<div class="comments">
 		{#if comments.length > 0}
 			{#each comments as { comment }}
-				<Comment {comment} />
+				<Comment comment="{comment}" />
 			{:else}
 				<Loading />
 			{/each}

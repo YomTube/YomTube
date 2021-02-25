@@ -40,10 +40,9 @@
 	}
 
 	.vertical {
-		width: 402px;
+		/* width: 402px;
 		min-width: 402px;
-		max-width: 402px;
-		margin: 0 1em;
+		max-width: 402px; */
 		flex-direction: column;
 		align-items: center;
 	}
@@ -96,7 +95,7 @@
 	</h1>
 	{#if videos.length > 0}
 		{#each videos as video}
-			<Thumbnail {orientation} {video} />
+			<Thumbnail orientation="{orientation}" video="{video}" />
 		{:else}
 			<Loading />
 		{/each}

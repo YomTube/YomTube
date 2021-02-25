@@ -1,4 +1,4 @@
-<style type="text/scss" lang="scss">
+<style type="text/scss" lang="sass">
 	* {
 		padding: 0;
 		margin: 0;
@@ -17,20 +17,14 @@
 		--margin: 1rem;
 	}
 	#videoPlayer {
-		height: 100vh;
-		max-width: calc(var(--video-width));
-		min-width: 98vw;
-		max-height: var(--video-height);
+		width: 100%;
 		position: relative;
 		overflow: hidden;
 	}
 	video {
-		height: 100%;
 		width: 100%;
+		object-fit: contain;
 		background-color: black;
-		position: absolute;
-		top: 0;
-		left: 0;
 		z-index: 1;
 	}
 	.hasBackground {
@@ -263,13 +257,10 @@
 			--video-width: 60vw;
 		}
 		#videoPlayer {
-			min-width: 768px;
-			min-height: 432px;
+			height: min-content;
 		}
 		#controls {
-			--control-height: calc(
-				var(--bar-size) + 2 * var(--bar-height)
-			);
+			--control-height: calc(var(--bar-size) + 2 * var(--bar-height));
 			height: var(--control-height);
 
 			display: block;
@@ -448,8 +439,7 @@
 		if (isMobile) {
 			if (canClick && shown) {
 				try {
-					if (paused && video.paused)
-						playPromise = video.play();
+					if (paused && video.paused) playPromise = video.play();
 					else {
 						if (playPromise !== undefined) {
 							await playPromise;
@@ -478,7 +468,7 @@
 
 	let muteVolume = () => (muted = !muted);
 
-	let chooseQuality = async quality => {
+	let chooseQuality = async (quality) => {
 		closestBuffer = 0;
 		if (playPromise !== undefined && playPromise instanceof Promise) {
 			await playPromise;
@@ -491,12 +481,12 @@
 		resetShowTimer();
 	};
 
-	let findClosestBuffer = ct => {
+	let findClosestBuffer = (ct) => {
 		let array = [];
 		for (let i = 0; i < video.buffered.length; i++) {
 			array.push({
 				start: video.buffered.start(i),
-				end: video.buffered.end(i)
+				end: video.buffered.end(i),
 			});
 		}
 		closestBuffer = array.indexOf(
@@ -509,7 +499,7 @@
 		);
 	};
 
-	let showControls = e => {
+	let showControls = (e) => {
 		if (e.detail > 1 || qualitiesShown) return;
 		console.log("Hovering");
 		if (isMobile && shown) {
@@ -520,7 +510,7 @@
 		}
 	};
 
-	let skipInVideo = event => {
+	let skipInVideo = (event) => {
 		let point = event.x - innerWidth / 2;
 		let abs = Math.abs(point);
 		if (abs > threshold) {
@@ -577,7 +567,7 @@
 			];
 		if (!video.duration) {
 			video.addEventListener("loadedmetadata", setup, {
-				once: true
+				once: true,
 			});
 		} else setup();
 	});
@@ -593,10 +583,11 @@
 	{/if}
 	<div
 		id="controls"
-		on:click="{e => isMobile && showControls(e)}"
-		on:mousemove="{e => !isMobile && showControls(e)}"
-		on:dblclick="{e => (isMobile ? skipInVideo(e) : toggleFullscreen(e))}"
-		class:shown="{(isMobile && (loading || shown)) || (!isMobile && shown)}">
+		on:click="{(e) => isMobile && showControls(e)}"
+		on:mousemove="{(e) => !isMobile && showControls(e)}"
+		on:dblclick="{(e) => (isMobile ? skipInVideo(e) : toggleFullscreen(e))}"
+		class:shown="{(isMobile && (loading || shown)) ||
+			(!isMobile && shown)}">
 		<div id="bar">
 			<input
 				disabled="{!canClick}"
@@ -604,24 +595,38 @@
 				type="range"
 				max="{videoLength}"
 				bind:value="{currentTime}"
-				on:change="{e => {
-					buffered.length > 0 ? findClosestBuffer(currentTime) : undefined;
+				on:change="{(e) => {
+					buffered.length > 0
+						? findClosestBuffer(currentTime)
+						: undefined;
 				}}"
-				on:input="{async e => {
+				on:input="{async (e) => {
 					resetShowTimer();
 					try {
-						if (playPromise !== undefined && playPromise instanceof Promise) {
+						if (
+							playPromise !== undefined &&
+							playPromise instanceof Promise
+						) {
 							await playPromise;
 						}
 						video.pause();
 					} catch (videoError) {
 						console.error('VideoError', videoError);
 					}
-					buffered.length > 0 ? findClosestBuffer(currentTime) : undefined;
+					buffered.length > 0
+						? findClosestBuffer(currentTime)
+						: undefined;
 				}}"
-				on:click="{() => (buffered.length > 0 && shown ? findClosestBuffer(currentTime) : undefined)}"
-				style="background: linear-gradient(90deg, #ffa000f0 {(currentTime / videoLength) * 100}%,
-				rgba(255, 255, 255, 0.1) {(currentTime / videoLength) * 100}%)"
+				on:click="{() =>
+					buffered.length > 0 && shown
+						? findClosestBuffer(currentTime)
+						: undefined}"
+				style="background: linear-gradient(90deg, #ffa000f0 {(currentTime /
+					videoLength) *
+					100}%,
+				rgba(255, 255, 255, 0.1) {(currentTime /
+					videoLength) *
+					100}%)"
 				step="{videoLength / Math.pow(10, 6)}" />
 			<div id="buffered" style="width: {bufferWidth}%"></div>
 		</div>
@@ -637,7 +642,7 @@
 				class="button hasBackground material-icons"
 				class:atBottom="{!isMobile}"
 				on:click="{togglePlaying}">
-				{paused ? 'play_arrow' : 'pause'}
+				{paused ? "play_arrow" : "pause"}
 			</i>
 		{/if}
 		<i
@@ -647,13 +652,10 @@
 			skip_next
 		</i>
 
-		<div
-			id="qualityChooser"
-			class="button"
-			class:atBottom="{!isMobile}">
+		<div id="qualityChooser" class="button" class:atBottom="{!isMobile}">
 			<i
 				class="hasBackground material-icons"
-				on:click="{e => {
+				on:click="{(e) => {
 					if (!shown) return;
 					qualitiesShown = !qualitiesShown;
 					resetShowTimer();
@@ -677,7 +679,7 @@
 					id="icon"
 					class="hasBackground material-icons"
 					on:click="{muteVolume}">
-					{!muted ? 'volume_up' : 'volume_off'}
+					{!muted ? "volume_up" : "volume_off"}
 				</i>
 				<input
 					type="range"
@@ -705,7 +707,7 @@
 			id="fullscreen"
 			on:click="{toggleFullscreen}"
 			class="button hasBackground material-icons atBottom">
-			{fullscreenEnabled ? 'fullscreen_exit' : 'fullscreen'}
+			{fullscreenEnabled ? "fullscreen_exit" : "fullscreen"}
 		</i>
 	</div>
 
@@ -716,9 +718,9 @@
 		bind:currentTime
 		controls="{false}"
 		preload="metadata"
-		on:mousemove="{e => !isMobile && showControls(e)}"
+		on:mousemove="{(e) => !isMobile && showControls(e)}"
 		on:click="{togglePlaying}"
-		on:dblclick="{e => (isMobile ? skipInVideo(e) : toggleFullscreen(e))}"
+		on:dblclick="{(e) => (isMobile ? skipInVideo(e) : toggleFullscreen(e))}"
 		on:playing="{() => {
 			loading = false;
 			setShowTimer();
