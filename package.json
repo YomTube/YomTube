@@ -21,7 +21,7 @@
 		"polka": "next",
 		"sass": "^1.32.8",
 		"sirv": "^1.0.0",
-		"validator": "^13.5.2"
+		"validator": "^13.7.0"
 	},
 	"devDependencies": {
 		"sapper": "^0.28.0",
